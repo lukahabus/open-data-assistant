@@ -1,0 +1,82 @@
+﻿X,Y,OBJECTID,naziv,vrsta,adresa,telefon,fax,email,web,osnivac,kampus,sjediste,nadlezan
+16.030636988,45.826410896,1,Agronomski fakultet,Fakultet,Svetošimunska cesta 25,01 239 3777,01 231 5300,dekanat@agr.hr,www.agr.hr/index.htm,Državni,Istočni,Sjedište,Sveučilište u Zagrebu
+15.9704146610001,45.808674631,2,Akademija dramske umjetnosti,Umjetnička akademija,Trg Republike Hrvatske 5,01 482 8506,01 482 8508,dekanat@pomet.adu.hr ,www.adu.hr,Državni,Središnji,Sjedište,Sveučilište u Zagrebu
+15.96277366,45.811450011,3,Akademija likovne umjetnosti,Umjetnička akademija,Ilica 85,01 377 7300,01 377 3401,alu@alu.hr,www.alu.hr ,Državni,Središnji (SKALU),Sjedište,Sveučilište u Zagrebu
+15.963629767,45.8086418120001,4,Arhitektonski fakultet,Fakultet,Kačićeva ulica 26,01 463 9222,01 482 8079,info@arhitekt.hr,"www.arhitekt.hr
+""",Državni,Sjeverni,Sjedište,Sveučilište u Zagrebu
+15.963629767,45.8086418120001,5,Građevinski fakultet,Fakultet,Kačićeva ulica 26,01 463 9222,01 463 9206,pisarnica@grad.hr,www.grad.unizg.hr,Državni,Središnji,Sjedište,Sveučilište u Zagrebu
+15.963629767,45.8086418120001,6,Geodetski fakultet,Fakultet,Kačićeva ulica 26,01 463 9222,01 482 8081,referada@geof.hr,www.geof.unizg.hr,Državni,Središnji,Sjedište,Sveučilište u Zagrebu
+16.042344971,45.8116627200001,7,Edukacijsko-rehabilitacijski fakultet,Fakultet,Borongajska cesta 83F,01 245 7500,01 245 7559,dekan@erf.hr,www.erf.unizg.hr,Državni,Istočni (ZUK Borongaj),Sjedište,Sveučilište u Zagrebu
+15.969658725,45.8071871810001,8,Fakultet kemijskog inženjerstva i tehnologije,Fakultet,Trg Marka Marulića 19,01 459 7281,01 459 7260,"office@fkit.hr
+
+",www.fkit.unizg.hr,Državni,Istočni (ZUK Borongaj),Sjedište,Sveučilište u Zagrebu
+15.988866767,45.8261224440001,9,Prirodoslovno - matematički fakultet,Fakultet,Horvatovac 102A,01 460 6000,01 460 6013,dekanat@dekanat.pmf.hr,www.pmf.unizg.hr,Državni,Sjeverni,Sjedište,Sveučilište u Zagrebu
+16.0115041550001,45.81600746,10,Ekonomski fakultet,Fakultet,Trg Johna Fitzgeralda Kennedya  6,01 238 3333,01 233 5633,dekan@efzg.hr,www.efzg.unizg.hr/default.aspx,Državni,Istočni,Sjedište,Sveučilište u Zagrebu
+15.9709074130001,45.8011352710001,11,Fakultet elektrotehnike i računarstva,Fakultet,Unska ulica 3,01 612 9999,01 617 0007,fer@fer.hr,www.fer.unizg.hr,Državni,Središnji,Sjedište,Sveučilište u Zagrebu
+15.992989983,45.8077966180001,12,Fakultet političkih znanosti,Fakultet,Ulica Ivana Lepušića 6,01 464 2000,01 465 5316,dekanat@fpzg.hr,www.fpzg.unizg.hr,Državni,Istočni (ZUK Borongaj),Sjedište,Sveučilište u Zagrebu
+16.0093597810001,45.81438566,13,Fakultet prometnih znanosti,Fakultet,Ulica Lavoslava Vukelića 4,01 238 0222,01 231 4415,fpz@fpz.hr,www.fpz.unizg.hr,Državni,Istočni (ZUK Borongaj),Sjedište,Sveučilište u Zagrebu
+15.9713816230001,45.7952836540001,14,Fakultet strojarstva i brodogradnje,Fakultet,Ulica Ivana Lučića 5,01 616 8222,01 615 6940,fsb@fsb.hr,www.fsb.unizg.hr,Državni,Središnji,Sjedište,Sveučilište u Zagrebu
+15.9758268750001,45.8085949420001,15,Farmaceutsko-biokemijski fakultet,Fakultet,Ulica Ante Kovačića 1,01 481 8288,01 639 4400,dekanat@pharma.hr,www.pharma.hr ,Državni,Sjeverni,Sjedište,Sveučilište u Zagrebu
+15.971306511,45.796588463,16,Filozofski fakultet,Fakultet,Ulica Ivana Lučića 3,01 612 0111,01 615 6879,ffzg@ffzg.hr,www.ffzg.hr,Državni,Središnji,Sjedište,Sveučilište u Zagrebu
+15.9698086400001,45.8105882950001,17,Sveučilište u Zagrebu,Sveučilište,Trg Republike Hrvatske 14,01 456 4111,01 483 0602,unizg.info@unizg.hr,www.unizg.hr,Državni,Središnji,Sjedište,Sveučilište u Zagrebu
+16.029807776,45.805919171,18,Grafički fakultet,Fakultet,Getaldićeva ulica 2,01 237 1080,01 237 1077,info@grf.hr,www.grf.unizg.hr,Državni,Istočni (ZUK Borongaj),Sjedište,Sveučilište u Zagrebu
+16.0436560960001,45.8123908600001,19,Hrvatski studiji,Sveučilišni centar,Borongajska 83D,01 245 7600,01 245 7636,info@hrstud.hr ,www.hrstud.unizg.hr,Državni,Istočni (ZUK Borongaj),Sjedište,Sveučilište u Zagrebu
+15.9823116470001,45.813733364,20,Katolički bogoslovni fakultet,Fakultet,Vlaška ulica 38,01 489 0400,01 481 4704,kbf@theo.kbf.hr ,www.kbf.hr,Državni,Sjeverni,Sjedište,Sveučilište u Zagrebu
+15.944520739,45.78484984,21,Kineziološki fakultet,Fakultet,Horvaćanski zavoj 15,01 365 8666,01 363 4146,dekanat@kif.hr,www.kif.unizg.hr,Državni,Zapadni,Sjedište,Sveučilište u Zagrebu
+15.9850611300001,45.8189743140001,22,Medicinski fakultet,Fakultet,Šalata 3B,01 456 6777,01 492 0053,mf@mef.hr,www.mef.hr,Državni,Sjeverni,Sjedište,Sveučilište u Zagrebu
+15.968642366,45.8100498380001,23,Muzička akademija,Umjetnička akademija,Trg Republike Hrvatske 12,01 481 0200,01 487 2380,mza@muza.hr,www.muza.hr,Državni,Središnji,Sjedište,Sveučilište u Zagrebu
+15.9698086400001,45.8105882950001,24,Pravni fakultet,Fakultet,Trg Republike Hrvatske 14,01 456 4332,01 456 4030,dekanat@pravo.hr,www.pravo.unizg.hr,Državni,Središnji,Sjedište,Sveučilište u Zagrebu
+15.96427261,45.806852615,25,Prehrambeno-biotehnološki fakultet,Fakultet,Pierottijeva ulica 6,01 460 5000,01 483 6083,"dekan@pbf.hr
+/","www.pbf.unizg.hr
+www.rgn.hr",Državni,Istočni (ZUK Borongaj),Sjedište,Sveučilište u Zagrebu
+15.96427261,45.806852615,26,Rudarsko-geološko-naftni fakultet,Fakultet,Pierottijeva ulica 6,01 483 6051,01 483 6051,dekanat@rgn.hr,www.rgn.hr,Državni,Središnji,Sjedište,Sveučilište u Zagrebu
+15.985564595,45.8268926040001,27,Prirodoslovno - matematički fakultet - Matematički odsjek,Fakultet,Bijenička cesta 30,01 460 5777,01 468 0335,ured@math.hr,www.math.hr,Državni,Sjeverni,Izvan sjedišta,Sveučilište u Zagrebu
+15.9853627420001,45.8271905170001,28,Prirodoslovno - matematički fakultet - Fizički odsjek,Fakultet,Bijenička cesta 32,01 460 5555,01 468 0336,,www.pmf.unizg.hr/phy,Državni,Sjeverni,Izvan sjedišta,Sveučilište u Zagrebu
+15.9871743590001,45.827084208,29,Prirodoslovno - matematički fakultet - Geofizički odsjek,Fakultet,Horvatovac 95,01 460 5900,01 468 0331,ured-geofizike@gfz.hr,www.pmf.unizg.hr/geof,Državni,Sjeverni,Sjedište,Sveučilište u Zagrebu
+15.988866767,45.8261224440001,30,Prirodoslovno - matematički fakultet - Kemijski odsjek,Fakultet,Horvatovac 102A,01 460 6010,01 460 6013,dekanat@dekanat.pmf.hr,www.pmf.unizg.hr,Državni,Sjeverni,Sjedište,Sveučilište u Zagrebu
+15.988866767,45.8261224440001,31,Prirodoslovno - matematički fakultet - Geološki odsjek,Fakultet,Horvatovac 102A,01 460 6000,,dekanat@dekanat.pmf.hr,www.pmf.unizg.hr,Državni,Sjeverni,Sjedište,Sveučilište u Zagrebu
+15.9673972950001,45.8091413670001,32,Prirodoslovno - matematički fakultet - Biološki odsjek,Fakultet,Rooseveltov trg 6,01 487 7700,01 482 6260,uredbo@biol.pmf.hr,www.pmf.unizg.hr/biol,Državni,Sjeverni,Izvan sjedišta,Sveučilište u Zagrebu
+15.972164155,45.812387544,33,Stomatološki fakultet,Fakultet,Gundulićeva ulica 5,01 480 2111,01 480 7367,dekanat@sfzg.hr,www.sfzg.unizg.hr,Državni,Sjeverni,Sjedište,Sveučilište u Zagrebu
+16.030636988,45.826410896,34,Šumarski fakultet,Fakultet,Svetošimunska cesta 25,01 235 2555,01 235 2496,fakultet@sumfak.hr,www.sumfak.unizg.hr,Državni,Istočni,Sjedište,Sveučilište u Zagrebu
+15.9369913520001,45.812194092,35,Tekstilno-tehnološki fakultet,Fakultet,Prilaz baruna Filipovića 28A,01 371 2500,01 371 2599,fakultet@ttf.hr,www.ttf.unizg.hr,Državni,Istočni (ZUK Borongaj),Sjedište,Sveučilište u Zagrebu
+15.961263295,45.7972792940001,36,Učiteljski fakultet,Fakultet,Savska cesta 77,01 632 7300,01 617 7860,dekanat@ufzg.hr,www.ufzg.unizg.hr,Državni,Središnji,Sjedište,Sveučilište u Zagrebu
+16.0073032940001,45.8062399620001,37,Veterinarski fakultet,Fakultet,Ulica Vjekoslava Heinzela 55,01 239 0111,01 244 1390,fakultet@vef.hr,www.ufzg.unizg.hr,Državni,Središnji,Sjedište,Sveučilište u Zagrebu
+15.944416819,45.8139207940001,38,Hrvatsko katoličko sveučilište,Sveučilište,Ilica 244B,01 370 6600,01 370 6601,rectorat@unicath.h,www.unicath.hr,Državni,,Sjedište,Sveučilište u Zagrebu
+15.9699567430001,45.7954614220001,39,Tehničko veleučilište,Veleučilište,Vrbik 8,01 560 3900,01 560 3999,tvz@tvz.hr,"www.tvz.hr
+",Državni,,Sjedište,"Ministarstvo znanosti, obrazovanja i sporta"
+15.977762834,45.82734787,40,Zdravstveno veleučilište,Veleučilište,Mlinarska cesta 38,01 549 5800,01 549 5900,tajnistvo@zvu.hr,www.zvu.hr,Državni,,Sjedište,"Ministarstvo znanosti, obrazovanja i sporta"
+15.987748185,45.8128345870001,41,Privatna visoka škola Bernays,Visoka škola,Prolaz Jurja Ratkaja 8,01 555 1212,01 555 1779,info@bernays.hr,www.bernays.hr,Privatni,,Sjedište,"Ministarstvo znanosti, obrazovanja i sporta"
+16.030997026,45.837116478,42,Visoka policijska škola,Visoka škola,Avenija Gojka Šuška 1,01 239 1304,01 239 1415,vps@fkz.hr,www.pa.mup.hr,Državni,,Sjedište,"Ministarstvo znanosti, obrazovanja i sporta"
+15.98516704,45.8133607940001,43,Veleučilište VERN,Veleučilište,Trg Drage Iblera 10,01 482 5911,01 482 5910,vuv@vern.hr,www.vern.hr ,Privatni,,Sjedište,"Ministarstvo znanosti, obrazovanja i sporta"
+16.012364082,45.815187011,44,"DIU Libertas, međunarodno sveučilište",Sveučilište,Trg Johna Fitzgeralda Kennedya 6B,01 414 111,01 414 111,diu@diu.hr,www.diu.hr,Privatni,,Sjedište,"Ministarstvo znanosti, obrazovanja i sporta"
+15.975636115,45.8160759530001,45,"Teološki fakultet ""Matija Vlačić Ilirik"" s pravom javnosti",Visoka škola,Ulica Pavla Radića 34,01 482 8915,01 482 8916,teoloski-fakultet@tfmvi.hr,www.tfmvi.hr,Privatni,,Sjedište,"Ministarstvo znanosti, obrazovanja i sporta"
+15.971301425,45.799316086,46,Visoka poslovna škola Zagreb s pravom javnosti,Visoka škola,Ulica grada Vukovara 68,01 631 0844,01 631 0628,vpsz@vpsz.hr,www.vpsz.hr,Privatni,,Sjedište,"Ministarstvo znanosti, obrazovanja i sporta"
+15.9448648040001,45.8148726150001,47,Visoka škola međunarodnih odnosa i diplomacije,Visoka škola,Ilica 244C,01 370 0666,01 370 0405,tajnistvo@diplomacija.hr,www.diplomacija.hr,Privatni,,Sjedište,"Ministarstvo znanosti, obrazovanja i sporta"
+15.9801309920001,45.7934556380001,48,Visoka škola tržišnih komunikacija AGORA,Visoka škola,Trnjanska cesta 114,01 222 5700,01 615 7615,tajnistvo@vsa.hr,www.vsa.hr,Privatni,,Sjedište,"Ministarstvo znanosti, obrazovanja i sporta"
+15.944322979,45.8011533120001,49,"Visoka škola za ekonomiju, poduzetništvo i upravljanje Nikola Šubić Zrinski",Visoka škola,Selska cesta 119,01 369 5706,01 400 2302,nikola@zrinski.org,www.zrinski.org/nikola,Privatni,,Sjedište,"Ministarstvo znanosti, obrazovanja i sporta"
+15.9877783270001,45.812410019,50,Visoka škola za financijski menađment (RRiF),Visoka škola,Martićeva ulica 29,01 469 9735,01 469 9736,visoka-skola@rrif.hr,www.visoka-skola-rrif.hr,Privatni,,Sjedište,"Ministarstvo znanosti, obrazovanja i sporta"
+15.962627895,45.8090666670001,51,Visoka škola za informacijske tehnologije Zagreb (VSITE),Visoka škola,Ulica Vjekoslava Klaića 7,01 376 4200,01 376 4264,referada@vsite.hr,www.vsite.hr,Privatni,,Sjedište,"Ministarstvo znanosti, obrazovanja i sporta"
+15.9448648040001,45.8148726150001,52,Visoka škola za primijenjeno računarstvo,Visoka škola,Ilica 244C,01 222 2182,01 222 2183,info@racunarstvo.hr,www.racunarstvo.hr,Privatni,,Sjedište,"Ministarstvo znanosti, obrazovanja i sporta"
+16.009154847,45.8156837230001,53,Visoko učilište EFFECTUS - visoka škola za financije i pravo,Visoka škola,Trg Johna Fitzgeralda Kennedya 2,01 611 7777,01 611 7022,referada@vsfp.eu,www.effectus-uciliste.eu,Privatni,,Sjedište,"Ministarstvo znanosti, obrazovanja i sporta"
+15.9713816230001,45.7952836540001,54,Visoka škola za sigurnost s pravom javnosti,Visoka škola,Ulica Ivana Lučića 5,01 616 8143,01 616 8566,tajnistvo@vss.hr,www.vss.hr,Privatni,,Sjedište,"Ministarstvo znanosti, obrazovanja i sporta"
+15.9987091190001,45.8270996740001,55,Zagrebačka škola ekonomije i menadžmenta,Visoka škola,Jordanovac 110,01 235 4243,01 235 4243,referada@zsem.h,www.zsem.hr,Privatni,,Sjedište,"Ministarstvo znanosti, obrazovanja i sporta"
+15.9448648040001,45.8148726150001,56,Europska poslovna škola Zagreb,Visoka škola,Ilica 244C,01 455 3020,01 455 3029,info@wificroatia.hr,www.wificroatia.hr,Privatni,,Sjedište,"Ministarstvo znanosti, obrazovanja i sporta"
+15.96277366,45.811450011,57,Akademija likovne umjetnosti - Odsjek za slikarstvo,Umjetnička akademija,Ilica 85,,,alu@alu.hr,www.alu.unizg.hr,Državni,Središnji (SKALU),Sjedište,Sveučilište u Zagrebu
+15.96277366,45.811450011,58,Akademija likovne umjetnosti - Odsjek za grafiku,Umjetnička akademija,Ilica 85,,,alu@alu.hr,www.alu.unizg.hr,Državni,Središnji (SKALU),Sjedište,Sveučilište u Zagrebu
+15.96277366,45.811450011,59,Akademija likovne umjetnosti - Odsjek za kiparstvo,Umjetnička akademija,Ilica 85,,,alu@alu.hr,www.alu.unizg.hr,Državni,Središnji (SKALU),Sjedište,Sveučilište u Zagrebu
+15.9715192580001,45.821799921,60,Akademija likovne umjetnosti - Nastavnički odsjek,Umjetnička akademija,Jabukovac 10,,,alu@alu.hr,www.alu.unizg.hr,Državni,Središnji (SKALU),Izvan sjedišta,Sveučilište u Zagrebu
+15.9683806840001,45.818217922,61,Akademija likovne umjetnosti - Odsjek za konzerviranje i restauriranje umjetnina,Umjetnička akademija,Zamenhofova ulica 14,,,alu@alu.hr,www.alu.unizg.hr,Državni,Središnji (SKALU),Izvan sjedišta,Sveučilište u Zagrebu
+15.943278418,45.807038026,62,Akademija likovne umjetnosti - Odsjek za animirani film i medije,Umjetnička akademija,Zagorska ulica 16,,,alu@alu.hr,www.alu.unizg.hr,Državni,Središnji (SKALU),Izvan sjedišta,Sveučilište u Zagrebu
+15.970575088,45.8072096970001,63,Fakultet kemijskog inženjerstva i tehnologije  - odvojeni objekt,Fakultet,Trg Marka Marulića 20,,,office@fkit.hr,www.fkit.unizg.hr,Državni,Istočni (ZUK Borongaj),Izvan sjedišta,Sveučilište u Zagrebu
+16.041583465,45.812607782,64,Fakultet prometnih znanosti - odvojeni objekt,Fakultet,Borongajska cesta 83A,,,dekan@fpz.hr,www.fpz.unizg.hr,Državni,Istočni (ZUK Borongaj),Izvan sjedišta,Sveučilište u Zagrebu
+15.9738487560001,45.795684834,65,Fakultet strojarstva i brodogradnje - odvojeni objekt (istočna zgrada),Fakultet,Miramarska cesta 107,,,dekanat@fsb.hr,www.fsb.unizg.hr,Državni,Središnji,Izvan sjedišta,Sveučilište u Zagrebu
+15.9711729690001,45.797732658,66,Fakultet strojarstva i brodogradnje - odvojeni objekt (sjeverna zgrada),Fakultet,Ulica Ivana Lučića 1,,,dekanat@fsb.hr,www.fsb.unizg.hr,Državni,Središnji,Izvan sjedišta,Sveučilište u Zagrebu
+15.970575088,45.8072096970001,67,Farmaceutsko-biokemijski fakultet - odvojeni objekt,Fakultet,Trg Marka Marulića 20,,,dekanat@pharma.hr,www.pharma.unizg.hr,Državni,Sjeverni,Izvan sjedišta,Sveučilište u Zagrebu
+15.986090717,45.808556536,68,Farmaceutsko-biokemijski fakultet - odvojeni objekt,Fakultet,Ulica kneza Domagoja 2,,,dekanat@pharma.hr,www.pharma.unizg.hr,Državni,Sjeverni,Izvan sjedišta,Sveučilište u Zagrebu
+15.9826883480001,45.8276634280001,69,Farmaceutsko-biokemijski fakultet - odvojeni objekt,Fakultet,Ulica Josipa Schrotta 39,,,dekanat@pharma.hr,www.pharma.unizg.hr,Državni,Sjeverni,Izvan sjedišta,Sveučilište u Zagrebu
+15.9711288940001,45.809610487,70,Pravni fakultet - odvojeni objekt,Fakultet,Trg Republike Hrvatske 3,,,dekanat@pravo.hr,www.pravo.unizg.hr,Državni,Središnji,Izvan sjedišta,Sveučilište u Zagrebu
+15.9735063210001,45.8152156730001,71,Pravni fakultet - odvojeni objekt,Fakultet,Ulica sv. Ćirila i Metoda 4,,,dekanat@pravo.hr,www.pravo.unizg.hr,Državni,Središnji,Izvan sjedišta,Sveučilište u Zagrebu
+15.9719626850001,45.811717075,72,Pravni fakultet - odvojeni objekt,Fakultet,Gundulićeva ulica 10,,,dekanat@pravo.hr,www.pravo.unizg.hr,Državni,Središnji,Izvan sjedišta,Sveučilište u Zagrebu
+15.9663258090001,45.8183116660001,73,Pravni fakultet - odvojeni objekt,Fakultet,Ulica Vladimira Nazora 51,,,dekanat@pravo.hr,www.pravo.unizg.hr,Državni,Središnji,Izvan sjedišta,Sveučilište u Zagrebu
+15.969658725,45.8071871810001,74,Prirodoslovno - matematički fakultet - Geografski odsjek,Fakultet,Trg Marka Marulića 19,01 489 5400,01 489 5440,geogpmf@geog.pmf.hr,www.pmf.unizg.hr/geog,Državni,Sjeverni,Izvan sjedišta,Sveučilište u Zagrebu
+16.0115041550001,45.81600746,75,Ekonomski fakultet - stručni studiji,Fakultet,Trg Johna Fitzgeralda Kennedya  6,01 238 3333,01 233 5633,dekan@efzg.hr,www.efzg.unizg.hr,Državni,Istočni (ZUK Borongaj),Sjedište,Sveučilište u Zagrebu
