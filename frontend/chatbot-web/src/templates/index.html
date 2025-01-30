@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Web Interface</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Street Info Chatbot</h1>
+        <form action="/get_info" method="post">
+            <label for="street_name">Enter Street Name:</label>
+            <input type="text" id="street_name" name="street_name" required>
+            <button type="submit">Get Info</button>
+        </form>
+        {% if response %}
+            <div class="response">
+                <h2>Response:</h2>
+                <p>{{ response }}</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
