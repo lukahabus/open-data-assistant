@@ -1,0 +1,224 @@
+{
+  "id": "catalog-001",
+  "title": "Open Data Zagreb Catalog",
+  "description": "A catalog of open datasets from the City of Zagreb",
+  "keywords": [
+    "zagreb",
+    "open data",
+    "geospatial",
+    "education",
+    "streets"
+  ],
+  "themes": [
+    "education",
+    "geography",
+    "infrastructure"
+  ],
+  "issued": "2023-01-16",
+  "modified": "2023-01-30",
+  "landing_page": null,
+  "language": [],
+  "publisher": {
+    "name": "City of Zagreb",
+    "url": "https://www.zagreb.hr"
+  },
+  "datasets": [
+    {
+      "id": "dataset-001",
+      "title": "Geoportal visokoskolske ustanove",
+      "description": "Dataset containing the locations of higher education institutions in Zagreb.\n        Contains 75 institutions with their geographical coordinates and metadata.\n        The dataset includes the name of each institution, its address, and precise coordinates.",
+      "keywords": [
+        "education",
+        "university",
+        "college",
+        "zagreb",
+        "geospatial"
+      ],
+      "themes": [
+        "education",
+        "geography"
+      ],
+      "issued": "2023-01-16",
+      "modified": "2023-01-30",
+      "landing_page": null,
+      "language": [],
+      "publisher": {
+        "name": "City of Zagreb - Geoportal",
+        "url": "https://geoportal.zagreb.hr"
+      },
+      "distributions": [
+        {
+          "id": "distribution-001",
+          "title": "Geoportal visokoskolske ustanove CSV",
+          "description": "CSV file containing data on higher education institutions in Zagreb",
+          "keywords": [
+            "education",
+            "geospatial",
+            "zagreb",
+            "institutions"
+          ],
+          "themes": [],
+          "issued": null,
+          "modified": null,
+          "landing_page": null,
+          "language": [],
+          "publisher": null,
+          "access_url": "https://geoportal.zagreb.hr/Public/Datasets/Download/135",
+          "download_url": "https://geoportal.zagreb.hr/Public/Datasets/Download/135",
+          "media_type": "text/csv",
+          "format": "CSV",
+          "byte_size": null,
+          "checksum": null,
+          "license": "https://data.gov.hr/otvorena-dozvola"
+        }
+      ],
+      "temporal_coverage": null,
+      "spatial_coverage": {
+        "type": "Point",
+        "coordinates": [
+          15.97,
+          45.81
+        ]
+      },
+      "accrual_periodicity": null,
+      "version": null,
+      "version_notes": null,
+      "is_version_of": null,
+      "has_version": [],
+      "source_dataset": [],
+      "contact_point": null
+    },
+    {
+      "id": "dataset-002",
+      "title": "Zagreb Streets Dataset",
+      "description": "Dataset containing information about streets in Zagreb.\n        Contains 5477 streets with detailed information about each street,\n        including the street name, the person or entity it was named after, and historical information.",
+      "keywords": [
+        "streets",
+        "zagreb",
+        "urban",
+        "city",
+        "infrastructure"
+      ],
+      "themes": [
+        "infrastructure",
+        "urban planning"
+      ],
+      "issued": "2023-01-16",
+      "modified": "2023-01-30",
+      "landing_page": null,
+      "language": [],
+      "publisher": {
+        "name": "City of Zagreb",
+        "url": "https://www.zagreb.hr"
+      },
+      "distributions": [
+        {
+          "id": "distribution-002",
+          "title": "Zagreb Streets CSV",
+          "description": "CSV file containing data on streets in Zagreb",
+          "keywords": [
+            "streets",
+            "zagreb",
+            "urban"
+          ],
+          "themes": [],
+          "issued": null,
+          "modified": null,
+          "landing_page": null,
+          "language": [],
+          "publisher": null,
+          "access_url": "https://data.gov.hr/dataset/zagreba\u010dke-ulice",
+          "download_url": "https://data.gov.hr/dataset/zagreba\u010dke-ulice/resource/download",
+          "media_type": "text/csv",
+          "format": "CSV",
+          "byte_size": null,
+          "checksum": null,
+          "license": "https://data.gov.hr/otvorena-dozvola"
+        }
+      ],
+      "temporal_coverage": null,
+      "spatial_coverage": {
+        "type": "Point",
+        "coordinates": [
+          15.97,
+          45.81
+        ]
+      },
+      "accrual_periodicity": null,
+      "version": null,
+      "version_notes": null,
+      "is_version_of": null,
+      "has_version": [],
+      "source_dataset": [],
+      "contact_point": null
+    }
+  ],
+  "services": [
+    {
+      "id": "service-001",
+      "title": "Zagreb Open Data Mapping Service",
+      "description": "A service that provides geospatial mapping capabilities for Zagreb open datasets",
+      "keywords": [],
+      "themes": [],
+      "issued": null,
+      "modified": null,
+      "landing_page": null,
+      "language": [],
+      "publisher": null,
+      "endpoint_url": "https://geoportal.zagreb.hr/Public/Map/Default",
+      "serves_dataset": [
+        "dataset-001",
+        "dataset-002"
+      ],
+      "endpoint_description": null,
+      "service_type": "WMS"
+    }
+  ],
+  "records": [
+    {
+      "id": "record-001",
+      "primary_topic": "dataset-001",
+      "title": "Catalog Record for Geoportal visokoskolske ustanove",
+      "description": "Metadata record for the Geoportal visokoskolske ustanove dataset",
+      "issued": "2023-01-16",
+      "modified": "2023-01-30",
+      "conforms_to": []
+    },
+    {
+      "id": "record-002",
+      "primary_topic": "dataset-002",
+      "title": "Catalog Record for Zagreb Streets Dataset",
+      "description": "Metadata record for the Zagreb Streets dataset",
+      "issued": "2023-01-16",
+      "modified": "2023-01-30",
+      "conforms_to": []
+    }
+  ],
+  "dataset_series": [
+    {
+      "id": "series-001",
+      "title": "Zagreb Geospatial Datasets",
+      "description": "A series of geospatial datasets for the City of Zagreb",
+      "keywords": [
+        "zagreb",
+        "geospatial",
+        "geography"
+      ],
+      "themes": [
+        "geography",
+        "urban planning"
+      ],
+      "issued": null,
+      "modified": null,
+      "landing_page": null,
+      "language": [],
+      "publisher": null,
+      "datasets": [
+        "dataset-001",
+        "dataset-002"
+      ],
+      "temporal_coverage": null,
+      "spatial_coverage": null
+    }
+  ]
+}

@@ -1,0 +1,607 @@
+{
+  "id": "catalog-test-001",
+  "title": "Test DCAT katalog otvorenih podataka grada Zagreba",
+  "description": "Test katalog skupova podataka grada Zagreba za testiranje DCAT funkcionalnosti",
+  "keywords": [
+    "zagreb",
+    "otvoreni podaci",
+    "geoprostorni podaci",
+    "obrazovanje",
+    "ulice",
+    "promet",
+    "zdravstvo",
+    "javne institucije"
+  ],
+  "themes": [
+    "obrazovanje",
+    "geografija",
+    "infrastruktura",
+    "promet",
+    "zdravstvo",
+    "javna uprava"
+  ],
+  "issued": "2023-01-16",
+  "modified": "2024-05-15",
+  "landing_page": "https://data.zagreb.hr",
+  "language": ["hr", "en"],
+  "publisher": {
+    "name": "Grad Zagreb",
+    "url": "https://www.zagreb.hr"
+  },
+  "datasets": [
+    {
+      "id": "dataset-edu-001",
+      "title": "Visokoškolske ustanove u Zagrebu",
+      "description": "Skup podataka koji sadrži informacije o lokacijama visokoškolskih ustanova u Zagrebu. Uključuje 75 ustanova s njihovim geografskim koordinatama i metapodacima. Skup podataka sadrži imena ustanova, adrese i precizne koordinate.",
+      "keywords": [
+        "obrazovanje",
+        "sveučilište",
+        "fakultet",
+        "zagreb",
+        "geoprostorni podaci"
+      ],
+      "themes": ["obrazovanje", "geografija"],
+      "issued": "2023-01-16",
+      "modified": "2024-03-30",
+      "landing_page": "https://data.zagreb.hr/dataset/visokoskolske-ustanove",
+      "language": ["hr"],
+      "publisher": {
+        "name": "Grad Zagreb - Geoportal",
+        "url": "https://geoportal.zagreb.hr"
+      },
+      "distributions": [
+        {
+          "id": "distribution-edu-001-csv",
+          "title": "Visokoškolske ustanove (CSV)",
+          "description": "CSV datoteka s podacima o visokoškolskim ustanovama u Zagrebu",
+          "keywords": [
+            "obrazovanje",
+            "geoprostorni podaci",
+            "zagreb",
+            "ustanove"
+          ],
+          "themes": ["obrazovanje"],
+          "issued": "2023-01-16",
+          "modified": "2024-03-30",
+          "landing_page": null,
+          "language": ["hr"],
+          "publisher": null,
+          "access_url": "https://geoportal.zagreb.hr/Public/Datasets/Download/135",
+          "download_url": "https://geoportal.zagreb.hr/Public/Datasets/Download/135",
+          "media_type": "text/csv",
+          "format": "CSV",
+          "byte_size": 12500,
+          "checksum": {
+            "algorithm": "SHA-256",
+            "checksum_value": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "license": "https://data.gov.hr/otvorena-dozvola"
+        },
+        {
+          "id": "distribution-edu-001-json",
+          "title": "Visokoškolske ustanove (JSON)",
+          "description": "JSON datoteka s podacima o visokoškolskim ustanovama u Zagrebu",
+          "keywords": [
+            "obrazovanje",
+            "geoprostorni podaci",
+            "zagreb",
+            "ustanove"
+          ],
+          "themes": ["obrazovanje"],
+          "issued": "2023-01-16",
+          "modified": "2024-03-30",
+          "landing_page": null,
+          "language": ["hr"],
+          "publisher": null,
+          "access_url": "https://geoportal.zagreb.hr/Public/Datasets/Download/135?format=json",
+          "download_url": "https://geoportal.zagreb.hr/Public/Datasets/Download/135?format=json",
+          "media_type": "application/json",
+          "format": "JSON",
+          "byte_size": 18600,
+          "checksum": null,
+          "license": "https://data.gov.hr/otvorena-dozvola"
+        }
+      ],
+      "temporal_coverage": {
+        "start_date": "2022-01-01",
+        "end_date": "2024-03-30"
+      },
+      "spatial_coverage": {
+        "type": "Point",
+        "coordinates": [15.97, 45.81]
+      },
+      "accrual_periodicity": "godišnje",
+      "version": "2.1",
+      "version_notes": "Ažurirani podaci za 2024. godinu",
+      "is_version_of": null,
+      "has_version": [],
+      "source_dataset": [],
+      "contact_point": {
+        "name": "Odjel za otvorene podatke",
+        "email": "otvoreni-podaci@zagreb.hr",
+        "phone": "+385 1 234 5678"
+      }
+    },
+    {
+      "id": "dataset-streets-001",
+      "title": "Ulice grada Zagreba",
+      "description": "Skup podataka koji sadrži informacije o ulicama u Zagrebu. Skup sadrži 5477 ulica s detaljnim informacijama o svakoj ulici, uključujući naziv ulice, osobu ili entitet po kojemu je nazvana, te povijesne informacije.",
+      "keywords": ["ulice", "zagreb", "urbano", "grad", "infrastruktura"],
+      "themes": ["infrastruktura", "urbano planiranje"],
+      "issued": "2023-01-16",
+      "modified": "2024-02-15",
+      "landing_page": "https://data.zagreb.hr/dataset/ulice",
+      "language": ["hr"],
+      "publisher": {
+        "name": "Grad Zagreb",
+        "url": "https://www.zagreb.hr"
+      },
+      "distributions": [
+        {
+          "id": "distribution-streets-001-csv",
+          "title": "Ulice grada Zagreba (CSV)",
+          "description": "CSV datoteka s podacima o ulicama u Zagrebu",
+          "keywords": ["ulice", "zagreb", "urbano"],
+          "themes": ["infrastruktura"],
+          "issued": "2023-01-16",
+          "modified": "2024-02-15",
+          "landing_page": null,
+          "language": ["hr"],
+          "publisher": null,
+          "access_url": "https://data.gov.hr/dataset/zagrebacke-ulice",
+          "download_url": "https://data.gov.hr/dataset/zagrebacke-ulice/resource/download",
+          "media_type": "text/csv",
+          "format": "CSV",
+          "byte_size": 756000,
+          "checksum": null,
+          "license": "https://data.gov.hr/otvorena-dozvola"
+        }
+      ],
+      "temporal_coverage": {
+        "start_date": "2022-01-01",
+        "end_date": "2024-02-15"
+      },
+      "spatial_coverage": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [15.87, 45.75],
+            [16.07, 45.75],
+            [16.07, 45.85],
+            [15.87, 45.85],
+            [15.87, 45.75]
+          ]
+        ]
+      },
+      "accrual_periodicity": "polugodišnje",
+      "version": "1.3",
+      "version_notes": "Ažuriranje podataka za nove ulice i promjene naziva",
+      "is_version_of": null,
+      "has_version": [],
+      "source_dataset": [],
+      "contact_point": {
+        "name": "Odjel za otvorene podatke",
+        "email": "otvoreni-podaci@zagreb.hr",
+        "phone": "+385 1 234 5678"
+      }
+    },
+    {
+      "id": "dataset-traffic-001",
+      "title": "Prometni podaci grada Zagreba",
+      "description": "Skup podataka koji sadrži informacije o prometu u Zagrebu, uključujući prometne gužve, zastoje i prosječne brzine na glavnim prometnicama. Podaci se prikupljaju u stvarnom vremenu putem senzora postavljenih na ključnim lokacijama.",
+      "keywords": [
+        "promet",
+        "zagreb",
+        "gužve",
+        "senzori",
+        "brzina",
+        "stvarno vrijeme"
+      ],
+      "themes": ["promet", "infrastruktura", "urbano planiranje"],
+      "issued": "2023-06-01",
+      "modified": "2024-05-10",
+      "landing_page": "https://data.zagreb.hr/dataset/prometni-podaci",
+      "language": ["hr", "en"],
+      "publisher": {
+        "name": "Gradski ured za promet",
+        "url": "https://www.zagreb.hr/promet"
+      },
+      "distributions": [
+        {
+          "id": "distribution-traffic-001-json",
+          "title": "Prometni podaci - stvarno vrijeme (JSON)",
+          "description": "JSON API s podacima o trenutnom stanju u prometu",
+          "keywords": ["promet", "API", "stvarno vrijeme", "JSON"],
+          "themes": ["promet"],
+          "issued": "2023-06-01",
+          "modified": "2024-05-10",
+          "landing_page": null,
+          "language": ["hr", "en"],
+          "publisher": null,
+          "access_url": "https://api.zagreb.hr/promet/v1/stanje",
+          "download_url": null,
+          "media_type": "application/json",
+          "format": "JSON",
+          "byte_size": null,
+          "checksum": null,
+          "license": "https://data.gov.hr/otvorena-dozvola"
+        },
+        {
+          "id": "distribution-traffic-001-historical",
+          "title": "Povijesni prometni podaci (CSV)",
+          "description": "Arhiva povijesnih podataka o prometu u Zagrebu",
+          "keywords": ["promet", "povijest", "analiza"],
+          "themes": ["promet"],
+          "issued": "2023-06-01",
+          "modified": "2024-05-10",
+          "landing_page": null,
+          "language": ["hr"],
+          "publisher": null,
+          "access_url": "https://data.zagreb.hr/dataset/prometni-podaci/arhiva",
+          "download_url": "https://data.zagreb.hr/dataset/prometni-podaci/arhiva/download",
+          "media_type": "text/csv",
+          "format": "CSV",
+          "byte_size": 1500000,
+          "checksum": null,
+          "license": "https://data.gov.hr/otvorena-dozvola"
+        }
+      ],
+      "temporal_coverage": {
+        "start_date": "2023-06-01",
+        "end_date": "2024-05-10"
+      },
+      "spatial_coverage": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [15.87, 45.75],
+            [16.07, 45.75],
+            [16.07, 45.85],
+            [15.87, 45.85],
+            [15.87, 45.75]
+          ]
+        ]
+      },
+      "accrual_periodicity": "kontinuirano",
+      "version": "3.2",
+      "version_notes": "Dodana podrška za stvarnovremenske podatke",
+      "is_version_of": null,
+      "has_version": [],
+      "source_dataset": [],
+      "contact_point": {
+        "name": "Ured za prometne podatke",
+        "email": "promet-podaci@zagreb.hr",
+        "phone": "+385 1 234 5679"
+      }
+    },
+    {
+      "id": "dataset-health-001",
+      "title": "Zdravstvene ustanove grada Zagreba",
+      "description": "Skup podataka koji sadrži informacije o zdravstvenim ustanovama u Zagrebu, uključujući bolnice, domove zdravlja, ambulante i specijalizirane zdravstvene centre. Podaci uključuju lokacije, kontakte i vrste usluga koje se pružaju.",
+      "keywords": [
+        "zdravstvo",
+        "bolnice",
+        "domovi zdravlja",
+        "medicinske usluge",
+        "zagreb"
+      ],
+      "themes": ["zdravstvo", "javne usluge"],
+      "issued": "2023-03-15",
+      "modified": "2024-04-20",
+      "landing_page": "https://data.zagreb.hr/dataset/zdravstvene-ustanove",
+      "language": ["hr"],
+      "publisher": {
+        "name": "Gradski ured za zdravstvo",
+        "url": "https://www.zagreb.hr/zdravstvo"
+      },
+      "distributions": [
+        {
+          "id": "distribution-health-001-csv",
+          "title": "Zdravstvene ustanove (CSV)",
+          "description": "CSV datoteka s podacima o zdravstvenim ustanovama u Zagrebu",
+          "keywords": ["zdravstvo", "ustanove", "zagreb"],
+          "themes": ["zdravstvo"],
+          "issued": "2023-03-15",
+          "modified": "2024-04-20",
+          "landing_page": null,
+          "language": ["hr"],
+          "publisher": null,
+          "access_url": "https://data.zagreb.hr/dataset/zdravstvene-ustanove/download",
+          "download_url": "https://data.zagreb.hr/dataset/zdravstvene-ustanove/download?format=csv",
+          "media_type": "text/csv",
+          "format": "CSV",
+          "byte_size": 45000,
+          "checksum": null,
+          "license": "https://data.gov.hr/otvorena-dozvola"
+        },
+        {
+          "id": "distribution-health-001-geojson",
+          "title": "Zdravstvene ustanove (GeoJSON)",
+          "description": "GeoJSON datoteka s geoprostornim podacima o zdravstvenim ustanovama",
+          "keywords": ["zdravstvo", "geoprostorni podaci", "ustanove"],
+          "themes": ["zdravstvo", "geografija"],
+          "issued": "2023-03-15",
+          "modified": "2024-04-20",
+          "landing_page": null,
+          "language": ["hr"],
+          "publisher": null,
+          "access_url": "https://data.zagreb.hr/dataset/zdravstvene-ustanove/download",
+          "download_url": "https://data.zagreb.hr/dataset/zdravstvene-ustanove/download?format=geojson",
+          "media_type": "application/geo+json",
+          "format": "GeoJSON",
+          "byte_size": 62000,
+          "checksum": null,
+          "license": "https://data.gov.hr/otvorena-dozvola"
+        }
+      ],
+      "temporal_coverage": {
+        "start_date": "2023-01-01",
+        "end_date": "2024-04-20"
+      },
+      "spatial_coverage": {
+        "type": "Point",
+        "coordinates": [15.97, 45.81]
+      },
+      "accrual_periodicity": "mjesečno",
+      "version": "2.0",
+      "version_notes": "Ažurirani podaci za 2024. godinu",
+      "is_version_of": null,
+      "has_version": [],
+      "source_dataset": [],
+      "contact_point": {
+        "name": "Odjel za zdravstvene podatke",
+        "email": "zdravstvo-podaci@zagreb.hr",
+        "phone": "+385 1 234 5680"
+      }
+    },
+    {
+      "id": "dataset-budget-001",
+      "title": "Proračun grada Zagreba",
+      "description": "Skup podataka koji sadrži detaljne informacije o proračunu grada Zagreba, uključujući prihode, rashode, kapitalna ulaganja i financiranje po različitim kategorijama i vremenskim razdobljima.",
+      "keywords": [
+        "proračun",
+        "financije",
+        "rashodi",
+        "prihodi",
+        "javna uprava",
+        "zagreb"
+      ],
+      "themes": ["javna uprava", "financije", "gospodarstvo"],
+      "issued": "2023-01-01",
+      "modified": "2024-01-15",
+      "landing_page": "https://data.zagreb.hr/dataset/proracun",
+      "language": ["hr", "en"],
+      "publisher": {
+        "name": "Gradski ured za financije",
+        "url": "https://www.zagreb.hr/financije"
+      },
+      "distributions": [
+        {
+          "id": "distribution-budget-001-csv",
+          "title": "Proračun 2024 (CSV)",
+          "description": "CSV datoteka s podacima o proračunu grada Zagreba za 2024. godinu",
+          "keywords": ["proračun", "financije", "2024"],
+          "themes": ["financije"],
+          "issued": "2024-01-01",
+          "modified": "2024-01-15",
+          "landing_page": null,
+          "language": ["hr"],
+          "publisher": null,
+          "access_url": "https://data.zagreb.hr/dataset/proracun/2024",
+          "download_url": "https://data.zagreb.hr/dataset/proracun/2024/download?format=csv",
+          "media_type": "text/csv",
+          "format": "CSV",
+          "byte_size": 125000,
+          "checksum": null,
+          "license": "https://data.gov.hr/otvorena-dozvola"
+        },
+        {
+          "id": "distribution-budget-001-xlsx",
+          "title": "Proračun 2024 (Excel)",
+          "description": "Excel datoteka s podacima o proračunu grada Zagreba za 2024. godinu",
+          "keywords": ["proračun", "financije", "2024", "excel"],
+          "themes": ["financije"],
+          "issued": "2024-01-01",
+          "modified": "2024-01-15",
+          "landing_page": null,
+          "language": ["hr"],
+          "publisher": null,
+          "access_url": "https://data.zagreb.hr/dataset/proracun/2024",
+          "download_url": "https://data.zagreb.hr/dataset/proracun/2024/download?format=xlsx",
+          "media_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "format": "XLSX",
+          "byte_size": 240000,
+          "checksum": null,
+          "license": "https://data.gov.hr/otvorena-dozvola"
+        },
+        {
+          "id": "distribution-budget-001-pdf",
+          "title": "Proračun 2024 - Obrazloženje (PDF)",
+          "description": "PDF dokument s detaljnim obrazloženjem proračuna grada Zagreba za 2024. godinu",
+          "keywords": ["proračun", "financije", "2024", "obrazloženje"],
+          "themes": ["financije", "javna uprava"],
+          "issued": "2024-01-01",
+          "modified": "2024-01-15",
+          "landing_page": null,
+          "language": ["hr"],
+          "publisher": null,
+          "access_url": "https://data.zagreb.hr/dataset/proracun/2024/obrazlozenje",
+          "download_url": "https://data.zagreb.hr/dataset/proracun/2024/obrazlozenje/download",
+          "media_type": "application/pdf",
+          "format": "PDF",
+          "byte_size": 3500000,
+          "checksum": null,
+          "license": "https://data.gov.hr/otvorena-dozvola"
+        }
+      ],
+      "temporal_coverage": {
+        "start_date": "2024-01-01",
+        "end_date": "2024-12-31"
+      },
+      "spatial_coverage": {
+        "type": "Point",
+        "coordinates": [15.97, 45.81]
+      },
+      "accrual_periodicity": "godišnje",
+      "version": "1.0",
+      "version_notes": "Inicijalna verzija za 2024. godinu",
+      "is_version_of": null,
+      "has_version": [],
+      "source_dataset": [],
+      "contact_point": {
+        "name": "Gradski ured za financije",
+        "email": "financije@zagreb.hr",
+        "phone": "+385 1 234 5681"
+      }
+    }
+  ],
+  "services": [
+    {
+      "id": "service-001",
+      "title": "Zagreb Open Data API",
+      "description": "API servis koji omogućuje programski pristup otvorenim podacima grada Zagreba",
+      "keywords": ["api", "otvoreni podaci", "zagreb", "programski pristup"],
+      "themes": ["infrastruktura", "javna uprava"],
+      "issued": "2023-06-15",
+      "modified": "2024-04-01",
+      "landing_page": "https://api.zagreb.hr/docs",
+      "language": ["hr", "en"],
+      "publisher": {
+        "name": "Grad Zagreb - IT odjel",
+        "url": "https://www.zagreb.hr/it"
+      },
+      "endpoint_url": "https://api.zagreb.hr/v1",
+      "serves_dataset": [
+        "dataset-edu-001",
+        "dataset-streets-001",
+        "dataset-traffic-001",
+        "dataset-health-001"
+      ],
+      "endpoint_description": "RESTful API koji pruža pristup otvorenim podacima u JSON formatu",
+      "service_type": "REST API"
+    },
+    {
+      "id": "service-002",
+      "title": "Zagreb Geoportal WMS",
+      "description": "Web Map Service (WMS) za pristup geoprostornim podacima grada Zagreba",
+      "keywords": ["wms", "geoprostorni podaci", "zagreb", "karte"],
+      "themes": ["geografija", "infrastruktura"],
+      "issued": "2023-02-10",
+      "modified": "2024-03-15",
+      "landing_page": "https://geoportal.zagreb.hr/wms",
+      "language": ["hr"],
+      "publisher": {
+        "name": "Grad Zagreb - Geoportal",
+        "url": "https://geoportal.zagreb.hr"
+      },
+      "endpoint_url": "https://geoportal.zagreb.hr/wms/service",
+      "serves_dataset": [
+        "dataset-edu-001",
+        "dataset-streets-001",
+        "dataset-health-001"
+      ],
+      "endpoint_description": "OGC kompatibilan WMS servis za pristup geoprostornim podacima",
+      "service_type": "WMS"
+    }
+  ],
+  "dataset_series": [
+    {
+      "id": "series-001",
+      "title": "Geoprostorni skupovi podataka grada Zagreba",
+      "description": "Serija skupova podataka koji sadrže geoprostorne informacije o različitim aspektima grada Zagreba",
+      "keywords": ["geoprostorni podaci", "zagreb", "geografija"],
+      "themes": ["geografija", "urbano planiranje"],
+      "issued": "2023-01-01",
+      "modified": "2024-05-15",
+      "landing_page": null,
+      "language": [],
+      "publisher": null,
+      "datasets": [
+        "dataset-edu-001",
+        "dataset-streets-001",
+        "dataset-health-001"
+      ],
+      "temporal_coverage": {
+        "start_date": "2022-01-01",
+        "end_date": "2024-05-15"
+      },
+      "spatial_coverage": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [15.87, 45.75],
+            [16.07, 45.75],
+            [16.07, 45.85],
+            [15.87, 45.85],
+            [15.87, 45.75]
+          ]
+        ]
+      }
+    },
+    {
+      "id": "series-002",
+      "title": "Serija proračunskih podataka grada Zagreba",
+      "description": "Serija skupova podataka vezanih uz proračun grada Zagreba kroz različite godine",
+      "keywords": ["proračun", "financije", "zagreb", "javna uprava"],
+      "themes": ["financije", "javna uprava"],
+      "issued": "2023-01-01",
+      "modified": "2024-01-15",
+      "landing_page": null,
+      "language": [],
+      "publisher": null,
+      "datasets": ["dataset-budget-001"],
+      "temporal_coverage": {
+        "start_date": "2023-01-01",
+        "end_date": "2024-12-31"
+      },
+      "spatial_coverage": null
+    }
+  ],
+  "records": [
+    {
+      "id": "record-edu-001",
+      "primary_topic": "dataset-edu-001",
+      "title": "Metapodaci za skup podataka o visokoškolskim ustanovama",
+      "description": "Kataložni zapis za skup podataka o visokoškolskim ustanovama u Zagrebu",
+      "issued": "2023-01-16",
+      "modified": "2024-03-30",
+      "conforms_to": ["https://www.w3.org/TR/vocab-dcat-2/"]
+    },
+    {
+      "id": "record-streets-001",
+      "primary_topic": "dataset-streets-001",
+      "title": "Metapodaci za skup podataka o ulicama grada Zagreba",
+      "description": "Kataložni zapis za skup podataka o ulicama u Zagrebu",
+      "issued": "2023-01-16",
+      "modified": "2024-02-15",
+      "conforms_to": ["https://www.w3.org/TR/vocab-dcat-2/"]
+    },
+    {
+      "id": "record-traffic-001",
+      "primary_topic": "dataset-traffic-001",
+      "title": "Metapodaci za skup podataka o prometu u Zagrebu",
+      "description": "Kataložni zapis za skup podataka o prometnim informacijama u Zagrebu",
+      "issued": "2023-06-01",
+      "modified": "2024-05-10",
+      "conforms_to": ["https://www.w3.org/TR/vocab-dcat-2/"]
+    },
+    {
+      "id": "record-health-001",
+      "primary_topic": "dataset-health-001",
+      "title": "Metapodaci za skup podataka o zdravstvenim ustanovama",
+      "description": "Kataložni zapis za skup podataka o zdravstvenim ustanovama u Zagrebu",
+      "issued": "2023-03-15",
+      "modified": "2024-04-20",
+      "conforms_to": ["https://www.w3.org/TR/vocab-dcat-2/"]
+    },
+    {
+      "id": "record-budget-001",
+      "primary_topic": "dataset-budget-001",
+      "title": "Metapodaci za skup podataka o proračunu grada Zagreba",
+      "description": "Kataložni zapis za skup podataka o proračunu grada Zagreba za 2024. godinu",
+      "issued": "2024-01-01",
+      "modified": "2024-01-15",
+      "conforms_to": ["https://www.w3.org/TR/vocab-dcat-2/"]
+    }
+  ]
+}

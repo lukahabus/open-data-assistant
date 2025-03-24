@@ -1,7 +1,9 @@
 import pandas as pd
+import os
 
 # Load the CSV data
-csv_file = "ulicegz.csv"
+root_dir = os.path.dirname(os.path.abspath(__file__))
+csv_file = os.path.join(root_dir, "data", "ulicegz.csv")
 data = pd.read_csv(csv_file, delimiter=";")
 
 

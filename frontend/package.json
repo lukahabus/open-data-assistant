@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "frontend": "file:",
     "plotly.js": "^2.35.3"
   }
 }
