@@ -1,0 +1,272 @@
+\chapter{Implementacija}
+\label{ch:implementation}
+
+\selectlanguage{croatian}
+
+\section{Tehnologije i alati}
+\label{sec:technologies}
+
+Za implementaciju sustava odabrane su moderne tehnologije koje omogućuju razvoj 
+skalabilnog i održivog rješenja. Odabir tehnologija vođen je sljedećim kriterijima:
+\begin{itemize}
+    \item Zrelost i stabilnost tehnologije
+    \item Dostupnost dokumentacije i zajednice
+    \item Performanse i skalabilnost
+    \item Jednostavnost integracije
+\end{itemize}
+
+\subsection{Backend tehnologije}
+\begin{itemize}
+    \item \textbf{Python} - glavni programski jezik
+    \begin{itemize}
+        \item FastAPI za REST API
+        \item Pydantic za validaciju podataka
+        \item SQLAlchemy za rad s bazom podataka
+    \end{itemize}
+    
+    \item \textbf{Vektorska baza} - Faiss/Milvus
+    \begin{itemize}
+        \item Pohrana i pretraživanje embeddings
+        \item Visoke performanse za similarity search
+        \item Skalabilnost za velike količine podataka
+    \end{itemize}
+    
+    \item \textbf{LLM integracija}
+    \begin{itemize}
+        \item OpenAI API
+        \item LangChain za orkestraciju
+        \item Sentence Transformers za embeddings
+    \end{itemize}
+\end{itemize}
+
+\subsection{Frontend tehnologije}
+\begin{itemize}
+    \item \textbf{React} - biblioteka za korisničko sučelje
+    \begin{itemize}
+        \item TypeScript za type safety
+        \item Material-UI za komponente
+        \item React Query za state management
+    \end{itemize}
+    
+    \item \textbf{Vizualizacija}
+    \begin{itemize}
+        \item D3.js za grafove
+        \item Chart.js za statistike
+        \item React Flow za interaktivne dijagrame
+    \end{itemize}
+\end{itemize}
+
+\section{Implementacija komponenti}
+\label{sec:components}
+
+\subsection{DCAT Adapter}
+Implementacija DCAT adaptera uključuje:
+\begin{itemize}
+    \item Parsiranje različitih formata meta podataka
+    \item Normalizaciju u standardni format
+    \item Validaciju prema DCAT shemi
+    \item Proširenja za dodatne metrike
+\end{itemize}
+
+\begin{lstlisting}[language=Python, caption=Implementacija DCAT adaptera]
+class DCATAdapter:
+    def __init__(self):
+        self.validator = DCATValidator()
+        self.normalizer = MetadataNormalizer()
+    
+    def process_metadata(self, metadata: dict) -> DCATDataset:
+        normalized = self.normalizer.normalize(metadata)
+        validated = self.validator.validate(normalized)
+        return DCATDataset.from_dict(validated)
+\end{lstlisting}
+
+\subsection{Embedding Engine}
+Modul za generiranje i upravljanje vektorskim reprezentacijama:
+\begin{itemize}
+    \item Korištenje predtreniranih modela
+    \item Prilagodba za specifične domene
+    \item Optimizacija performansi
+    \item Cachiranje rezultata
+\end{itemize}
+
+\begin{lstlisting}[language=Python, caption=Implementacija Embedding Engine-a]
+class EmbeddingEngine:
+    def __init__(self, model_name: str = "all-MiniLM-L6-v2"):
+        self.model = SentenceTransformer(model_name)
+        self.cache = EmbeddingCache()
+    
+    def generate_embeddings(self, text: str) -> np.ndarray:
+        if cached := self.cache.get(text):
+            return cached
+        embedding = self.model.encode(text)
+        self.cache.store(text, embedding)
+        return embedding
+\end{lstlisting}
+
+\subsection{Semantic Analyzer}
+Komponenta za semantičku analizu implementira:
+\begin{itemize}
+    \item Analizu sličnosti skupova podataka
+    \item Otkrivanje tematskih klastera
+    \item Generiranje semantičkih veza
+    \item Procjenu kvalitete meta podataka
+\end{itemize}
+
+\begin{lstlisting}[language=Python, caption=Implementacija Semantic Analyzer-a]
+class SemanticAnalyzer:
+    def __init__(self, embedding_engine: EmbeddingEngine):
+        self.embedding_engine = embedding_engine
+        self.index = VectorIndex()
+    
+    def analyze_dataset(self, dataset: DCATDataset) -> Analysis:
+        embeddings = self.generate_dataset_embeddings(dataset)
+        similar = self.find_similar_datasets(embeddings)
+        clusters = self.identify_clusters(embeddings)
+        return Analysis(similar=similar, clusters=clusters)
+\end{lstlisting}
+
+\subsection{LLM Assistant}
+Implementacija asistenta uključuje:
+\begin{itemize}
+    \item Integraciju s OpenAI API-jem
+    \item Upravljanje kontekstom razgovora
+    \item Generiranje prirodnih odgovora
+    \item Analizu korisničkih upita
+\end{itemize}
+
+\begin{lstlisting}[language=Python, caption=Implementacija LLM Asistenta]
+class LLMAssistant:
+    def __init__(self, model: str = "gpt-3.5-turbo"):
+        self.llm = ChatOpenAI(model=model)
+        self.memory = ConversationBufferMemory()
+    
+    async def analyze_query(self, query: str) -> AssistantResponse:
+        context = self.memory.get_context()
+        response = await self.llm.generate_response(query, context)
+        self.memory.add_interaction(query, response)
+        return response
+\end{lstlisting}
+
+\section{API implementacija}
+\label{sec:api}
+
+REST API implementiran je korištenjem FastAPI okvira:
+
+\begin{lstlisting}[language=Python, caption=Implementacija glavnih API endpointa]
+@router.post("/query")
+async def query_datasets(request: QueryRequest) -> AssistantResponse:
+    response = await assistant.analyze_query(request.query)
+    return response
+
+@router.get("/datasets/{dataset_id}")
+async def get_dataset(dataset_id: str) -> Dataset:
+    dataset = await repository.get_dataset(dataset_id)
+    return dataset
+
+@router.post("/analyze")
+async def analyze_dataset(request: AnalysisRequest) -> List[MetadataInsight]:
+    insights = await analyzer.analyze_dataset(request.dataset_id)
+    return insights
+\end{lstlisting}
+
+\section{Frontend implementacija}
+\label{sec:frontend}
+
+\subsection{Komponente korisničkog sučelja}
+Implementirane su sljedeće React komponente:
+\begin{itemize}
+    \item \textbf{Dataset Explorer} - pregled i pretraživanje skupova podataka
+    \item \textbf{Metadata Viewer} - detaljni prikaz meta podataka
+    \item \textbf{Relationship Graph} - vizualizacija veza
+    \item \textbf{Search Interface} - napredno pretraživanje
+\end{itemize}
+
+\begin{lstlisting}[language=TypeScript, caption=Implementacija Dataset komponente]
+interface DatasetProps {
+  dataset: Dataset;
+  onAnalyze: (id: string) => void;
+}
+
+const Dataset: React.FC<DatasetProps> = ({ dataset, onAnalyze }) => {
+  return (
+    <Card>
+      <CardHeader title={dataset.title} />
+      <CardContent>
+        <Typography>{dataset.description}</Typography>
+        <MetadataList metadata={dataset.metadata} />
+      </CardContent>
+      <CardActions>
+        <Button onClick={() => onAnalyze(dataset.id)}>
+          Analyze
+        </Button>
+      </CardActions>
+    </Card>
+  );
+};
+\end{lstlisting}
+
+\section{Testiranje}
+\label{sec:testing}
+
+\subsection{Jedinični testovi}
+Implementirani su testovi za sve ključne komponente:
+
+\begin{lstlisting}[language=Python, caption=Primjer unit testa]
+def test_embedding_generation():
+    engine = EmbeddingEngine()
+    text = "Test dataset description"
+    embedding = engine.generate_embeddings(text)
+    
+    assert embedding is not None
+    assert embedding.shape == (384,)  # Expected dimension
+    
+def test_semantic_analysis():
+    analyzer = SemanticAnalyzer(mock_embedding_engine)
+    dataset = create_test_dataset()
+    analysis = analyzer.analyze_dataset(dataset)
+    
+    assert len(analysis.similar) > 0
+    assert len(analysis.clusters) > 0
+\end{lstlisting}
+
+\subsection{Integracijski testovi}
+Testiranje integracije komponenti:
+
+\begin{lstlisting}[language=Python, caption=Primjer integracijskog testa]
+async def test_full_analysis_pipeline():
+    # Setup test components
+    adapter = DCATAdapter()
+    engine = EmbeddingEngine()
+    analyzer = SemanticAnalyzer(engine)
+    
+    # Test pipeline
+    metadata = load_test_metadata()
+    dataset = adapter.process_metadata(metadata)
+    embeddings = engine.generate_embeddings(dataset.description)
+    analysis = analyzer.analyze_dataset(dataset)
+    
+    # Verify results
+    assert analysis.is_valid()
+    assert len(analysis.insights) > 0
+\end{lstlisting}
+
+\section{Optimizacija}
+\label{sec:optimization}
+
+\subsection{Performanse}
+Implementirane su sljedeće optimizacije:
+\begin{itemize}
+    \item Cachiranje embeddings
+    \item Batch processing za LLM pozive
+    \item Optimizacija vektorskih upita
+    \item Lazy loading podataka
+\end{itemize}
+
+\subsection{Skalabilnost}
+Sustav je pripremljen za skaliranje kroz:
+\begin{itemize}
+    \item Asinkrono procesiranje
+    \item Distribuirani cache
+    \item Load balancing
+    \item Horizontalno skaliranje komponenti
+\end{itemize} 

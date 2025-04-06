@@ -1,0 +1,125 @@
+\chapter{Teorijska podloga}
+\label{ch:background}
+
+\selectlanguage{croatian}
+
+\section{Otvoreni podaci}
+\label{sec:open_data}
+
+Otvoreni podaci predstavljaju koncept prema kojem određeni podaci trebaju biti slobodno 
+dostupni svima za korištenje i ponovno korištenje bez ograničenja \cite{janssen2012benefits}. 
+U kontekstu javne uprave i znanstvenih institucija, otvoreni podaci igraju ključnu ulogu 
+u promicanju transparentnosti, inovacija i ekonomskog razvoja.
+
+\subsection{Karakteristike otvorenih podataka}
+Prema općeprihvaćenim načelima, otvoreni podaci moraju biti:
+\begin{itemize}
+    \item Dostupni - podaci moraju biti dostupni u cjelini, po razumnoj cijeni reprodukcije
+    \item Ponovno iskoristivi - podaci moraju biti dostupni u obliku koji omogućuje ponovno korištenje
+    \item Univerzalno sudjelovanje - svi moraju moći koristiti, ponovno koristiti i redistribuirati podatke
+\end{itemize}
+
+\subsection{Izazovi u korištenju otvorenih podataka}
+Unatoč rastućoj dostupnosti otvorenih podataka, njihova stvarna iskoristivost često je 
+ograničena zbog nekoliko ključnih izazova:
+\begin{itemize}
+    \item Fragmentacija - podaci su raspršeni kroz različite portale i formate
+    \item Kvaliteta meta podataka - nepotpuni ili nekonzistentni opisi podataka
+    \item Povezanost - nedostatak eksplicitnih veza između povezanih skupova podataka
+    \item Pristupačnost - složeni mehanizmi pristupa i nedostatak standardizacije
+\end{itemize}
+
+\section{DCAT (Data Catalog Vocabulary)}
+\label{sec:dcat}
+
+DCAT je W3C preporuka dizajnirana za olakšavanje interoperabilnosti između podatkovnih 
+kataloga objavljenih na webu \cite{dcat2020}. Predstavlja standardni model za opisivanje 
+skupova podataka u podatkovnim katalozima.
+
+\subsection{Osnovni koncepti}
+DCAT definira nekoliko ključnih klasa:
+\begin{itemize}
+    \item \texttt{dcat:Catalog} - kolekcija meta podataka o skupovima podataka
+    \item \texttt{dcat:Dataset} - kolekcija podataka koju objavljuje jedan agent
+    \item \texttt{dcat:Distribution} - specifična reprezentacija skupa podataka
+    \item \texttt{dcat:DataService} - servis koji omogućuje pristup podacima
+\end{itemize}
+
+\subsection{Primjena u praksi}
+DCAT se široko primjenjuje u:
+\begin{itemize}
+    \item Portalima otvorenih podataka (npr. CKAN)
+    \item Znanstvenim repozitorijima
+    \item Integraciji podatkovnih kataloga
+\end{itemize}
+
+\section{Veliki jezični modeli}
+\label{sec:llm}
+
+Veliki jezični modeli (Large Language Models, LLM) predstavljaju značajan napredak u 
+području obrade prirodnog jezika \cite{brown2020language}. Ovi modeli, temeljeni na 
+transformerskoj arhitekturi, pokazuju impresivne sposobnosti u razumijevanju i 
+generiranju teksta.
+
+\subsection{Arhitektura i principi rada}
+Moderni jezični modeli temelje se na nekoliko ključnih koncepata:
+\begin{itemize}
+    \item Transformerska arhitektura - omogućuje paralelnu obradu teksta
+    \item Mehanizam pažnje - fokusira se na relevantne dijelove ulaznog teksta
+    \item Predtrening i fino podešavanje - učenje općih i specifičnih znanja
+\end{itemize}
+
+\subsection{Primjena u analizi meta podataka}
+LLM-ovi donose nekoliko prednosti u kontekstu analize meta podataka:
+\begin{itemize}
+    \item Semantičko razumijevanje - sposobnost razumijevanja konteksta i značenja
+    \item Generiranje opisa - automatsko obogaćivanje meta podataka
+    \item Otkrivanje veza - prepoznavanje semantičkih odnosa između skupova podataka
+\end{itemize}
+
+\section{Semantičko pretraživanje}
+\label{sec:semantic_search}
+
+Semantičko pretraživanje nadilazi tradicionalno tekstualno podudaranje fokusirajući se 
+na razumijevanje značenja i konteksta \cite{zhang2022survey}. Ova tehnologija posebno 
+je relevantna za pretraživanje i povezivanje meta podataka.
+
+\subsection{Tehnike semantičkog pretraživanja}
+Moderne tehnike semantičkog pretraživanja uključuju:
+\begin{itemize}
+    \item Vektorske reprezentacije - pretvaranje teksta u numeričke vektore
+    \item Izračun semantičke sličnosti - mjerenje bliskosti značenja
+    \item Kontekstualno rangiranje - prilagodba rezultata kontekstu upita
+\end{itemize}
+
+\subsection{Primjena u otkrivanju podataka}
+Semantičko pretraživanje omogućuje:
+\begin{itemize}
+    \item Intuitivnije pronalaženje podataka
+    \item Otkrivanje skrivenih veza između skupova podataka
+    \item Poboljšanu relevantnost rezultata pretraživanja
+\end{itemize}
+
+\section{Evaluacija kvalitete meta podataka}
+\label{sec:metadata_quality}
+
+Kvaliteta meta podataka ključna je za učinkovito pronalaženje i korištenje otvorenih 
+podataka \cite{neumaier2016automated}. Evaluacija kvalitete obuhvaća nekoliko dimenzija.
+
+\subsection{Dimenzije kvalitete}
+Ključne dimenzije kvalitete meta podataka uključuju:
+\begin{itemize}
+    \item Potpunost - prisutnost svih relevantnih informacija
+    \item Točnost - preciznost i istinitost informacija
+    \item Konzistentnost - usklađenost s definiranim standardima
+    \item Pravodobnost - ažurnost informacija
+\end{itemize}
+
+\subsection{Metrike i mjerenje}
+Za evaluaciju kvalitete koriste se različite metrike:
+\begin{itemize}
+    \item Automatske provjere usklađenosti
+    \item Semantička analiza sadržaja
+    \item Korisnička povratna informacija
+    \item Statističke analize kompletnosti
+\end{itemize} 

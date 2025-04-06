@@ -161,3 +161,6 @@ cython_debug/
 
 opendata_env/
 frontend/node_modules/
+
+# Virtual environment
+dcat_env/

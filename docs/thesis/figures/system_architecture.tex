@@ -1,0 +1,82 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,fit,backgrounds}
+
+\begin{document}
+\begin{tikzpicture}[
+    node distance=1.5cm,
+    box/.style={
+        rectangle,
+        draw=black,
+        thick,
+        minimum height=1cm,
+        minimum width=2.5cm,
+        align=center
+    },
+    interface/.style={
+        draw=black,
+        thick,
+        trapezium,
+        trapezium left angle=70,
+        trapezium right angle=110,
+        minimum height=1cm,
+        minimum width=2.5cm,
+        align=center
+    },
+    database/.style={
+        cylinder,
+        draw=black,
+        thick,
+        shape border rotate=90,
+        minimum height=1cm,
+        minimum width=2cm,
+        align=center
+    },
+    arrow/.style={
+        ->,
+        >=latex,
+        thick
+    }
+]
+
+% External Systems
+\node[interface] (ckan) {CKAN\\Portal};
+\node[interface, right=6cm of ckan] (user) {Web\\Interface};
+
+% Core Components
+\node[box, below right=1cm and 1cm of ckan] (adapter) {DCAT\\Adapter};
+\node[box, right=1cm of adapter] (embedding) {Embedding\\Engine};
+\node[box, right=1cm of embedding] (analyzer) {Semantic\\Analyzer};
+\node[box, right=1cm of analyzer] (assistant) {LLM\\Assistant};
+
+% Databases
+\node[database, below=1.5cm of adapter] (metadata_db) {Metadata\\Store};
+\node[database, below=1.5cm of embedding] (vector_db) {Vector\\Store};
+\node[database, below=1.5cm of analyzer] (graph_db) {Graph\\Store};
+\node[database, below=1.5cm of assistant] (cache_db) {Cache\\Store};
+
+% Background System Boundary
+\begin{scope}[on background layer]
+\node[rectangle, draw=gray, dashed, thick, fit=(adapter) (embedding) (analyzer) (assistant) (metadata_db) (vector_db) (graph_db) (cache_db), inner sep=0.5cm] (system) {};
+\node[above=0.2cm of system] {DCAT Metadata Analysis System};
+\end{scope}
+
+% Connections
+\draw[arrow] (ckan) -- (adapter);
+\draw[arrow] (adapter) -- (embedding);
+\draw[arrow] (embedding) -- (analyzer);
+\draw[arrow] (analyzer) -- (assistant);
+\draw[arrow] (assistant) -- (user);
+
+\draw[arrow] (adapter) -- (metadata_db);
+\draw[arrow] (embedding) -- (vector_db);
+\draw[arrow] (analyzer) -- (graph_db);
+\draw[arrow] (assistant) -- (cache_db);
+
+% Bidirectional connections
+\draw[arrow, <->] (metadata_db) -- (vector_db);
+\draw[arrow, <->] (vector_db) -- (graph_db);
+\draw[arrow, <->] (graph_db) -- (cache_db);
+
+\end{tikzpicture}
+\end{document} 

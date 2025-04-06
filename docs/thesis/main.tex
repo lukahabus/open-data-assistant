@@ -1,0 +1,92 @@
+\documentclass[12pt,a4paper]{report}
+
+% Language and encoding
+\usepackage[utf8]{inputenc}
+\usepackage[croatian,english]{babel}
+\usepackage{csquotes}
+
+% Math and symbols
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+% Graphics and figures
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subcaption}
+
+% Code listings
+\usepackage{listings}
+\usepackage{xcolor}
+
+% Bibliography
+\usepackage[backend=biber,style=ieee]{biblatex}
+\addbibresource{references.bib}
+
+% Hyperlinks
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+}
+
+% Custom commands
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\system}{DCAT Metadata Analysis System}
+
+% Document settings
+\title{Sustav za analizu meta podataka otvorenih skupova podataka\\
+       \large A System for Metadata Analysis of Open Datasets}
+\author{Your Name}
+\date{\today}
+
+% Begin document
+\begin{document}
+
+% Front matter
+\frontmatter
+\maketitle
+
+\begin{abstract}
+\selectlanguage{croatian}
+% Croatian abstract
+Sve veća dostupnost otvorenih podataka ne podrazumijeva i njihovu veću iskoristivost. 
+Iako normirani formati meta podataka (npr. DCAT) omogućuju jednostavnije pronalaženje i 
+tumačenje objavljenih pojedinačnih skupova podataka, dodatna vrijednost nalazi se u 
+njihovom povezivanju i pronalaženju novih uvida i skrivenog znanja. Ovaj rad predstavlja 
+sustav za analizu meta podataka otvorenih skupova podataka koji koristi velike jezične 
+modele za poboljšanje iskoristivosti i povezanosti otvorenih podataka.
+
+\selectlanguage{english}
+% English abstract
+The increasing availability of open data does not necessarily imply its greater usability. 
+While standardized metadata formats (e.g., DCAT) enable easier discovery and interpretation 
+of individual published datasets, additional value lies in connecting them and discovering 
+new insights and hidden knowledge. This thesis presents a system for analyzing open dataset 
+metadata that utilizes large language models to improve the usability and connectivity of 
+open data.
+\end{abstract}
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+% Main content
+\mainmatter
+
+% Include chapters
+\include{chapters/introduction}
+\include{chapters/background}
+\include{chapters/related_work}
+\include{chapters/system_design}
+\include{chapters/implementation}
+\include{chapters/evaluation}
+\include{chapters/conclusion}
+
+% Back matter
+\backmatter
+\printbibliography
+
+\end{document} 
