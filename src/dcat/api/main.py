@@ -2,10 +2,15 @@
 FastAPI backend for the metadata analysis system.
 """
 
+# Load environment variables from .env file
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from typing import Dict, List, Optional
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, HttpUrl
 
 from ..metadata.base import DCATDataset, DCATCatalog
 from ..semantic.analyzer import SemanticAnalyzer
@@ -63,6 +68,20 @@ class DatasetClusterResponse(BaseModel):
     datasets: List[str]
     theme: Optional[str]
     size: int
+
+
+class CkanImportRequest(BaseModel):
+    """Request model for importing data from a CKAN instance."""
+
+    ckan_url: HttpUrl
+
+
+class ImportResponse(BaseModel):
+    """Response model for import operations."""
+
+    status: str
+    message: str
+    datasets_imported: int = 0
 
 
 # API Routes
@@ -175,6 +194,33 @@ async def get_similar_datasets(
         return suggestions
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/import/ckan", response_model=ImportResponse)
+async def import_from_ckan(request: CkanImportRequest):
+    """Import datasets from a CKAN portal URL."""
+    try:
+        print(f"Received CKAN import request for URL: {request.ckan_url}")
+        # --- TODO: Implementation Required --- #
+        # 1. Fetch data from request.ckan_url
+        # 2. Parse CKAN response (e.g., package_search results) into DCATDataset objects
+        # 3. Save/Store the datasets (e.g., using EmbeddingEngine or a database)
+        # 4. Optionally trigger analysis/embedding
+        # 5. Count imported datasets
+        # ------------------------------------ #
+
+        # Placeholder response for now
+        imported_count = 0  # Replace with actual count
+        return ImportResponse(
+            status="success",  # or "error"
+            message=f"CKAN import initiated for {request.ckan_url}. Processing...",  # Update message based on outcome
+            datasets_imported=imported_count,
+        )
+    except Exception as e:
+        # Log the full error for debugging
+        print(f"CKAN Import Error: {e}")
+        # traceback.print_exc() # Consider adding traceback import for more detail
+        raise HTTPException(status_code=500, detail=f"Failed to import from CKAN: {e}")
 
 
 # Helper functions (to be implemented)
