@@ -4,12 +4,34 @@ DCAT Assistant - A LangChain-based assistant for interacting with DCAT metadata.
 This module provides a LangChain-based assistant that helps users interact with
 DCAT metadata, including searching for datasets, answering questions about
 datasets, and suggesting related datasets.
+
+It primarily uses an LLM (Large Language Model) with Retrieval-Augmented Generation (RAG)
+to understand natural language queries and search through textual DCAT metadata
+(like titles, descriptions). This is good for fuzzy searching and understanding user intent.
+
+This module ALSO provides functionality to execute precise SPARQL queries if the user
+knows the specific SPARQL endpoint (e.g., from a dcat:accessService) and the query structure.
+SPARQL is ideal for querying structured RDF data directly, offering precision where
+the data schema is known.
+
+Comparison:
+- LLM (RAG):
+    - Input: Natural language questions.
+    - Data: Primarily text descriptions in DCAT metadata.
+    - Strength: Flexible searching, understanding intent, summarizing.
+    - Weakness: Less precise for structured data, relies on quality of text metadata.
+- SPARQL:
+    - Input: Formal SPARQL query language.
+    - Data: Structured RDF data (can be DCAT metadata in RDF or the dataset itself if available via SPARQL).
+    - Strength: Precise querying of known structures, complex graph traversals.
+    - Weakness: Requires knowledge of SPARQL syntax and the specific data model/endpoint.
 """
 
 import os
 import sys
 from typing import List, Dict, Any, Optional, Tuple, Union
 from dotenv import load_dotenv
+from SPARQLWrapper import SPARQLWrapper, JSON
 from langchain_openai import ChatOpenAI
 from langchain.chains import ConversationalRetrievalChain
 from langchain_core.prompts import (
@@ -196,7 +218,7 @@ class DCATAssistant:
         return [doc.page_content for doc in related_docs]
 
     def answer_question_about_dataset(self, dataset_id: str, question: str) -> str:
-        """Answer a question about a specific dataset.
+        """Answer a question about a specific dataset using the LLM and its metadata.
 
         Args:
             dataset_id: The ID of the dataset to answer a question about.
@@ -221,3 +243,25 @@ class DCATAssistant:
         # Use the LLM to generate an answer
         result = self.llm.invoke(prompt)
         return result.content
+
+    def execute_sparql_query(
+        self, endpoint_url: str, sparql_query: str
+    ) -> Union[Dict[str, Any], str]:
+        """Execute a SPARQL query against a specified endpoint.
+
+        Args:
+            endpoint_url: The URL of the SPARQL endpoint.
+            sparql_query: The SPARQL query string.
+
+        Returns:
+            A dictionary containing the parsed JSON results from the SPARQL query,
+            or an error message string if the query fails.
+        """
+        try:
+            sparql = SPARQLWrapper(endpoint_url)
+            sparql.setQuery(sparql_query)
+            sparql.setReturnFormat(JSON)
+            results = sparql.query().convert()
+            return results
+        except Exception as e:
+            return f"Error executing SPARQL query against {endpoint_url}: {e}"
