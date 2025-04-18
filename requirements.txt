@@ -1,5 +1,5 @@
 # Core dependencies
-requests>=2.28.0
+requests>=2.31.0
 python-dotenv>=1.0.0
 
 # LLM and embedding
@@ -13,6 +13,13 @@ sentence-transformers>=2.2.0
 # Data processing
 pandas>=2.1.4
 numpy>=1.21.0
+
+# DCAT and CKAN integration
+ckanext-dcat>=1.5.1
+ckanapi>=4.7.0
+rdflib>=6.3.2
+pyld>=2.0.3
+SPARQLWrapper>=2.0.0
 
 # Web framework
 fastapi>=0.100.0
@@ -37,11 +44,3 @@ black>=24.1.0
 isort>=5.13.0
 flake8>=7.0.0
 mypy>=1.8.0
-
-# Added from the code block
-torch>=2.0.0
-transformers>=4.30.0
-pydantic>=2.0.0
-python-dateutil>=2.8.2
-rdflib>=6.3.0
-python-multipart>=0.0.6

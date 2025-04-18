@@ -18,3 +18,9 @@ from dcat.dcat_metadata import (
 )
 from dcat.dcat_embedding import DCATEmbedder
 from dcat.dcat_assistant import DCATAssistant
+
+"""DCAT metadata analysis and EU Data Portal integration."""
+from .eu_data_portal import EUDataPortal
+from .sparql_processor import SparqlQueryProcessor
+
+__all__ = ['EUDataPortal', 'SparqlQueryProcessor']

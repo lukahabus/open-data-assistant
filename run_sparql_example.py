@@ -419,3 +419,156 @@ except Exception as e:
 """
 
 print("\nScript finished.")
+
+"""Example script to test EU Data Portal SPARQL queries."""
+from SPARQLWrapper import SPARQLWrapper, JSON
+import logging
+import sys
+import requests
+import json
+from datetime import datetime, timedelta
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+def query_eu_data_portal(query: str) -> dict:
+    """Execute a SPARQL query against the EU Data Portal.
+    
+    Args:
+        query: SPARQL query string
+    
+    Returns:
+        Query results
+    """
+    # EU Open Data Portal SPARQL endpoint
+    endpoint = "https://data.europa.eu/api/hub/repo/query"
+    
+    # Set up query with common prefixes
+    full_query = """
+    PREFIX dcat: <http://www.w3.org/ns/dcat#>
+    PREFIX dct: <http://purl.org/dc/terms/>
+    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    """ + query
+    
+    # Set up request headers
+    headers = {
+        'Accept': 'application/sparql-results+json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
+    
+    try:
+        # Make direct HTTP request
+        response = requests.post(
+            endpoint,
+            headers=headers,
+            data={'query': full_query}
+        )
+        response.raise_for_status()
+        
+        return response.json()
+    except requests.RequestException as e:
+        logger.error(f"Request error: {str(e)}")
+        return {"error": str(e)}
+    except json.JSONDecodeError as e:
+        logger.error(f"JSON decode error: {str(e)}")
+        return {"error": "Failed to parse response"}
+    except Exception as e:
+        logger.error(f"Unexpected error: {str(e)}")
+        return {"error": str(e)}
+
+def main():
+    """Run example SPARQL queries."""
+    try:
+        # Example 1: Find recent datasets about climate change
+        logger.info("\n=== Recent Climate Change Datasets ===")
+        six_months_ago = (datetime.now() - timedelta(days=180)).strftime("%Y-%m-%d")
+        
+        query1 = f"""
+        SELECT DISTINCT ?dataset ?title ?modified ?publisher
+        WHERE {{
+            ?dataset a dcat:Dataset ;
+                    dct:title ?title ;
+                    dct:modified ?modified .
+            OPTIONAL {{ 
+                ?dataset dct:publisher ?pub .
+                ?pub foaf:name ?publisher 
+            }}
+            
+            FILTER(CONTAINS(LCASE(STR(?title)), "climate"))
+            FILTER(LANG(?title) = "en" || LANG(?title) = "")
+            FILTER(?modified >= "{six_months_ago}"^^xsd:date)
+        }}
+        ORDER BY DESC(?modified)
+        LIMIT 5
+        """
+        
+        logger.info("Executing climate change datasets query...")
+        results = query_eu_data_portal(query1)
+        
+        if "error" in results:
+            logger.error(f"Query failed: {results['error']}")
+        else:
+            bindings = results.get("results", {}).get("bindings", [])
+            if not bindings:
+                logger.info("No climate change datasets found")
+            else:
+                for result in bindings:
+                    print("\nDataset found:")
+                    print(f"Title: {result['title']['value']}")
+                    if 'modified' in result:
+                        print(f"Modified: {result['modified']['value']}")
+                    if 'publisher' in result:
+                        print(f"Publisher: {result['publisher']['value']}")
+                    print(f"URI: {result['dataset']['value']}")
+        
+        # Example 2: Find CSV datasets about population statistics
+        logger.info("\n=== Population Statistics Datasets (CSV) ===")
+        query2 = """
+        SELECT DISTINCT ?dataset ?title ?distribution ?format
+        WHERE {
+            ?dataset a dcat:Dataset ;
+                    dct:title ?title ;
+                    dcat:distribution ?distribution .
+            ?distribution dct:format ?format .
+            
+            FILTER(
+                (CONTAINS(LCASE(STR(?title)), "population") || 
+                 CONTAINS(LCASE(STR(?title)), "demographic"))
+            )
+            FILTER(CONTAINS(LCASE(STR(?format)), "csv"))
+            FILTER(LANG(?title) = "en" || LANG(?title) = "")
+        }
+        LIMIT 5
+        """
+        
+        logger.info("Executing population statistics datasets query...")
+        results = query_eu_data_portal(query2)
+        
+        if "error" in results:
+            logger.error(f"Query failed: {results['error']}")
+        else:
+            bindings = results.get("results", {}).get("bindings", [])
+            if not bindings:
+                logger.info("No population statistics datasets found")
+            else:
+                for result in bindings:
+                    print("\nDataset found:")
+                    print(f"Title: {result['title']['value']}")
+                    print(f"Distribution: {result['distribution']['value']}")
+                    print(f"Format: {result['format']['value']}")
+                    print(f"Dataset URI: {result['dataset']['value']}")
+        
+    except KeyboardInterrupt:
+        logger.info("Script interrupted by user")
+        sys.exit(0)
+    except Exception as e:
+        logger.error(f"An unexpected error occurred: {str(e)}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
