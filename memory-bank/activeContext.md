@@ -2,39 +2,39 @@
 
 ## Current Focus
 
-Integrating and refining the core logic for processing natural language queries into SPARQL for the EU Open Data Portal. The primary implementation resides in `sparql.py`.
+Refining and testing the Langchain Agent implementation in `sparql.py` for processing natural language queries into SPARQL for the EU Open Data Portal.
 
 ## Recent Changes
 
--   Implemented a manual Chain-of-Thought (CoT) orchestration (`answer_complex_query` in `sparql.py`).
--   This orchestration includes steps for:
-    -   SPARQL generation (`generate_sparql_query` using OpenAI).
-    -   SPARQL execution (`execute_sparql_query`).
-    -   LLM-based analysis of results/failures (`analyse_with_llm` using OpenAI) for metadata review, linking hypothesis, self-correction context, and final answer synthesis.
-    -   Self-correction loops for handling execution errors, empty results, unsuitable candidates, and low linking feasibility.
--   The changes implementing this manual CoT were accepted into `sparql.py`.
--   An attempt was made to refactor this manual CoT logic using the Langchain framework (specifically an AgentExecutor). However, the automated code application tool failed to apply the necessary changes to `sparql.py`.
--   The `requirements.txt` file has been created/updated, listing necessary dependencies including `openai`, `requests`, and `langchain` libraries.
+-   **Logging Implementation:** Integrated Python's standard `logging` module into `sparql.py`.
+    -   Logs are now written to timestamped files in a newly created `logs/` directory (e.g., `logs/sparql_run_YYYYMMDD_HHMMSS.log`).
+    -   Logging includes the user query, context, generated SPARQL, execution attempts, success/failure status, result summaries or error messages, and the final agent answer.
+    -   Replaced previous `print` statements with appropriate `logging` calls (info, warning, error).
+    -   Included traceback information (`exc_info=True`) in error logs.
+-   **API Timeouts:** Configured a 5-second timeout for both OpenAI API calls (`ChatOpenAI(request_timeout=5)`) and SPARQL endpoint requests (`requests.get(timeout=5)` within `execute_sparql_tool`).
+-   **Example Queries:** Added three more complex multi-dataset query examples to `example_nl_queries_multi` in `sparql.py` for testing.
+-   **Agent Verbosity:** Set `verbose=False` for the `AgentExecutor` in `sparql.py` to avoid duplicating log messages already handled by the custom logging setup.
 
 ## Current State
 
--   The active code in `sparql.py` uses the manually implemented CoT orchestrator (`answer_complex_query`) and direct OpenAI API calls (`analyse_with_llm`).
--   The Langchain refactoring is *not* currently reflected in the `sparql.py` code due to the failed application of the edit.
+-   The active code in `sparql.py` uses the Langchain `AgentExecutor` with the `generate_sparql_tool` and `execute_sparql_tool`.
+-   This implementation includes the recently added logging, 5-second timeouts, and expanded examples.
+-   The previous manual Chain-of-Thought implementation (`answer_complex_query`, `analyse_with_llm`) is no longer present or used in the main execution path.
 
 ## Next Steps & Considerations
 
-1.  **Address Langchain Refactoring:**
-    *   Option A: Retry the Langchain refactoring, potentially by providing the code directly for manual application if the tool continues to fail.
-    *   Option B: Continue development using the current manual CoT implementation in `sparql.py` if Langchain integration proves problematic or isn't a priority.
-2.  **Testing & Evaluation:** Thoroughly test the current `answer_complex_query` function with a wider range of complex queries to assess robustness and identify areas for prompt/logic improvement.
-3.  **Refine Prompts:** Review and refine the prompts used for SPARQL generation (`generate_sparql_query`) and the various analysis steps (`analyse_with_llm`) for better accuracy and efficiency.
-4.  **Error Handling:** Enhance error handling, particularly for edge cases in LLM responses or SPARQL results.
-5.  **Interface:** Consider how this logic will be integrated into a user-facing application (e.g., Streamlit, FastAPI).
+1.  **Monitor Timeouts:** Evaluate the impact of the 5-second timeouts. If frequent timeout errors occur, consider increasing the timeout values for `ChatOpenAI` and/or `requests.get`.
+2.  **Testing & Evaluation:** Thoroughly test the agent with the existing and new example queries, plus additional complex cases, to assess robustness, accuracy, and the impact of timeouts. Analyze the generated logs to understand agent behavior and failures.
+3.  **Refine Prompts:** Review and potentially refine the system prompt for the agent and the instructions within `generate_sparql_tool` based on testing outcomes and log analysis.
+4.  **Error Handling:** Enhance error handling logic within the agent's reasoning (prompt) or tools, especially for interpreting different types of errors returned by the tools (e.g., specific timeout errors vs. other request errors).
+5.  **Learning from Logs (Passive):** Utilize the detailed logs generated on each run to manually analyze agent performance, identify patterns in query generation/execution, and inform prompt refinement. (Active learning *from* logs is a future potential enhancement).
+6.  **Interface:** Consider how this logic will be integrated into a user-facing application (e.g., Streamlit, FastAPI).
 
 ## Important Patterns & Preferences
 
--   Use Chain-of-Thought reasoning for complex tasks involving multiple steps and potential failures.
--   Employ LLMs for specific analysis tasks within the chain (metadata analysis, linking, synthesis, failure analysis).
--   Incorporate self-correction loops based on execution results or LLM analysis.
--   Request structured JSON output from LLMs for easier parsing and integration.
+-   Use Langchain Agents for orchestrating complex tasks involving tool use and reasoning.
+-   Implement comprehensive, structured logging for observability and debugging.
+-   Encapsulate distinct functionalities (like API calls) within Langchain Tools.
+-   Configure external API call parameters like timeouts explicitly.
+-   Request structured JSON output from LLMs where applicable (though the current agent returns natural language).
 -   Prioritize finding relevant *datasets* rather than directly answering questions requiring deep data analysis within the datasets themselves (at this stage). 
