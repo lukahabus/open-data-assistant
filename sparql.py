@@ -9,6 +9,7 @@ import datetime
 import sys
 import traceback
 from typing import List, Dict, Any, Optional, TypedDict
+import coloredlogs  # Added for colored console logging
 
 # Langchain imports
 from langchain_openai import ChatOpenAI
@@ -29,11 +30,20 @@ if not os.path.exists(log_directory):
 timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
 log_filename = os.path.join(log_directory, f"sparql_run_{timestamp}.log")
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.FileHandler(log_filename), logging.StreamHandler()],
-    force=True,
+# Configure file logging
+file_handler = logging.FileHandler(log_filename)
+file_handler.setLevel(logging.INFO)
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+file_handler.setFormatter(formatter)
+
+# Get the root logger
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)  # Set root logger level
+logger.addHandler(file_handler)
+
+# Configure colored console logging
+coloredlogs.install(
+    level="INFO", logger=logger, fmt="%(asctime)s - %(levelname)s - %(message)s"
 )
 
 logging.info("--- Starting SPARQL Agent Script (LangGraph Version) ---")
