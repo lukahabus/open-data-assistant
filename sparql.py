@@ -61,8 +61,9 @@ def generate_sparql_tool(natural_language_query: str, context: str = "") -> str:
     Given the natural language query: "{natural_language_query}"
     {context} # Add context if provided (e.g., for refinement)
 
-    Generate a SPARQL query for the EU Open Data Portal ({SPARQL_ENDPOINT}) to find **datasets relevant to the themes** mentioned in the query.
-    - The primary goal is to identify datasets. Focus on searching dataset metadata (title, description, keywords) for relevance.
+    Generate a SPARQL query for the EU Open Data Portal ({SPARQL_ENDPOINT}) to find **multiple datasets relevant to the themes** mentioned in the query.
+    - The primary goal is **dataset discovery for exploration**: identify a range of potentially relevant datasets (up to 10-20).
+    - Focus on searching dataset metadata (title, description, keywords) for relevance.
     - Use standard prefixes like `dct:` (<http://purl.org/dc/terms/>) and `dcat:` (<http://www.w3.org/ns/dcat#>).
     - If you use XML Schema datatypes (like `xsd:date`), include `PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>`.
     - If you use Friend of a Friend terms (like `foaf:name` for publisher names), include `PREFIX foaf: <http://xmlns.com/foaf/0.1/>`.
@@ -73,8 +74,8 @@ def generate_sparql_tool(natural_language_query: str, context: str = "") -> str:
     - Use `dct:publisher` and potentially `foaf:name` for publisher filtering.
     - Use `dcat:distribution` to link to distributions only if filtering by `dct:format` or `dcat:mediaType` is explicitly requested.
     - Use FILTER with `CONTAINS` or `REGEX` for flexible text matching on title, description, or keywords. Apply `STR()` and `LCASE()` for case-insensitive matching on potentially non-string variables: `FILTER(CONTAINS(LCASE(STR(?var)), "term"))`.
-    - Avoid complex joins or analysis *within* the SPARQL query itself unless the query explicitly asks for specific data points likely found together. The main aim is dataset discovery.
-    - Add a LIMIT clause (e.g., LIMIT 10) to keep results manageable.
+    - Avoid complex joins or analysis *within* the SPARQL query itself unless the query explicitly asks for specific data points likely found together.
+    - Add a LIMIT clause (e.g., LIMIT 20) to retrieve a good number of results for exploration.
 
     Return *only* the raw SPARQL query string, without any explanations or formatting like ```sparql ... ```.
     """
@@ -269,6 +270,8 @@ def ask_data_portal_agent(user_query: str) -> Dict[str, Any]:
 example_nl_queries_single = [
     "Find datasets about climate change tagged with 'environment'. Retrieve their titles and descriptions.",
     "List datasets published by the European Environment Agency, showing their title and landing page.",
+    "Show me datasets related to bicycle traffic in major European cities.",
+    "Find datasets about the budget of the European Union.",
 ]
 
 # Complex/Multi-dataset examples
@@ -280,22 +283,71 @@ example_nl_queries_multi = [
     "Identify datasets on agricultural subsidies distributed per region (NUTS 2 level) within the EU over the last 5 years, cross-referenced with datasets on regional GDP growth.",
     "Find data linking fish stock assessments (e.g., biomass, fishing mortality) in the North Sea with ocean temperature anomalies reported by Copernicus Marine Service for the period 2015-2023.",
     "Show me datasets about migration flows into Germany, Italy, and Greece, specifically looking for data disaggregated by country of origin and year, alongside datasets about social integration policies or outcomes in those host countries since 2018.",
+    "Find datasets on energy consumption per capita compared to GDP per capita for EU member states over the last decade.",
+    "List datasets showing public transport usage trends before and after the COVID-19 pandemic in capital cities.",
 ]
 
 # --- Run Examples using the Langchain Agent ---
 
 if __name__ == "__main__":
-    logging.info("\n--- Running Agent Examples ---")
+    logging.info("\n--- Initializing SPARQL Agent Interface ---")
 
     all_examples = example_nl_queries_single + example_nl_queries_multi
 
-    for i, nl_query in enumerate(all_examples):
-        logging.info(f"\n========== Example {i+1} ==========")
-        agent_result = ask_data_portal_agent(nl_query)
-        logging.info(f"\nResult Dictionary for Example {i+1}:")
-        # Pretty print the JSON result dictionary to log
-        logging.info(json.dumps(agent_result, indent=2))
-        logging.info("===================================")
+    while True:  # Outer loop to restart after completion
+        print("\nAvailable Example Queries:")
+        for i, nl_query in enumerate(all_examples):
+            print(f"{i+1}. {nl_query}")
+        print("0. Run ALL examples")
+
+        while True:
+            try:
+                choice_str = input(
+                    f"\nEnter the number of the example to run (1-{len(all_examples)}) or 0 to run all: "
+                )
+                choice = int(choice_str)
+                if 0 <= choice <= len(all_examples):
+                    break  # Valid input
+                else:
+                    print(
+                        f"Invalid choice. Please enter a number between 0 and {len(all_examples)}."
+                    )
+            except ValueError:
+                print("Invalid input. Please enter a number.")
+
+        if choice == 0:
+            logging.info("\n--- Running ALL Examples ---")
+            for i, nl_query in enumerate(all_examples):
+                logging.info(f"\n========== Running Example {i+1} ==========")
+                agent_result = ask_data_portal_agent(nl_query)
+                logging.info(f"\nResult Dictionary for Example {i+1}:")
+                # Pretty print the JSON result dictionary to log
+                logging.info(json.dumps(agent_result, indent=2))
+                logging.info("===================================")
+        else:
+            selected_query = all_examples[choice - 1]  # Adjust for 0-based index
+            logging.info(f"\n--- Running Selected Example {choice} ---")
+            logging.info(f"Query: {selected_query}")
+            agent_result = ask_data_portal_agent(selected_query)
+            logging.info(f"\nResult Dictionary for Example {choice}:")
+            # Pretty print the JSON result dictionary to log
+            logging.info(json.dumps(agent_result, indent=2))
+            logging.info("===================================")
+
+        # Ask user if they want to continue
+        while True:
+            another_query = (
+                input("\nDo you want to run another example? (yes/no): ")
+                .strip()
+                .lower()
+            )
+            if another_query in ["yes", "y"]:
+                break  # Continue outer loop
+            elif another_query in ["no", "n"]:
+                logging.info("--- Exiting SPARQL Agent Interface ---")
+                sys.exit()  # Exit the script cleanly
+            else:
+                print("Invalid input. Please enter 'yes' or 'no'.")
 
     logging.info("--- Finished SPARQL Agent Script ---")
 
