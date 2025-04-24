@@ -2,10 +2,11 @@
 
 ## Current Focus
 
-Refining and testing the Langchain Agent implementation in `sparql.py` for processing natural language queries into SPARQL for the EU Open Data Portal.
+Refining and testing the Langchain Agent implementation in `sparql.py` for processing natural language queries into SPARQL for the EU Open Data Portal. The immediate focus is on adjusting the query generation to retrieve a broader set of potentially relevant datasets (up to 10-20) for exploration, rather than just the single most likely match.
 
 ## Recent Changes
 
+-   **SPARQL Generation Prompt Update:** Modified the prompt within `generate_sparql_tool` in `sparql.py` to emphasize dataset discovery for exploration and increased the suggested `LIMIT` to 20.
 -   **Logging Implementation:** Integrated Python's standard `logging` module into `sparql.py`.
     -   Logs are now written to timestamped files in a newly created `logs/` directory (e.g., `logs/sparql_run_YYYYMMDD_HHMMSS.log`).
     -   Logging includes the user query, context, generated SPARQL, execution attempts, success/failure status, result summaries or error messages, and the final agent answer.
@@ -37,4 +38,4 @@ Refining and testing the Langchain Agent implementation in `sparql.py` for proce
 -   Encapsulate distinct functionalities (like API calls) within Langchain Tools.
 -   Configure external API call parameters like timeouts explicitly.
 -   Request structured JSON output from LLMs where applicable (though the current agent returns natural language).
--   Prioritize finding relevant *datasets* rather than directly answering questions requiring deep data analysis within the datasets themselves (at this stage). 
+-   **Current Preference:** Prioritize finding a *range* of relevant datasets (up to 10-20) for exploration, rather than trying to pinpoint the single "best" dataset. 

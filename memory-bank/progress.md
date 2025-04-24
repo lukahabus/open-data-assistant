@@ -4,7 +4,7 @@
 
 -   **Core Query Pipeline (Langchain Agent):** The `ask_data_portal_agent` function in `sparql.py` successfully uses a Langchain `AgentExecutor`:
     -   Takes a natural language query.
-    -   Utilizes `generate_sparql_tool` (which calls `gpt-4o` with a 5s timeout) to create SPARQL queries.
+    -   Utilizes `generate_sparql_tool` (which calls `gpt-4o` with a 5s timeout) to create SPARQL queries. The prompt for this tool now emphasizes retrieving a broader set of datasets (up to 20) for exploration.
     -   Utilizes `execute_sparql_tool` (which calls the SPARQL endpoint with a 5s timeout) to run queries.
     -   The agent's internal logic (guided by its system prompt) handles errors (like timeouts, bad syntax) and empty results by analyzing the tool output and potentially retrying generation with added context.
     -   The agent analyzes successful results (metadata) and synthesizes a final natural language answer.
@@ -15,9 +15,10 @@
 
 ## What's Left to Build / Refine
 
--   **Timeout Evaluation & Tuning:** Monitor the impact of the 5-second timeouts. Increase if they prove too restrictive for reliable operation.
+-   **Evaluate Broader Query Results:** Assess the quality and relevance of the larger number of datasets returned due to the updated SPARQL generation prompt. Ensure the agent's synthesis handles multiple results effectively.
+-   **Timeout Evaluation & Tuning:** Monitor the impact of the 5-second timeouts, especially now that queries might aim for more results (potentially slightly longer execution). Increase if necessary.
 -   **Testing & Evaluation:** Conduct more extensive testing with diverse and challenging queries to evaluate the reliability and accuracy of the agent's SPARQL generation, tool usage, error handling, and final synthesis. Use logs for analysis.
--   **Prompt Engineering:** Refine the agent's system prompt and potentially the prompt within `generate_sparql_tool` based on testing outcomes to improve reasoning, error recovery, and result quality.
+-   **Prompt Engineering:** Further refine the agent's system prompt and potentially the prompt within `generate_sparql_tool` based on testing outcomes to improve reasoning, error recovery, and result quality, especially concerning the handling of multiple datasets.
 -   **Error Handling Robustness:** Further improve the agent's ability (via prompt refinement) to handle and recover from various tool errors or unexpected SPARQL results.
 -   **Learning from Logs (Active):** Potentially implement mechanisms for the agent to ingest and learn from past interactions recorded in the logs (e.g., to improve SPARQL generation based on past successes/failures).
 -   **Output Formatting:** Improve the final output format beyond the agent's text response for better end-user readability (potentially as part of a UI layer).
