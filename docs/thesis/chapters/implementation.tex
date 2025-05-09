@@ -21,12 +21,11 @@ skalabilnog i održivog rješenja. Odabir tehnologija vođen je sljedećim krite
     \begin{itemize}
         \item FastAPI za REST API
         \item Pydantic za validaciju podataka
-        \item SQLAlchemy za rad s bazom podataka
     \end{itemize}
     
     \item \textbf{Vektorska baza} - Faiss/Milvus
     \begin{itemize}
-        \item Pohrana i pretraživanje embeddings
+        \item Pohrana i pretraživanje embeddinga
         \item Visoke performanse za similarity search
         \item Skalabilnost za velike količine podataka
     \end{itemize}
@@ -35,7 +34,7 @@ skalabilnog i održivog rješenja. Odabir tehnologija vođen je sljedećim krite
     \begin{itemize}
         \item OpenAI API
         \item LangChain za orkestraciju
-        \item Sentence Transformers za embeddings
+        \item Sentence Transformers za embeddinge
     \end{itemize}
 \end{itemize}
 
@@ -45,7 +44,6 @@ skalabilnog i održivog rješenja. Odabir tehnologija vođen je sljedećim krite
     \begin{itemize}
         \item TypeScript za type safety
         \item Material-UI za komponente
-        \item React Query za state management
     \end{itemize}
     
     \item \textbf{Vizualizacija}
@@ -147,6 +145,262 @@ class LLMAssistant:
         return response
 \end{lstlisting}
 
+\subsection{LLM Agent za Semantičko Pretraživanje Portala Otvorenih Podataka}
+\label{sec:llm_agent_sparql}
+
+Algoritam opisan u nastavku razvijen je unutar programskog koda \texttt{sparql.py} i omogućuje interakciju s EU Portalom Otvorenih Podataka (\textit{EU Open Data Portal}) korištenjem prirodnog jezika za postavljanje upita. Glavni cilj je demonstrirati kako moderni jezični modeli mogu poslužiti kao sučelje prema strukturiranim podacima dostupnim putem SPARQL krajnjih točaka.
+
+\subsubsection{Cilj Sustava}
+\label{sec:llm_agent_objective_sparql}
+Osnovni cilj je omogućiti korisnicima dohvaćanje relevantnih skupova podataka s EU Portala Otvorenih Podataka formuliranjem upita na prirodnom jeziku. Sustav teži pružiti sažet, korisniku čitljiv odgovor koji identificira više potencijalno relevantnih skupova podataka za daljnje istraživanje, umjesto izravnog izdvajanja podataka ili složene analize unutar samog SPARQL upita. Naglasak je na \textbf{otkrivanju skupova podataka} (\textit{dataset discovery}).
+
+\subsubsection{Osnovne Komponente Sustava}
+\label{sec:llm_agent_components_sparql}
+Sustav se sastoji od sljedećih ključnih komponenti, implementiranih korištenjem Python programskog jezika i Langchain okvira:
+
+\begin{itemize}
+    \item \textbf{Veliki jezični model (LLM):} Jezgru čini OpenAI \texttt{gpt-4o} model, koji se koristi za razumijevanje prirodnog jezika i generiranje SPARQL upita. Konfiguriran je s temperaturom od 0.1 za konzistentnije odgovore i vremenskim ograničenjem od 60 sekundi po zahtjevu.
+
+    \item \textbf{Alat za Generiranje SPARQL Upita (\texttt{generate\_sparql\_tool}):} Langchain alat koji koristi LLM za prijevod korisničkog upita s prirodnog jezika u sintaktički ispravan SPARQL upit.
+    \begin{itemize}
+        \item \textit{Ulazni parametri:}
+        \begin{itemize}
+            \item \texttt{natural\_language\_query} (string): Korisničko pitanje u tekstualnom obliku.
+            \item \texttt{context} (string, opcionalno): Dodatne informacije za pročišćavanje upita ako prethodni pokušaj nije uspio (npr. poruke o greškama iz izvršavanja, prijedlozi za proširenje pretrage).
+        \end{itemize}
+        \item \textit{Proces generiranja:}
+        \begin{enumerate}
+            \item \textbf{Konstrukcija Ulaznog Obrasca (Prompt Construction):} Dinamički se sastavlja detaljan ulazni obrazac (prompt) za LLM. Obrazac specificira ciljnu SPARQL krajnju točku (\url{https://data.europa.eu/sparql}), upute za fokusiranje na otkrivanje 10-20 skupova podataka, popis standardnih RDF prefiksa (npr. \texttt{dct:}, \texttt{dcat:}, \texttt{foaf:}, \texttt{skos:}, \texttt{xsd:}, \texttt{rdfs:}, \texttt{adms:}), ciljanje entiteta tipa \texttt{dcat:Dataset}, ekstrakciju ključnih metapodataka (URI, \texttt{dct:title}, \texttt{dct:description}, \texttt{dct:publisher} -> \texttt{foaf:name}, \texttt{dcat:landingPage}, \texttt{dct:issued}, \texttt{dct:modified}), preferenciju za engleske metapodatke koristeći \texttt{FILTER(LANGMATCHES(LANG(?title), "en") || LANG(?title) = "")}, filtriranje prema ključnim riječima, temama, datumima, izdavačima i formatima, korištenje \texttt{FILTER} s \texttt{CONTAINS} ili \texttt{REGEX} (uz \texttt{LCASE(STR(?var))}) za fleksibilno pretraživanje, izbjegavanje složenih spajanja unutar SPARQL-a, te obavezno uključivanje \texttt{LIMIT} klauzule (npr. \texttt{LIMIT 20}). Prompt također sadrži nekoliko primjera parova prirodnojezičnih upita i odgovarajućih SPARQL upita.
+            \item \textbf{Poziv LLM-a:} Konstruirani ulazni obrazac šalje se konfiguriranom \texttt{ChatOpenAI} modelu.
+            \item \textbf{Obrada Izlaza:} Odgovor LLM-a (generirani SPARQL upit) se čisti od potencijalnih Markdown kodnih blokova (npr. \texttt{\`\`\`sparql ... \`\`\`}). Provodi se osnovna provjera da li upit započinje s ključnim riječima \texttt{PREFIX} ili \texttt{SELECT}.
+        \end{enumerate}
+        \item \textit{Izlaz:} Tekstualni niz koji sadrži generirani SPARQL upit. U slučaju neuspjeha LLM poziva, vraća se poruka o grešci. Ako upit ne započinje očekivanim ključnim riječima, vraća se upozorenje uz sam upit.
+    \end{itemize}
+
+\begin{lstlisting}[language=Python, caption=Ključni dijelovi alata za generiranje SPARQL upita (\texttt{generate\_sparql\_tool}), label=lst:generate_sparql_tool_sparql_py, basicstyle=\footnotesize\ttfamily, breaklines=true, morekeywords={tool, logging, HumanMessage, AIMessage}]
+import logging
+import re
+from langchain.tools import tool
+from langchain_core.messages import HumanMessage
+# Pretpostavka: llm, SPARQL_ENDPOINT su prethodno definirani
+# from sparql import llm, SPARQL_ENDPOINT (za kontekst)
+
+@tool
+def generate_sparql_tool(natural_language_query: str, context: str = "") -> str:
+    '''
+    Generates a SPARQL query for the EU Open Data Portal based on a natural language query.
+    Provide context only if a previous generation attempt failed...
+    '''
+    logging.info(
+        f"Attempting to generate SPARQL for NLQ: '{natural_language_query}' (Context: '{context}')"
+    )
+    # Skraćeni prikaz kompleksnog prompta za LLM radi sažetosti
+    sparql_prompt = f'''
+    Given the natural language query: "{natural_language_query}"
+    {f"Additional context for refinement: {context}" if context else ""}
+    Generate a SPARQL query for the EU Open Data Portal ({SPARQL_ENDPOINT})...
+    Focus on dataset discovery (up to 10-20 datasets).
+    Use standard prefixes (dct:, dcat:, foaf:, skos: ...).
+    Target dcat:Dataset. Extract title, description, publisher...
+    Prioritize English metadata.
+    Filter by keywords, themes, dates, publishers, formats.
+    Use FILTER with CONTAINS or REGEX for flexible text matching.
+    Add a LIMIT clause (e.g., LIMIT 20).
+    (Ovdje slijede detaljne upute i primjeri unutar stvarnog prompta)
+    Return *only* the raw SPARQL query string...
+    '''
+    try:
+        logging.info("Invoking LLM for SPARQL generation...")
+        response = llm.invoke(
+            [HumanMessage(content=f"Generate a SPARQL query based on these instructions:\n{sparql_prompt}")]
+        )
+        generated_query = response.content.strip()
+        logging.info("LLM call successful.")
+
+        cleaned_query = re.sub(r"^```sparql\s*", "", generated_query, flags=re.IGNORECASE)
+        cleaned_query = re.sub(r"\s*```$", "", cleaned_query)
+
+        if not cleaned_query.strip().upper().startswith("PREFIX") and \
+           not cleaned_query.strip().upper().startswith("SELECT"):
+            warning = "Warning: Generated query might be invalid..."
+            logging.warning(f"{warning} Query: {cleaned_query}")
+            return f"{warning}\n\nSPARQL Query:\n{cleaned_query}"
+        
+        logging.info(f"--- Generated SPARQL ---\n{cleaned_query}\n------------------------")
+        return cleaned_query
+
+    except Exception as e:
+        logging.error(f"Error generating SPARQL for query: '{natural_language_query}'. Error: {e}", exc_info=True)
+        return f"Error: Failed to generate SPARQL query. LLM call failed: {e}"
+\end{lstlisting}
+
+    \item \textbf{Alat za Izvršavanje SPARQL Upita (\texttt{execute\_sparql\_tool}):} Langchain alat odgovoran za izvršavanje SPARQL upita na specificiranoj EU Open Data Portal krajnjoj točki.
+    \begin{itemize}
+        \item \textit{Ulazni parametar:} \texttt{sparql\_query} (string): Tekstualni niz s SPARQL upitom.
+        \item \textit{Proces izvršavanja:}
+        \begin{enumerate}
+            \item Slanje HTTP GET zahtjeva na SPARQL krajnju točku (\url{https://data.europa.eu/sparql}). Zahtjev uključuje \texttt{Accept} zaglavlje postavljeno na \texttt{application/sparql-results+json} i SPARQL upit kao URL parametar.
+            \item Postavljeno je vremensko ograničenje od 30 sekundi za zahtjev.
+            \item Provjerava se HTTP status odgovora; greške (4xx ili 5xx) rezultiraju iznimkom.
+            \item U slučaju uspješnog odgovora, JSON tijelo odgovora se parsira.
+        \end{enumerate}
+        \item \textit{Izlaz:} Python rječnik (dictionary) koji predstavlja JSON rezultate SPARQL upita. U slučaju greške (npr. vremensko ograničenje, HTTP greška, neispravan JSON), vraća se string s porukom o grešci.
+    \end{itemize}
+
+\begin{lstlisting}[language=Python, caption=Alat za izvršavanje SPARQL upita (\texttt{execute\_sparql\_tool}), label=lst:execute_sparql_tool_sparql_py, basicstyle=\footnotesize\ttfamily, breaklines=true, morekeywords={tool, logging, requests, json, Dict, Any}]
+import logging
+import requests
+import json
+from typing import Dict, Any
+from langchain.tools import tool
+# Pretpostavka: SPARQL_ENDPOINT je prethodno definiran
+# from sparql import SPARQL_ENDPOINT (za kontekst)
+
+@tool
+def execute_sparql_tool(sparql_query: str) -> Dict[str, Any] | str:
+    '''
+    Executes a given SPARQL query against the EU Open Data Portal endpoint.
+    Returns JSON results or an error message string.
+    '''
+    logging.info(f"\n--- Executing SPARQL ---\n{sparql_query}\n-----------------------")
+    headers = {"Accept": "application/sparql-results+json"}
+    params = {"query": sparql_query}
+    try:
+        response = requests.get(SPARQL_ENDPOINT, headers=headers, params=params, timeout=30)
+        response.raise_for_status()  # HTTPError za loše odgovore (4xx ili 5xx)
+        results = response.json()
+        result_count = len(results.get("results", {}).get("bindings", []))
+        logging.info(f"--- SPARQL Execution Success: Got {result_count} results ---")
+        return results
+    except Exception as e:
+        error_msg = f"Error: An unexpected error occurred during SPARQL execution: {e}"
+        logging.error(f"--- {error_msg} --- Query:\n{sparql_query}", exc_info=True)
+        return error_msg
+\end{lstlisting}
+
+    \item \textbf{Agentni Okvir (Langchain Agent Executor):} Orkestracijski sloj koji upravlja cjelokupnim procesom, interakcijom između LLM-a, definiranih alata i korisničkog upita. Koristi se \texttt{create\_openai\_tools\_agent} i \texttt{AgentExecutor}.
+    \begin{itemize}
+        \item \textit{Definicija Agenta i Ulaznog Obrasca (Agent Prompting):} Ponašanje agenta vođeno je strukturiranim sistemskim obrascem (\texttt{ChatPromptTemplate}) koji specificira njegovu ulogu, ciljeve, dostupne alate (\texttt{generate\_sparql\_tool}, \texttt{execute\_sparql\_tool}) i detaljan korak-po-korak proces rezoniranja:
+        \begin{enumerate}
+            \item \textbf{Generiranje SPARQL Upita:} Prvo se koristi \texttt{generate\_sparql\_tool} s korisničkim upitom. Ako generiranje vrati upozorenje o sintaksi, agent obično svejedno pokuša izvršiti upit.
+            \item \textbf{Izvršavanje SPARQL Upita:} Koristi se \texttt{execute\_sparql\_tool} s generiranim upitom.
+            \item \textbf{Analiza Rezultata i Iteracija:}
+                \begin{itemize}
+                    \item \textbf{Greška pri Izvršavanju:} Ako \texttt{execute\_sparql\_tool} vrati poruku o grešci, agent analizira grešku. Razmatra se ponovno pozivanje \texttt{generate\_sparql\_tool} s originalnim upitom i dodatnim kontekstom koji opisuje grešku (npr., "Prethodni upit nije uspio. Greška: [...]. Provjeri sintaksu."). Broj ponovnih pokušaja je ograničen (1-2).
+                    \item \textbf{Nema Rezultata:} Ako je izvršavanje uspješno (vraćen JSON), ali \texttt{results.bindings} je prazan, agent razmatra ponovno pozivanje \texttt{generate\_sparql\_tool} s kontekstom koji sugerira šire pojmove ili blaže filtere. Broj ponovnih pokušaja je ograničen.
+                    \item \textbf{Uspješni Rezultati:} Ako su dohvaćeni JSON rezultati s vezama (bindings): agent analizira metapodatke (naslov, opis, ključne riječi) do 20 skupova podataka. Ako je potrebno, agent može hipotetski razmotriti kako bi se višestruki skupovi podataka mogli povezati, ali ne provodi samo povezivanje.
+                \end{itemize}
+            \item \textbf{Sinteza Odgovora:} Na temelju analize, agent formulira konačni odgovor na prirodnom jeziku. Odgovor sažima ključne pronađene skupove podataka, objašnjava njihovu relevantnost, spominje potencijalnu logiku povezivanja (ako postoji), priznaje ograničenja (npr., "Zahtijeva preuzimanje podataka za potpunu analizu", "Vremensko ograničenje API-ja može limitirati rezultate") te uključuje URI-jeve ili naslove skupova podataka. Agent ne vraća sirove JSON rezultate korisniku.
+        \end{enumerate}
+        \item \textit{Praćenje Razgovora i Stanja:} Agent koristi \texttt{MessagesPlaceholder} za povijest razgovora (\texttt{chat\_history}) i internu radnu memoriju (\texttt{agent\_scratchpad}).
+    \end{itemize}
+\end{itemize}
+
+\begin{lstlisting}[language=Python, caption=Postavljanje Langchain agenta i izvršitelja, label=lst:langchain_agent_setup_sparql_py, basicstyle=\footnotesize\ttfamily, breaklines=true, morekeywords={ChatPromptTemplate, MessagesPlaceholder, create_openai_tools_agent, AgentExecutor, logging}]
+# Pretpostavke: llm, generate_sparql_tool, execute_sparql_tool su definirani
+# from sparql import llm, generate_sparql_tool, execute_sparql_tool (za kontekst)
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain.agents import AgentExecutor, create_openai_tools_agent
+import logging
+
+tools = [generate_sparql_tool, execute_sparql_tool]
+
+# Skraćeni prikaz sistemskog prompta za agenta radi sažetosti
+agent_system_prompt = """You are an AI assistant designed to query the EU Open Data Portal.
+Your primary goal is dataset discovery for exploration (up to 10-20 datasets).
+You have two tools: `generate_sparql_tool` and `execute_sparql_tool`.
+
+Follow these steps:
+1.  **Generate SPARQL:** Use `generate_sparql_tool` with the user's query.
+    If generation returns a warning, usually try executing it anyway.
+2.  **Execute SPARQL:** Use `execute_sparql_tool` with the generated query.
+3.  **Analyze Results/Errors:**
+    *   **Execution Error:** If execution fails, analyze the error. Consider using
+        `generate_sparql_tool` again with context (e.g., "Previous query failed.
+        Error: [...]. Recheck syntax."). Limit retries to 1-2.
+    *   **No Results:** If successful but no results, consider `generate_sparql_tool`
+        again with context suggesting broader terms. Limit retries.
+    *   **Successful Results:** Analyze metadata. Synthesize a summary answer.
+        Do NOT just return raw JSON. Include dataset URIs/titles.
+Important: Think step-by-step. Explain reasoning.
+"""
+
+agent_prompt = ChatPromptTemplate.from_messages([
+    ("system", agent_system_prompt),
+    MessagesPlaceholder(variable_name="chat_history"),
+    ("human", "{input}"),
+    MessagesPlaceholder(variable_name="agent_scratchpad"),
+])
+
+agent = create_openai_tools_agent(llm, tools, agent_prompt)
+agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+logging.info("Langchain Agent Executor created.")
+\end{lstlisting}
+
+\subsubsection{Ukupni Tok Rada Sustava}
+\label{sec:llm_agent_workflow_sparql}
+Cjelokupni proces interakcije odvija se kroz sljedeće korake, orkestrirane putem funkcije \texttt{ask\_data\_portal\_agent}:
+\begin{enumerate}
+    \item Korisnik unosi upit na prirodnom jeziku (\texttt{user\_query}).
+    \item Poziva se \texttt{agent\_executor.invoke} s korisničkim upitom i praznom poviješću razgovora.
+    \item \textbf{Korak 1 (Generiranje Upita):} Agent interno poziva \texttt{generate\_sparql\_tool}. LLM, vođen detaljnim promptom alata, generira SPARQL upit.
+    \item \textbf{Korak 2 (Izvršavanje Upita):} Agent prosljeđuje generirani SPARQL upit alatu \texttt{execute\_sparql\_tool}, koji ga izvršava na EU Open Data Portal krajnjoj točki.
+    \item \textbf{Korak 3 (Analiza i Potencijalno Pročišćavanje):}
+    \begin{itemize}
+        \item Ako generiranje SPARQL-a ili njegovo izvršavanje ne uspije, ili ako nema rezultata, agent može ući u petlju pročišćavanja. U tom slučaju, ponovno poziva \texttt{generate\_sparql\_tool} s dodatnim kontekstom (npr. poruka o grešci, ili uputa za proširenje pretrage) kako bi dobio revidirani upit, koji se zatim ponovno izvršava. Ova petlja ima ograničen broj pokušaja.
+        \item Ako su podaci uspješno dohvaćeni, agent analizira metapodatke unutar vraćenih JSON rezultata.
+    \end{itemize}
+    \item \textbf{Korak 4 (Sinteza Odgovora):} Agent, slijedeći upute iz svog sistemskog prompta, formulira odgovor na prirodnom jeziku koji sažima nalaze. Ovaj odgovor uključuje popis relevantnih skupova podataka, objašnjenje njihove potencijalne koristi za odgovor na korisnikov upit, te eventualna ograničenja.
+    \item Konačni sintetizirani odgovor, sadržan u ključu \texttt{'output'} rječnika kojeg vraća \texttt{agent\_executor.invoke}, prosljeđuje se korisniku kao dio strukturiranog odgovora funkcije \texttt{ask\_data\_portal\_agent}.
+\end{enumerate}
+
+\begin{lstlisting}[language=Python, caption=Glavna funkcija za pokretanje agenta (\texttt{ask\_data\_portal\_agent}), label=lst:ask_data_portal_agent_sparql_py, basicstyle=\footnotesize\ttfamily, breaklines=true, morekeywords={logging, traceback, Dict, Any}]
+import logging
+import traceback
+from typing import Dict, Any
+# Pretpostavka: agent_executor je prethodno definiran
+# from sparql import agent_executor (za kontekst)
+
+def ask_data_portal_agent(user_query: str) -> Dict[str, Any]:
+    '''
+    Uses the Langchain agent to answer a question about the EU Open Data Portal.
+    '''
+    logging.info(f"--- Running Agent for Query: '{user_query}' ---")
+    chat_history = [] # Inicijalizacija prazne povijesti za svaki poziv
+    try:
+        logging.info("Invoking agent executor...")
+        response = agent_executor.invoke(
+            {"input": user_query, "chat_history": chat_history}
+        )
+        final_answer = response.get("output", "Agent did not provide a final output.")
+        logging.info(f"--- Agent Final Answer ---\n{final_answer}\n--------------------------")
+        return {"status": "success", "query": user_query, "answer": final_answer}
+    except Exception as e:
+        logging.error(
+            f"Error running Langchain Agent for query: '{user_query}'. Error: {e}",
+            exc_info=True,
+        )
+        traceback.print_exc() # Ispis traceback-a u konzolu
+        return {
+            "status": "error",
+            "query": user_query,
+            "message": f"Agent execution failed: {e}",
+        }
+\end{lstlisting}
+
+\subsubsection{Ključne Karakteristike Algoritma}
+\label{sec:llm_agent_characteristics_sparql}
+\begin{itemize}
+    \item \textbf{Sučelje na Prirodnom Jeziku:} Apstrahira tehničku složenost SPARQL protokola, omogućujući korisnicima postavljanje upita na intuitivan način.
+    \item \textbf{Inteligencija Pokretana Velikim Jezičnim Modelom:} Iskorištava napredne sposobnosti razumijevanja i generiranja teksta LLM-a za temeljni zadatak prevođenja upita i sinteze odgovora.
+    \item \textbf{Iterativno Pročišćavanje Upita:} Uključuje mehanizam putem kojeg agent pokušava samostalno ispraviti ili poboljšati SPARQL upite na temelju povratnih informacija iz izvršavanja ili nedostatka rezultata.
+    \item \textbf{Fokus na Otkrivanje Skupova Podataka:} Dizajniran primarno za identifikaciju kolekcije potencijalno relevantnih skupova podataka za daljnje istraživanje od strane korisnika, a ne za izvođenje dubinske analize ili integraciju podataka unutar samog upita.
+    \item \textbf{Modularni Dizajn putem Langchain Alata:} Jasno razdvajanje odgovornosti u specijalizirane alate (za generiranje i izvršavanje SPARQL-a) koje orkestrira centralni agent, što promiče održivost i proširivost.
+    \item \textbf{Visoka Ovisnost o Kontekstualnim Ulaznim Obrascima (Prompts):} Kvaliteta i preciznost rada sustava značajno ovise o pažljivo konstruiranim promptovima, kako za pojedine alate tako i za cjelokupnu logiku agenta.
+\end{itemize}
+
+Implementirani algoritam demonstrira kako se kombinacijom LLM-ova, agentnih okvira i specijaliziranih alata može stvoriti robustan i korisnički prihvatljiv pristup za pretraživanje i istraživanje velikih, strukturiranih izvora podataka kao što je EU Portal Otvorenih Podataka.
+
 \section{API implementacija}
 \label{sec:api}
 
@@ -208,7 +462,7 @@ const Dataset: React.FC<DatasetProps> = ({ dataset, onAnalyze }) => {
 \section{Testiranje}
 \label{sec:testing}
 
-\subsection{Jedinični testovi}
+\subsection{Unit testovi}
 Implementirani su testovi za sve ključne komponente:
 
 \begin{lstlisting}[language=Python, caption=Primjer unit testa]
@@ -256,7 +510,7 @@ async def test_full_analysis_pipeline():
 \subsection{Performanse}
 Implementirane su sljedeće optimizacije:
 \begin{itemize}
-    \item Cachiranje embeddings
+    \item Cachiranje embeddinga
     \item Batch processing za LLM pozive
     \item Optimizacija vektorskih upita
     \item Lazy loading podataka
@@ -267,6 +521,4 @@ Sustav je pripremljen za skaliranje kroz:
 \begin{itemize}
     \item Asinkrono procesiranje
     \item Distribuirani cache
-    \item Load balancing
-    \item Horizontalno skaliranje komponenti
 \end{itemize} 

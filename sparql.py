@@ -8,6 +8,7 @@ import datetime
 import sys
 import traceback
 from typing import List, Dict, Any, Optional
+from dotenv import load_dotenv
 
 # Langchain imports
 from langchain_openai import ChatOpenAI
@@ -33,6 +34,9 @@ logging.basicConfig(
 logging.info("--- Starting SPARQL Agent Script ---")
 
 # --- Setup ---
+# Load environment variables from .env file
+load_dotenv()
+
 # Ensure OpenAI API key is available
 # It will default to checking the OPENAI_API_KEY environment variable
 llm = ChatOpenAI(model="gpt-4o", temperature=0.1, request_timeout=60)
@@ -50,32 +54,138 @@ def generate_sparql_tool(natural_language_query: str, context: str = "") -> str:
     """
     Generates a SPARQL query for the EU Open Data Portal based on a natural language query.
     Use this tool first to get a query.
-    Provide context only if a previous generation attempt failed and you have specific instructions for correction (e.g., 'Previous query failed execution. Check prefixes.').
+    Provide context only if a previous generation attempt failed and you have specific instructions for correction (e.g., 'Previous query failed with: [error message]. Check prefixes and resource types.').
     """
     logging.info(
         f"Attempting to generate SPARQL for NLQ: '{natural_language_query}' (Context: '{context}')"
     )
     # Prompt for the LLM to generate a SPARQL query
-    # This prompt is kept similar to the original for consistency
     sparql_prompt = f"""
     Given the natural language query: "{natural_language_query}"
-    {context} # Add context if provided (e.g., for refinement)
+    {f"Additional context for refinement based on previous attempt: {context}" if context else ""}
 
     Generate a SPARQL query for the EU Open Data Portal ({SPARQL_ENDPOINT}) to find **multiple datasets relevant to the themes** mentioned in the query.
     - The primary goal is **dataset discovery for exploration**: identify a range of potentially relevant datasets (up to 10-20).
     - Focus on searching dataset metadata (title, description, keywords) for relevance.
-    - Use standard prefixes like `dct:` (<http://purl.org/dc/terms/>) and `dcat:` (<http://www.w3.org/ns/dcat#>).
-    - If you use XML Schema datatypes (like `xsd:date`), include `PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>`.
-    - If you use Friend of a Friend terms (like `foaf:name` for publisher names), include `PREFIX foaf: <http://xmlns.com/foaf/0.1/>`.
+    - Use standard prefixes. Commonly used ones include:
+        - `dct: <http://purl.org/dc/terms/>` (for titles, descriptions, dates, publishers, formats, spatial, etc.)
+        - `dcat: <http://www.w3.org/ns/dcat#>` (for dataset/distribution types, keywords, themes, landing pages, start/end dates for temporal coverage)
+        - `xsd: <http://www.w3.org/2001/XMLSchema#>` (for data types like dates)
+        - `foaf: <http://xmlns.com/foaf/0.1/>` (for names, homepages, e.g., publisher names)
+        - `skos: <http://www.w3.org/2004/02/skos/core#>` (for labels of controlled vocabulary terms, e.g., themes, file types, status)
+        - `adms: <http://www.w3.org/ns/adms#>` (for status of distributions, e.g. adms:status)
+        - `rdfs: <http://www.w3.org/2000/01/rdf-schema#>` (for labels, comments)
     - Target datasets (`?dataset a dcat:Dataset`).
-    - Extract relevant *dataset* information (e.g., `dct:title`, `dct:description`, `dct:publisher`, `dcat:landingPage`, dataset URI). Always include the dataset URI.
+    - Extract relevant *dataset* information (e.g., dataset URI, `dct:title`, `dct:description`, `dct:publisher` -> `foaf:name`, `dcat:landingPage`, `dct:issued`, `dct:modified`). Always include the dataset URI.
+    - **Language Preference:** Prioritize datasets with English metadata (e.g., `dct:title`, `dct:description`, `skos:prefLabel`). Use `FILTER(LANGMATCHES(LANG(?title), "en") || LANG(?title) = "")` for titles. Apply similar logic for descriptions and labels. If English is not available, results in other languages are acceptable.
     - Filter datasets based on keywords, themes, dates, publishers, formats etc. mentioned in the query by searching `dcat:keyword`, `dct:title`, `dct:description`.
-    - Use `dct:issued` for publication date filtering.
-    - Use `dct:publisher` and potentially `foaf:name` for publisher filtering.
-    - Use `dcat:distribution` to link to distributions only if filtering by `dct:format` or `dcat:mediaType` is explicitly requested.
+        - For themes, use `dcat:theme` and link to specific theme URIs (e.g., from `<http://publications.europa.eu/resource/authority/data-theme>`). You might need to find the theme URI by its label (e.g., `?themeURI skos:prefLabel "Environment"@en`).
+        - For dates, use `dct:issued` (publication), `dct:modified` (update), or `dct:temporal` with `dcat:startDate`/`dcat:endDate` for the period covered by the data.
+        - For publishers, use `dct:publisher` and then `foaf:name` for the publisher's name.
+        - For file formats, link `?dataset dcat:distribution ?distribution . ?distribution dct:format <URI_of_file_type_from_controlled_vocabulary>` or `?distribution dcat:mediaType "iana/mimetype"`. Example file type URI for CSV: `<http://publications.europa.eu/resource/authority/file-type/CSV>`. Use `skos:prefLabel` to get the format name.
     - Use FILTER with `CONTAINS` or `REGEX` for flexible text matching on title, description, or keywords. Apply `STR()` and `LCASE()` for case-insensitive matching on potentially non-string variables: `FILTER(CONTAINS(LCASE(STR(?var)), "term"))`.
-    - Avoid complex joins or analysis *within* the SPARQL query itself unless the query explicitly asks for specific data points likely found together.
+    - **Avoid complex joins or analysis *within* the SPARQL query itself.** However, simple links to distributions (for format filtering) or publishers are acceptable.
     - Add a LIMIT clause (e.g., LIMIT 20) to retrieve a good number of results for exploration.
+
+    Here are some examples to guide your generation:
+
+    --- Example 1 ---
+    Natural Language Query: "Find datasets about air quality in Germany."
+    SPARQL Query:
+    PREFIX dct: <http://purl.org/dc/terms/>
+    PREFIX dcat: <http://www.w3.org/ns/dcat#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    SELECT DISTINCT ?dataset ?title ?description
+    WHERE {{
+      ?dataset a dcat:Dataset .
+      ?dataset dct:title ?title .
+      OPTIONAL {{ ?dataset dct:description ?description . }}
+      # Filter by keywords or text in title/description
+      FILTER (
+        CONTAINS(LCASE(STR(?title)), "air quality") ||
+        (BOUND(?description) && CONTAINS(LCASE(STR(?description)), "air quality")) ||
+        EXISTS {{ ?dataset dcat:keyword ?kw . FILTER(CONTAINS(LCASE(STR(?kw)), "air quality")) }}
+      )
+      # Filter by location if mentioned (Germany example)
+      FILTER (
+        CONTAINS(LCASE(STR(?title)), "germany") ||
+        (BOUND(?description) && CONTAINS(LCASE(STR(?description)), "germany")) ||
+        EXISTS {{ ?dataset dct:spatial ?spatialUri . OPTIONAL {{?spatialUri skos:prefLabel ?spatialLabelEN . FILTER(LANGMATCHES(LANG(?spatialLabelEN), "en"))}} OPTIONAL {{?spatialUri rdfs:label ?spatialLabel .}} FILTER(CONTAINS(LCASE(STR(?spatialLabelEN)), "germany") || CONTAINS(LCASE(STR(?spatialLabel)), "germany")) }} ||
+        EXISTS {{ ?dataset dcat:keyword ?kw_loc . FILTER(CONTAINS(LCASE(STR(?kw_loc)), "germany")) }}
+      )
+      # Language preference for title
+      FILTER(LANGMATCHES(LANG(?title), "en") || LANG(?title) = "")
+      # Optional language preference for description
+      OPTIONAL {{ FILTER(LANGMATCHES(LANG(?description), "en") || LANG(?description) = "") }}
+    }}
+    LIMIT 15
+    --- End Example 1 ---
+
+    --- Example 2 ---
+    Natural Language Query: "List datasets published by Eurostat concerning unemployment rates, issued after 2020."
+    SPARQL Query:
+    PREFIX dct: <http://purl.org/dc/terms/>
+    PREFIX dcat: <http://www.w3.org/ns/dcat#>
+    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    SELECT DISTINCT ?dataset ?title ?publisherName ?issuedDate
+    WHERE {{
+      ?dataset a dcat:Dataset .
+      ?dataset dct:title ?title .
+      ?dataset dct:publisher ?publisherOrg .
+      ?publisherOrg foaf:name ?publisherName .
+      OPTIONAL {{ ?dataset dct:issued ?issuedDate . }}
+      OPTIONAL {{ ?dataset dct:description ?description . }}
+
+      # Filter by publisher name
+      FILTER(CONTAINS(LCASE(STR(?publisherName)), "eurostat"))
+
+      # Filter by keywords in title/description
+      FILTER (
+        CONTAINS(LCASE(STR(?title)), "unemployment") ||
+        (BOUND(?description) && CONTAINS(LCASE(STR(?description)), "unemployment")) ||
+        EXISTS {{ ?dataset dcat:keyword ?kw . FILTER(CONTAINS(LCASE(STR(?kw)), "unemployment")) }}
+      )
+      # Filter by issue date
+      FILTER(!BOUND(?issuedDate) || ?issuedDate > "2020-01-01"^^xsd:date)
+
+      # Language preference for title
+      FILTER(LANGMATCHES(LANG(?title), "en") || LANG(?title) = "")
+    }}
+    LIMIT 10
+    --- End Example 2 ---
+
+    --- Example 3 ---
+    Natural Language Query: "Find datasets in the 'Environment' theme, available in CSV format, and include their modification date."
+    SPARQL Query:
+    PREFIX dct: <http://purl.org/dc/terms/>
+    PREFIX dcat: <http://www.w3.org/ns/dcat#>
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+    SELECT DISTINCT ?dataset ?title ?modifiedDate ?formatLabel
+    WHERE {{
+      ?dataset a dcat:Dataset .
+      ?dataset dct:title ?title .
+      OPTIONAL {{ ?dataset dct:modified ?modifiedDate . }}
+
+      # Filter by theme: Attempt to match "Environment" theme label
+      ?dataset dcat:theme ?themeURI .
+      ?themeURI skos:prefLabel ?themeLabel .
+      FILTER(LANGMATCHES(LANG(?themeLabel), "en") && CONTAINS(LCASE(STR(?themeLabel)), "environment"))
+
+      # Filter by distribution format: Specifically CSV
+      ?dataset dcat:distribution ?distribution .
+      ?distribution dct:format <http://publications.europa.eu/resource/authority/file-type/CSV> .
+      # Optionally get the label of the format if needed for display
+      <http://publications.europa.eu/resource/authority/file-type/CSV> skos:prefLabel ?formatLabel .
+      FILTER(LANGMATCHES(LANG(?formatLabel), "en") || LANG(?formatLabel) = "")
+
+      # Language preference for title
+      FILTER(LANGMATCHES(LANG(?title), "en") || LANG(?title) = "")
+    }}
+    LIMIT 15
+    --- End Example 3 ---
 
     Return *only* the raw SPARQL query string, without any explanations or formatting like ```sparql ... ```.
     """
@@ -287,6 +397,10 @@ example_nl_queries_multi = [
     "Show me datasets about migration flows into Germany, Italy, and Greece, specifically looking for data disaggregated by country of origin and year, alongside datasets about social integration policies or outcomes in those host countries since 2018.",
     "Find datasets on energy consumption per capita compared to GDP per capita for EU member states over the last decade.",
     "List datasets showing public transport usage trends before and after the COVID-19 pandemic in capital cities.",
+    "Find datasets about environmental protection, published after 2022, and available in CSV or XML format.",
+    "List datasets related to fishery statistics, including their last modification date, prioritizing English titles.",
+    "Show me datasets from the 'Justice, legal system and public safety' data theme, specifically those mentioning 'crime statistics' in their title or description.",
+    "Find datasets about energy consumption that have been modified since January 2023 and list their publisher.",
 ]
 
 # --- Run Examples using the Langchain Agent ---
