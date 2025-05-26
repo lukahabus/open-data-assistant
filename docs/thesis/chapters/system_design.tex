@@ -6,148 +6,90 @@
 \section{Arhitektura sustava}
 \label{sec:architecture}
 
-Predloženi sustav temelji se na modularnoj arhitekturi koja omogućuje fleksibilnost i 
-proširivost. Sustav je podijeljen u nekoliko ključnih komponenti koje međusobno 
-surađuju kako bi omogućile naprednu analizu meta podataka.
+Predloženi RAG sustav temelji se na troslojnoj arhitekturi koja omogućuje skalabilnu i održivu implementaciju naprednog semantičkog pretraživanja nad EU Portalom otvorenih podataka. Arhitektura je dizajnirana prema načelima modularnosti, proširivosti i optimizacije performansi, omogućujući robusno funkcioniranje u produkcijskom okruženju.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/system_architecture}
-    \caption{Arhitektura sustava za analizu meta podataka}
-    \label{fig:system_architecture}
-\end{figure}
+Sloj pohrane čini ChromaDB vektorska baza podataka koja omogućuje trajno pohranjivanje visokodimenzijskih ugradbi s optimiziranim mogućnostima pretraživanja sličnosti. Ovaj sloj također uključuje predmemoriju informacija o shemi i mehanizme predmemoriranja rezultata upita koji omogućuju značajna poboljšanja performansi za ponavljane operacije.
 
-\subsection{Ključne komponente}
-Sustav se sastoji od sljedećih glavnih komponenti:
+Sloj obrade sastoji se od Sentence Transformers modela za generiranje ugradbi, OpenAI GPT-4 integracije za generiranje SPARQL upita, te komponenti za automatsku ekstrakciju sheme koje dinamički analiziraju strukturu grafa znanja. Ovaj sloj implementira osnovnu RAG funkcionalnost kroz inteligentno dohvaćanje i procese proširenog generiranja.
 
-\begin{itemize}
-    \item \textbf{DCAT Adapter} - komponenta za pretvorbu i normalizaciju meta podataka
-    \item \textbf{Embedding Engine} - modul za vektorsku reprezentaciju meta podataka
-    \item \textbf{Semantic Analyzer} - komponenta za semantičku analizu i otkrivanje veza
-    \item \textbf{LLM Assistant} - sučelje za interakciju s korisnicima
-    \item \textbf{CKAN Integration} - modul za integraciju s CKAN portalima
-    \item \textbf{Web Interface} - korisničko sučelje sustava
-\end{itemize}
+Sloj sučelja omogućuje multimodalnu interakciju kroz LangChain agent okvir koji orkestrira različite strategije pretraživanja. Arhitektura temeljena na agentima omogućuje sofisticirano upravljanje tijekom rada s automatskim strategijama za vraćanje i inteligentnu sintezu rezultata kroz više izvora podataka.
 
-\section{Prošireni DCAT model}
-\label{sec:extended_dcat}
+\section{Ključne komponente}
+\label{sec:key_components}
 
-Za potrebe semantičke analize i povezivanja skupova podataka, razvijen je prošireni 
-DCAT model koji dodaje nove funkcionalnosti standardnom DCAT modelu.
+Sustav se sastoji od sljedećih glavnih komponenti koje implementiraju sveobuhvatnu RAG funkcionalnost. RAG System komponenta implementira osnovnu logiku povratnog dohvaćanja i generiranja kroz ChromaDB integraciju za pohranu vektora, Sentence Transformers za generiranje ugradbi, i OpenAI GPT-4 za generiranje upita. Schema Extractor komponenta automatski analizira strukturu grafa znanja EU Portala otvorenih podataka kroz ekstrakciju VoID opisa i DCAT-specifičnu analizu. Unified Data Assistant komponenta orkestrira multimodalne strategije pretraživanja kroz LangChain agent okvir koji kombinira SPARQL upite, REST API pozive i funkcionalnost API-ja za slične skupove podataka. Vektorska baza podataka komponenta omogućuje trajno pohranjivanje i učinkovito dohvaćanje semantičkih ugradbi kroz optimizirane algoritme pretraživanja sličnosti. Komponenta za validaciju upita implementira dvostupanjski proces validacije koji osigurava sintaksnu ispravnost i izvodljivost generiranih SPARQL upita. Komponenta za optimizaciju performansi implementira strategije predmemoriranja, upravljanje ograničenjima tokena i asinkrone mogućnosti obrade za optimalne performanse sustava.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/extended_dcat_model}
-    \caption{Prošireni DCAT model s podrškom za semantičke veze}
-    \label{fig:extended_dcat_model}
-\end{figure}
+\section{RAG komponente i tijek rada}
+\label{sec:rag_components}
 
-\subsection{Proširenja modela}
-Ključna proširenja uključuju:
+RAG sustav implementira četiri ključne komponente identificirane u istraživačkoj literaturi \cite{lewis2020retrieval, reimers2019sentence, wang2023vector}. Svaka komponenta je dizajnirana za optimalne performanse i robusno rukovanje greškama u produkcijskom okruženju.
 
-\begin{itemize}
-    \item \textbf{Semantičke veze} - eksplicitno modeliranje veza između skupova podataka
-    \item \textbf{Metrike kvalitete} - dodatni atributi za praćenje kvalitete meta podataka
-    \item \textbf{Vektorske reprezentacije} - podrška za embeddings meta podataka
-    \item \textbf{Kontekstualne informacije} - dodatni metapodaci o kontekstu i uporabi
-\end{itemize}
+Komponenta za ugradbe i indeksiranje koristi all-MiniLM-L6-v2 Sentence Transformers model za generiranje 384-dimenzijskih semantičkih ugradbi iz upita na prirodnom jeziku i pohranjenih primjera. ChromaDB omogućuje učinkovito pohranjivanje i dohvaćanje ovih ugradbi kroz optimizirane algoritme pretraživanja sličnosti koji koriste kosinusne metrike udaljenosti.
 
-\section{Tok podataka}
-\label{sec:data_flow}
+Komponenta za izgradnju promptova implementira sofisticiran proces sastavljanja konteksta koji kombinira dohvaćene slične primjere s relevantnim informacijama o shemi. Ovaj proces omogućuje stvaranje sveobuhvatnih promptova koji pružaju dovoljan kontekst za točno generiranje SPARQL upita dok ostaju unutar ograničenja tokena komercijalnih LLM API-ja.
 
-Tok podataka kroz sustav organiziran je u nekoliko faza koje osiguravaju učinkovitu 
-obradu i analizu meta podataka.
+Komponenta za validaciju upita implementira dvostupanjski proces validacije koji uključuje provjeru sintakse kroz parsiranje SPARQL-a i validaciju izvršavanja kroz testne upite s ograničenjima LIMIT 1. Ovaj pristup omogućuje rano otkrivanje sintaksnih grešaka i provjeru da se generirani upiti mogu uspješno izvršiti protiv ciljne krajnje točke.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/data_flow}
-    \caption{Tok podataka kroz sustav}
-    \label{fig:data_flow}
-\end{figure}
+\section{Multimodalni pristup pretraživanju}
+\label{sec:multimodal_approach}
 
-\subsection{Faze obrade}
-\begin{enumerate}
-    \item \textbf{Dohvat podataka}
-    \begin{itemize}
-        \item Povezivanje s CKAN API-jem
-        \item Dohvat meta podataka
-        \item Validacija i normalizacija
-    \end{itemize}
-    
-    \item \textbf{Semantička analiza}
-    \begin{itemize}
-        \item Generiranje embeddinga
-        \item Analiza sličnosti
-        \item Otkrivanje veza
-    \end{itemize}
-    
-    \item \textbf{Obogaćivanje meta podataka}
-    \begin{itemize}
-        \item LLM analiza
-        \item Generiranje opisa
-        \item Dodavanje konteksta
-    \end{itemize}
-    
-    \item \textbf{Pohrana i indeksiranje}
-    \begin{itemize}
-        \item Pohrana u vektorsku bazu
-        \item Indeksiranje za pretraživanje
-        \item Ažuriranje veza
-    \end{itemize}
-\end{enumerate}
+Unified Data Assistant implementira multimodalni pristup koji kombinira tri komplementarne strategije pretraživanja za sveobuhvatno otkrivanje skupova podataka. Ovaj pristup omogućuje optimalno pokrivanje različitih korisničkih namjera i tipova upita kroz inteligentnu orkestraciju više metoda pristupa podacima.
 
-\section{Korisničko sučelje}
-\label{sec:user_interface}
+RAG-prošireno generiranje SPARQL upita predstavlja primarnu strategiju pretraživanja koja koristi semantičko pretraživanje sličnosti za dohvaćanje relevantnih primjera upita i informacija o shemi. Ovaj pristup je optimiziran za strukturirane upite koji zahtijevaju precizno filtriranje i složena spajanja kroz više svojstava skupova podataka.
 
-Korisničko sučelje dizajnirano je s ciljem jednostavne i intuitivne interakcije s 
-meta podacima i njihovom analizom.
+REST API pretraživanje omogućuje fleksibilno pretraživanje temeljeno na ključnim riječima s mogućnostima facetiranja preko izdavača, formata, teme i vremenskih dimenzija. Ovaj pristup je idealan za istraživačke upite gdje korisnici nisu sigurni o točnoj terminologiji ili strukturi ciljnih skupova podataka.
 
-\subsection{Komponente sučelja}
-\begin{itemize}
-    \item \textbf{Pretraživanje} - napredno semantičko pretraživanje
-    \item \textbf{Vizualizacija} - grafički prikaz veza između skupova podataka
-    \item \textbf{Interaktivni asistent} - sučelje za prirodnu jezičnu interakciju
-    \item \textbf{Analitički dashboard} - pregled metrika i statistika
-\end{itemize}
+API za slične skupove podataka koristi vlastite algoritme platforme sličnosti za otkrivanje povezanih skupova podataka na temelju sličnosti metapodataka. Ovaj pristup omogućuje neočekivano otkrivanje povezanih skupova podataka koji možda nisu odmah očigledni kroz tradicionalne metode pretraživanja.
 
-\section{Sigurnost i skalabilnost}
-\label{sec:security_scalability}
+\section{Ekstrakcija sheme i analiza grafa znanja}
+\label{sec:schema_extraction}
 
-\subsection{Sigurnosni aspekti}
-Implementirane sigurnosne mjere uključuju:
-\begin{itemize}
-    \item Autentikacija i autorizacija
-    \item Enkripcija podataka
-    \item Praćenje pristupa
-    \item Sigurnosno kopiranje
-\end{itemize}
+Sustav za automatsku ekstrakciju sheme implementira sveobuhvatnu analizu strukture grafa znanja EU Portala otvorenih podataka kroz kombinaciju ekstrakcije VoID opisa i DCAT-specifične analize. Ovaj sustav omogućuje dinamičko razumijevanje strukture skupa podataka i uzoraka korištenja rječnika koji su bitni za informirano generiranje upita.
 
-\subsection{Skalabilnost}
-Sustav je dizajniran za skalabilnost kroz:
-\begin{itemize}
-    \item Modularnu arhitekturu
-    \item Distribuiranu obradu
-    \item Cachiranje rezultata
-    \item Horizontalno skaliranje
-\end{itemize}
+Komponenta za ekstrakciju VoID opisa automatski dohvaća sveobuhvatne statistike o strukturi grafa znanja uključujući ukupan broj trojki, različitih subjekata, klasa i svojstava. Ove informacije omogućuju razumijevanje opsega i složenosti ciljnog grafa znanja što je ključno za optimizaciju strategija generiranja upita.
 
-\section{Integracija s postojećim sustavima}
-\label{sec:integration}
+DCAT-specifična analiza fokusira se na ekstrakciju domenski specifičnih statistika relevantnih za ekosustav EU Portala otvorenih podataka. Analiza uključuje nabrajanje broja skupova podataka, formata distribucije, statistika izdavača, pokrivanje tema i vremenske uzorke koji omogućuju specijaliziranu optimizaciju za kontekst europskih otvorenih podataka.
 
-\subsection{CKAN integracija}
-Integracija s CKAN portalima ostvarena je kroz:
-\begin{itemize}
-    \item REST API adapter
-    \item Sinkronizaciju meta podataka
-    \item Mapiranje podatkovnih modela
-    \item Praćenje promjena
-\end{itemize}
+Nabrajanje klasa i svojstava sa statistikama korištenja omogućuje identifikaciju najčešće korištenih pojmova rječnika i njihovih odnosa unutar grafa znanja. Ova informacija je integrirana u proces izgradnje RAG promptova za generiranje upita koji slijede ustaljene uzorke i koriste odgovarajuće pojmove rječnika.
 
-\subsection{Proširivost}
-Sustav podržava integraciju s drugim sustavima kroz:
-\begin{itemize}
-    \item Standardizirane API-je
-    \item Prilagodljive adaptere
-    \item Plugin arhitekturu
-    \item Konfiguracijske opcije
-\end{itemize} 
+\section{Orkestracija temeljena na agentima}
+\label{sec:agent_orchestration}
+
+LangChain agent okvir omogućuje sofisticiranu orkestraciju više strategija pretraživanja kroz inteligentno upravljanje tijekom rada. Arhitektura temeljena na agentima implementira logiku donošenja odluka koja određuje optimalnu strategiju pretraživanja na temelju karakteristika upita, korisničke namjere i dostupnih resursa.
+
+Inženjerstvo agent promptova implementira sveobuhvatne upute koje vode ponašanje agenta kroz složene višestupanjske tokove rada. Promptovi su dizajnirani da potiču sistemski pristup koji počinje s RAG-proširenim generiranjem SPARQL upita, nastavlja kroz API pretraživanja, i završava s inteligentnom sintezom i analizom rezultata.
+
+Integracija alata omogućuje besprijekorna interakcija između različitih komponenti pretraživanja kroz standardizirana sučelja. Svaki alat implementira robusno rukovanje greškama i pruža strukturirani izlaz koji može biti lako obrađen od strane logike donošenja odluka agenta.
+
+Komponenta za sintezu rezultata implementira inteligentnu analizu i kombinaciju rezultata iz više strategija pretraživanja. Ovaj proces uključuje uklanjanje duplikata, rangiranje relevantnosti, i sveobuhvatno sažimanje koje korisnicima pruža praktične uvide o dostupnim skupovima podataka.
+
+\section{Strategije optimizacije performansi}
+\label{sec:performance_optimization}
+
+Optimizacija performansi u RAG sustavu implementirana je kroz predmemoriranje na više razina, inteligentno upravljanje resursima i optimizirane strukture podataka. Ove strategije omogućuju vremena odgovora u sekundama za pretraživanja sličnosti i razumna vremena odgovora za složene multimodalne upite.
+
+Optimizacija vektorskog pretraživanja implementirana je kroz ChromaDB trajno pohranjivanje koje omogućuje brzo pokretanje sustava i dosljedne performanse kroz sesije. Operacije u skupinama i optimizirane strategije indeksiranja omogućuju učinkovito rukovanje velikim kolekcijama primjera upita bez značajne degradacije performansi.
+
+Upravljanje ograničenjima tokena implementirano je kroz inteligentne strategije skraćivanja koje čuvaju najvažnije informacije dok ostaju unutar ograničenja komercijalnih API-ja. Tehnike sažimanja rezultata i kompresije konteksta omogućuju učinkovito rukovanje velikim skupovima rezultata bez gubitka kritičnih informacija.
+
+Asinkrone mogućnosti obrade omogućuju paralelno izvršavanje više strategija pretraživanja što rezultira bržim ukupnim vremenima odgovora. Strategije predmemoriranja na više razina uključujući predmemoriju ugradbi, predmemoriju sheme i predmemoriju rezultata omogućuju značajna poboljšanja performansi za ponavljane upite.
+
+\section{Rukovanje greškama i robusnost}
+\label{sec:error_handling}
+
+Sveobuhvatno rukovanje greškama implementirano je kroz više slojeva sustava za osiguravanje robusnog funkcioniranja u produkcijskom okruženju. Strategije rukovanja greškama uključuju graciozan pad, automatske mehanizme ponovnog pokušaja i sveobuhvatno bilježenje za otklanjanje grešaka i nadzor.
+
+Validacija SPARQL upita implementira dvostupanjski pristup koji hvata sintaksne greške prije izvršavanja i pruža značajne poruke o greškama za otklanjanje grešaka. Automatski mehanizmi ponovnog pokušaja s profinjavanjem konteksta omogućuju oporavak od privremenih kvarova i poboljšanje kvalitete upita kroz iterativno pročišćavanje.
+
+Rukovanje API greškama implementira robusne strategije za rukovanje ograničenjima brzine, vremenskim ograničenjima mreže i nedostupnosti servisa. Rezervni mehanizmi omogućuju nastavak rada čak i kada pojedinačne komponente nisu dostupne, osiguravajući dosljedno korisničko iskustvo.
+
+Bilježenje i nadzor implementirani su kroz sveobuhvatan okvir koji prati metrike performansi, stope grešaka i uzorke korisničkih interakcija. Ove informacije omogućuju kontinuirano poboljšanje sustava i proaktivnu identifikaciju potencijalnih problema prije nego što utječu na korisničko iskustvo.
+
+\section{Skalabilnost i razmatranja za implementaciju}
+\label{sec:scalability}
+
+Sustav je dizajniran za horizontalno skaliranje kroz modularnu arhitekturu i dizajn komponenti bez stanja. ChromaDB trajno pohranjivanje omogućuje jednostavne strategije sigurnosnog kopiranja i migracije, dok kontejnerizirano implementiranje omogućuje fleksibilnu dodjelu resursa i skaliranje na temelju potražnje.
+
+Upravljanje resursima implementirano je kroz inteligentne strategije dodjele koje uravnotežuju točnost i performanse na temelju dostupnih računalnih resursa. Prilagodljivi algoritmi omogućuju automatsko prilagođavanje parametara obrade na temelju opterećenja sustava i zahtjeva za vremenom odgovora.
+
+Upravljanje konfiguracije omogućuje jednostavno prilagođavanje sustava za različita okruženja implementacije i slučajeve korištenja. Parametrizirane komponente omogućuju fino podešavanje karakteristika performansi bez potrebe za izmjenama koda, omogućujući optimalno funkcioniranje u različitim produkcijskim scenarijima. 

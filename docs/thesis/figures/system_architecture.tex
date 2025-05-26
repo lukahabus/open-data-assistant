@@ -46,37 +46,42 @@
 % Core Components
 \node[box, below right=1cm and 1cm of ckan] (adapter) {DCAT\\Adapter};
 \node[box, right=1cm of adapter] (embedding) {Embedding\\Engine};
-\node[box, right=1cm of embedding] (analyzer) {Semantic\\Analyzer};
-\node[box, right=1cm of analyzer] (assistant) {LLM\\Assistant};
+\node[box, right=1cm of embedding] (rag) {RAG\\Engine};
+\node[box, right=1cm of rag] (llm) {LLM\\Assistant};
 
 % Databases
 \node[database, below=1.5cm of adapter] (metadata_db) {Metadata\\Store};
 \node[database, below=1.5cm of embedding] (vector_db) {Vector\\Store};
-\node[database, below=1.5cm of analyzer] (graph_db) {Graph\\Store};
-\node[database, below=1.5cm of assistant] (cache_db) {Cache\\Store};
+\node[database, below=1.5cm of rag] (cache_db) {Cache\\Store};
+\node[database, below=1.5cm of llm] (prompt_db) {Prompt\\Store};
 
 % Background System Boundary
 \begin{scope}[on background layer]
-\node[rectangle, draw=gray, dashed, thick, fit=(adapter) (embedding) (analyzer) (assistant) (metadata_db) (vector_db) (graph_db) (cache_db), inner sep=0.5cm] (system) {};
+\node[rectangle, draw=gray, dashed, thick, fit=(adapter) (embedding) (rag) (llm) (metadata_db) (vector_db) (cache_db) (prompt_db), inner sep=0.5cm] (system) {};
 \node[above=0.2cm of system] {DCAT Metadata Analysis System};
 \end{scope}
 
 % Connections
 \draw[arrow] (ckan) -- (adapter);
 \draw[arrow] (adapter) -- (embedding);
-\draw[arrow] (embedding) -- (analyzer);
-\draw[arrow] (analyzer) -- (assistant);
-\draw[arrow] (assistant) -- (user);
+\draw[arrow] (embedding) -- (rag);
+\draw[arrow] (rag) -- (llm);
+\draw[arrow] (llm) -- (user);
 
+% Database connections
 \draw[arrow] (adapter) -- (metadata_db);
 \draw[arrow] (embedding) -- (vector_db);
-\draw[arrow] (analyzer) -- (graph_db);
-\draw[arrow] (assistant) -- (cache_db);
+\draw[arrow] (rag) -- (cache_db);
+\draw[arrow] (llm) -- (prompt_db);
 
 % Bidirectional connections
 \draw[arrow, <->] (metadata_db) -- (vector_db);
-\draw[arrow, <->] (vector_db) -- (graph_db);
-\draw[arrow, <->] (graph_db) -- (cache_db);
+\draw[arrow, <->] (vector_db) -- (cache_db);
+\draw[arrow, <->] (cache_db) -- (prompt_db);
+
+% Feedback loops
+\draw[arrow, bend left=45] (llm) to (rag);
+\draw[arrow, bend left=45] (rag) to (embedding);
 
 \end{tikzpicture}
 \end{document} 

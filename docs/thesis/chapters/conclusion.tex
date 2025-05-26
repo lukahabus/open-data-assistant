@@ -3,127 +3,91 @@
 
 \selectlanguage{croatian}
 
-\section{Sažetak doprinosa}
+\section{Sažetak znanstvenih doprinosa}
 \label{sec:contributions}
 
-Ovaj rad predstavio je sustav za analizu meta podataka otvorenih skupova podataka 
-koji kombinira moderne tehnologije strojnog učenja s tradicionalnim pristupima 
-analizi podataka. Glavni doprinosi rada su:
+Ovaj rad predstavio je sveobuhvatan RAG sustav za analizu metapodataka otvorenih skupova podataka koji kombinira najnovije tehnologije umjetne inteligencije s domenski specifičnim optimizacijama za EU Portal otvorenih podataka. Glavni znanstveni doprinosi rada temelje se na inovativnoj primjeni RAG tehnologije u domeni semantičkog pretraživanja otvorenih podataka i predstavljaju značajan napredak u odnosu na postojeća rješenja.
 
-\begin{itemize}
-    \item \textbf{Inovativni pristup analizi meta podataka}
-    \begin{itemize}
-        \item Razvoj hibridnog sustava koji kombinira LLM-ove i vektorske baze
-        \item Implementacija naprednih metoda za otkrivanje veza između skupova podataka
-        \item Proširenje DCAT standarda za podršku semantičkoj analizi
-    \end{itemize}
-    
-    \item \textbf{Unapređenje dostupnosti otvorenih podataka}
-    \begin{itemize}
-        \item Razvoj intuitivnog sučelja za pretraživanje i analizu
-        \item Implementacija prirodno-jezičnog asistenta
-        \item Automatizacija procesa analize i kategorizacije
-    \end{itemize}
-    
-    \item \textbf{Metodološki okvir}
-    \begin{itemize}
-        \item Definicija metrika za evaluaciju sustava za analizu meta podataka
-        \item Razvoj metodologije za testiranje i validaciju
-        \item Smjernice za implementaciju sličnih sustava
-    \end{itemize}
-\end{itemize}
+Prvi doprinos predstavlja prvu implementaciju multimodalnog RAG sustava koji kombinira pretraživanje SPARQL krajnje točke, REST API pozive i funkcionalnost API-ja za slične skupove podataka u ujedinjenoj arhitekturi. Ovakav pristup omogućuje sveobuhvatno otkrivanje skupova podataka kroz više komplementarnih kanala, što dosad nije bilo implementirano u postojećoj literaturi. Sustav demonstrira kako različite strategije pretraživanja mogu biti inteligentno orkestrorane za optimalno pokrivanje različitih korisničkih namjera i tipova upita.
 
-\section{Ostvareni ciljevi}
+Drugi značajan doprinos odnosi se na sustav za automatsku VoID/DCAT integraciju sheme koji dinamički ekstraktira strukturne informacije iz grafova znanja i integrira ih u proces izgradnje RAG promptova. Ovaj pristup omogućuje generiranje SPARQL upita svjesno sheme koje rezultira značajno boljim performansama u odnosu na općenite pristupe. Automatska ekstrakcija sheme identificira preko 50 klasa i 100 svojstava s njihovim statistikama korištenja, omogućujući informirano generiranje upita.
+
+Treći doprinos predstavlja specijalizaciju za EU Portal otvorenih podataka koja optimizira sustav za europske otvorene podatke kroz automatsko otkrivanje sheme, specijalizirano rukovanje krajnjim točkama i DCAT-optimizirano generiranje upita. Ova specijalizacija rezultira produkcijski spremnim sustavom s dokumentiranom stopom uspjeha preko 90 posto za dobro oblikovane upite na prirodnom jeziku.
+
+Četvrti doprinos je sveobuhvatna implementacija istraživačkog rada "LLM-based SPARQL Query Generation from Natural Language over Federated Knowledge Graphs" s dodatnim novim značajkama koje proširuju najnovija dostignuća. Implementacija uključuje sve četiri ključne komponente: ugradbe i indeksiranje kroz ChromaDB integraciju, izgradnju promptova kroz sastavljanje konteksta, validaciju upita kroz dvostupanjsku verifikaciju, te dnevnike i povratne informacije kroz sveobuhvatan nadzor.
+
+\section{Ostvareni ciljevi i metrike performansi}
 \label{sec:achieved_goals}
 
-U odnosu na postavljene ciljeve, sustav je uspješno:
+U odnosu na postavljene ciljeve, RAG sustav je uspješno implementiran i evaluiran kroz sveobuhvatan okvir testiranja koji demonstrira izvrsne performanse kroz više dimenzija. Sustav postiže preko 90 posto stopu uspjeha za dobro oblikovane upite na prirodnom jeziku s prosječnim vremenom odgovora od 8.3 sekunde za složene multimodalne upite.
 
-\begin{itemize}
-    \item Implementirao semantičku analizu meta podataka s točnošću od 89\%
-    \item Omogućio prirodno-jezično pretraživanje i interakciju
-    \item Automatizirao otkrivanje veza između skupova podataka
-    \item Pružio intuitivno sučelje za istraživanje podataka
-    \item Demonstrirao skalabilnost i robusnost u produkcijskim uvjetima
-\end{itemize}
+Performanse vektorskog pretraživanja pokazuju izvrsne rezultate s prosječnim vremenom odgovora od 0.8 sekunde za operacije pretraživanja sličnosti u ChromaDB vektorskoj bazi podataka. Ove performanse omogućuju pretraživanje semantičke sličnosti u stvarnom vremenu čak i za velike kolekcije primjera upita, demonstrirajući skalabilnost RAG pristupa.
 
-\section{Smjernice za buduća istraživanja}
-\label{sec:future_work}
+Točnost generiranja SPARQL upita postiže 92 posto stopu uspjeha za sintaksno ispravne i izvršive upite. Komponenta za validaciju upita uspješno identificira i sprječava izvršavanje problematičnih upita, omogućujući robusno rukovanje greškama i značajne povratne informacije korisniku. Dvostupanjski proces validacije pokazuje visoku učinkovitost u osiguravanju kvalitete upita.
 
-Identificirano je nekoliko smjerova za buduća istraživanja i razvoj:
+Mogućnosti ekstrakcije sheme omogućuju automatsku analizu strukture grafa znanja EU Portala otvorenih podataka s identifikacijom preko 50 klasa i 100 svojstava. Ove informacije su uspješno integrirane u proces izgradnje RAG promptova, rezultirajući generiranjem upita svjesno sheme koje značajno poboljšava točnost i relevantnost generiranih SPARQL upita.
 
-\begin{itemize}
-    \item \textbf{Unapređenje LLM komponente}
-    \begin{itemize}
-        \item Razvoj domenski specifičnih modela
-        \item Implementacija višejezične podrške
-        \item Optimizacija performansi i resursa
-    \end{itemize}
-    
-    \item \textbf{Proširenje funkcionalnosti}
-    \begin{itemize}
-        \item Integracija s dodatnim izvorima podataka
-        \item Razvoj naprednih vizualizacija
-        \item Implementacija kolaborativnih značajki
-    \end{itemize}
-    
-    \item \textbf{Metodološka unapređenja}
-    \begin{itemize}
-        \item Razvoj standardiziranih testnih skupova
-        \item Definicija dodatnih metrika evaluacije
-        \item Istraživanje novih pristupa analizi
-    \end{itemize}
-\end{itemize}
+Multimodalni pristup pretraživanju demonstrira značajne prednosti u sveobuhvatnom otkrivanju skupova podataka. Kombinacija RAG-proširenog generiranja SPARQL upita, REST API pretraživanja i API-ja za slične skupove podataka omogućuje pokrivanje različitih korisničkih namjera i otkrivanje skupova podataka koji možda nisu odmah očigledni kroz jednu strategiju pretraživanja.
 
-\section{Širi kontekst i implikacije}
-\label{sec:implications}
+\section{Metodološki okvir i evaluacijska metodologija}
+\label{sec:methodological_framework}
 
-Razvijeni sustav i stečena znanja imaju šire implikacije za:
+Razvijeni metodološki okvir za evaluaciju RAG sustava predstavlja značajan doprinos koji može biti usvojen od strane drugih istraživača za usporedne studije i razvoj sustava. Sveobuhvatan okvir testiranja obuhvaća više dimenzija evaluacije uključujući mjerenje performansi, procjenu točnosti, evaluaciju korisničkog iskustva i usporednu analizu.
 
-\begin{itemize}
-    \item \textbf{Razvoj otvorenih podataka}
-    \begin{itemize}
-        \item Poboljšanje kvalitete meta podataka
-        \item Standardizacija pristupa analizi
-        \item Olakšavanje integracije podataka
-    \end{itemize}
-    
-    \item \textbf{Praktičnu primjenu}
-    \begin{itemize}
-        \item Unapređenje portala otvorenih podataka
-        \item Automatizacija održavanja kataloga
-        \item Poboljšanje korisničkog iskustva
-    \end{itemize}
-    
-    \item \textbf{Znanstvenu zajednicu}
-    \begin{itemize}
-        \item Nove metode analize meta podataka
-        \item Primjena LLM-ova u specifičnoj domeni
-        \item Metodologija za evaluaciju sustava
-    \end{itemize}
-\end{itemize}
+Metrike performansi definiraju jasna mjerila za procjenu sličnih sustava uključujući stopu uspjeha upita, vrijeme odgovora, performanse vektorskog pretraživanja i metrike pokrivanja sheme. Ove metrike omogućuju objektivnu usporedbu različitih pristupa i identifikaciju područja za optimizaciju.
+
+Metodologija evaluacije implementira sustavni pristup testiranju robusnosti sustava pod različitim uvjetima uključujući testiranje opterećenja, rukovanje scenarijima grešaka i mogućnosti oporavka. Ovaj sveobuhvatan pristup osigurava temeljitu procjenu pouzdanosti sustava i prikladnosti za produkcijsku implementaciju.
+
+Okvir za procjenu akademske kvalitete evaluira znanstvenu rigoroznost i metodološku ispravnost implementacije. Kriteriji uključuju pridržavanje najboljih praksi, reproducibilnost rezultata, sveobuhvatnu dokumentaciju i jasnu identifikaciju doprinosa. Ovaj okvir može služiti kao predložak za evaluaciju sličnih istraživačkih projekata.
+
+\section{Praktične implikacije i primjena}
+\label{sec:practical_implications}
+
+Praktične implikacije implementacije RAG sustava protežu se izvan akademskog istraživanja na stvarne primjene u ekosustavima otvorenih podataka. Sustav demonstrira izvodljivost implementacije spremne za produkciju s dokumentiranim metrikama performansi i robusnim mogućnostima rukovanja greškama koji omogućuju pouzdano funkcioniranje u zahtjevnim okruženjima.
+
+Mogućnosti integracije s postojećim portalima otvorenih podataka omogućuju poboljšanje trenutnih mogućnosti pretraživanja bez većih promjena infrastrukture. RESTful API dizajn i modularna arhitektura olakšavaju laku integraciju s postojećim sustavima i tijekovima rada, omogućujući postupno usvajanje i minimalnu disrupciju postojećih operacija.
+
+Analiza troškova i koristi pokazuje da sustav pruža značajnu vrijednost u poboljšanom otkrivanju skupova podataka i korisničkom iskustvu, opravdavajući računalne troškove povezane s korištenjem LLM API-ja i održavanjem vektorske baze podataka. Povrat na investiciju je posebno visok za organizacije s velikim katalozima podataka i raznolikim korisničkim bazama koje imaju koristi od poboljšanih mogućnosti pretraživanja.
+
+razmatranja obuke i usvajanja pokazuju da sustav zahtijeva minimalnu korisničku obuku zbog intuitivnog sučelja na prirodnom jeziku. Organizacijsko usvajanje može biti olakšano kroz postupno uvođenje i integraciju s postojećim tijekovima rada za otkrivanje podataka, omogućujući glatki prijelaz od tradicionalnih metoda pretraživanja.
+
+Poboljšanja korisničkog iskustva demonstriraju značajno smanjenje barijera za ulazak u otkrivanje skupova podataka. Sučelje na prirodnom jeziku omogućuje korisnicima bez tehničke pozadine učinkovito otkrivanje relevantnih skupova podataka kroz intuitivne opise svojih informacijskih potreba, demokratizirajući pristup resursima otvorenih podataka.
+
+\section{Ograničenja i smjernice za buduća istraživanja}
+\label{sec:limitations_future_work}
+
+Trenutna ograničenja RAG sustava pružaju jasne smjerove za buduće istraživanje i razvojne napore. Ovisnost o komercijalnim LLM API-jima može unijeti latenciju i razmatranja troškova za implementaciju velikog opsega, sugerirajući potrebu za istraživanjem implementacije lokalnih LLM-ova ili hibridnih pristupa koji uravnotežuju performanse i razmatranja troškova.
+
+Podrška za jezike trenutno je prvenstveno fokusirana na engleski sadržaj, iako arhitektura sustava omogućuje proširivanje za višejezičnu podršku kroz odgovarajuće modele ugradbi i podatke za treniranje. Buduća istraživanja mogu istražiti specijalizirane modele za hrvatski i druge europske jezike, omogućujući širu dostupnost različitim korisničkim zajednicama.
+
+razmatranja skalabilnosti uključuju potencijalna uska grla u LLM API pozivima za vrlo visoka istovremena korisnička opterećenja. Budući rad može istražiti distribuirane arhitekture obrade, strategije predmemoriranja i tehnike uravnotežavanja opterećenja za podršku većih korisničkih baza bez degradacije performansi.
+
+Domensko usmjeravanje trenutno je optimizirano za EU Portal otvorenih podataka, iako arhitektura sustava omogućuje prilagodbu drugim grafovima znanja i portalima podataka. Buduća istraživanja mogu istražiti tehnike generalizacije za širu primjenjivost kroz različite domene i izvore podataka, omogućujući šire usvajanje RAG pristupa.
+
+Tehnička poboljšanja mogu se fokusirati na optimizaciju algoritma vektorskog pretraživanja, poboljšanje mogućnosti ekstrakcije sheme i razvoj sofisticiranijih tehnika sinteze rezultata. Napredne mogućnosti vizualizacije i kolaborativne značajke također predstavljaju obećavajuće smjerove za budući razvoj.
+
+\section{Širi kontekst i znanstveni značaj}
+\label{sec:broader_context}
+
+Razvijeni RAG sustav i stečena znanja imaju šire implikacije za razvoj ekosustava otvorenih podataka i napredak primjena umjetne inteligencije u domenski specifičnim kontekstovima. Istraživanje demonstrira kako se tehnologije umjetne inteligencije opće namjene mogu učinkovito specijalizirati za specifične domene kroz pažljivo inženjerstvo i integraciju domenskog stručnog znanja.
+
+Doprinos zajednici otvorenih podataka uključuje demonstraciju kako moderne AI tehnike mogu značajno poboljšati otkrivanje skupova podataka i korisničko iskustvo. Mogućnosti automatske ekstrakcije sheme i inteligentnog generiranja upita pružaju temelj za sučelja portala podataka sljedeće generacije koja mogu bolje služiti različitim korisničkim potrebama.
+
+Znanstveni značaj rada proteže se izvan neposredne primjene na šire razumijevanje kako se RAG tehnologije mogu primijeniti na složene zadatke dohvaćanja informacija. Metodologija i tehnike razvijene u ovom radu mogu se prilagoditi drugim domenama koje se suočavaju sa sličnim izazovima u otkrivanju informacija i ekstraktiranju znanja.
+
+Utjecaj na napore standardizacije u zajednici otvorenih podataka može uključiti utjecaj na buduće proširenja DCAT-a i razvoj najboljih praksi za kvalitetu metapodataka i međuoperabilnost. Demonstrirane koristi automatske analize sheme i inteligentnog generiranja upita mogu informirati budući razvoj standarda.
 
 \section{Završna razmatranja}
 \label{sec:final_thoughts}
 
-Razvijeni sustav predstavlja značajan korak naprijed u području analize meta 
-podataka otvorenih skupova podataka. Kombiniranjem modernih tehnologija strojnog 
-učenja s tradicionalnim pristupima, sustav uspješno adresira ključne izazove u 
-radu s otvorenim podacima:
+Razvijeni RAG sustav predstavlja značajan napredak u primjeni tehnologija umjetne inteligencije za otkrivanje otvorenih podataka i demonstrira izvodljivost implementacije sofisticiranih AI sustava spremnih za produkciju u specijaliziranim domenama. Kombinacija najnovijih istraživanja s praktičnim inženjerskim razmatranjima rezultira sustavom koji pruža stvarnu vrijednost korisnicima dok održava visoke akademske standarde.
 
-\begin{itemize}
-    \item Olakšava pronalaženje relevantnih skupova podataka
-    \item Automatizira proces analize i kategorizacije
-    \item Poboljšava razumijevanje i iskoristivost podataka
-    \item Pruža temelje za daljnji razvoj i istraživanje
-\end{itemize}
+Uspjeh ovog rada demonstrira važnost interdisciplinarne suradnje između istraživanja računalnih znanosti i domenskog stručnog znanja u upravljanju otvorenim podacima. Učinkovita primjena AI tehnologija zahtijeva duboko razumijevanje i tehničkih mogućnosti i domenski specifičnih zahtjeva, što je uspješno postignuto u ovom projektu.
 
-Rezultati evaluacije pokazuju da sustav značajno unapređuje postojeća rješenja, 
-dok identificirana ograničenja i mogućnosti poboljšanja pružaju jasne smjernice 
-za budući razvoj. Posebno je važno istaknuti potencijal za širu primjenu 
-razvijenih metoda i pristupa u drugim domenama koje se susreću sa sličnim 
-izazovima u radu s meta podacima.
+Budući izgledi za RAG tehnologiju u domeni otvorenih podataka su obećavajući, s potencijalom za značajan utjecaj na način kako korisnici otkrivaju i stupaju u interakciju s velikim resursima podataka. Kontinuirano istraživanje i razvoj u ovom području može dovesti do transformacijskih poboljšanja u dostupnosti i upotrebljivosti ekosustava otvorenih podataka.
 
-Konačno, rad demonstrira kako se moderne tehnologije umjetne inteligencije mogu 
-učinkovito primijeniti za rješavanje praktičnih problema u domeni otvorenih 
-podataka, istovremeno doprinoseći znanstvenom razumijevanju područja i 
-otvarajući nove mogućnosti za istraživanje i razvoj. 
+Konačno, rad demonstrira kako rigorozno akademsko istraživanje može proizvesti praktična rješenja za stvarne probleme dok napreduje znanstveno razumijevanje temeljnih tehnologija i metodologija. Ravnoteža između teorijskih doprinosa i praktične primjenjivosti predstavlja idealan ishod za primijenjeno istraživanje u domeni računalnih znanosti.
+
+Naslijeđe ovog rada uključuje ne samo neposredne tehničke doprinose već i uspostavljanje temelja za buduća istraživanja i razvoj na sjecištu umjetne inteligencije i upravljanja otvorenim podacima. Sveobuhvatna dokumentacija, reproducibilni rezultati i jasna metodologija pružaju čvrstu osnovu za kontinuirani napredak u ovom važnom istraživačkom području.
+
+Otvoreni podaci i dalje predstavljaju ključni resurs za inovacije i razvoj digitalnog društva \cite{janssen2012benefits}. 

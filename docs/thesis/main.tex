@@ -1,8 +1,7 @@
-\documentclass[12pt,a4paper]{report}
+\documentclass[diplomskirad]{fer}
 
 % Language and encoding
 \usepackage[utf8]{inputenc}
-\usepackage[croatian,english]{babel}
 \usepackage{csquotes}
 
 % Math and symbols
@@ -14,14 +13,12 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{subcaption}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,fit,backgrounds}
 
 % Code listings
 \usepackage{listings}
 \usepackage{xcolor}
-
-% Bibliography
-\usepackage[backend=biber,style=ieee]{biblatex}
-\addbibresource{references.bib}
 
 % Hyperlinks
 \usepackage{hyperref}
@@ -36,36 +33,47 @@
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\system}{DCAT Metadata Analysis System}
 
-% Document settings
-\title{Sustav za analizu meta podataka otvorenih skupova podataka}
-\author{Luka Habuš}
-\date{\today}
+% For code listings: global settings
+\lstset{
+  basicstyle=\footnotesize\ttfamily,
+  breaklines=true,
+  xleftmargin=0.5cm,
+  xrightmargin=0.5cm,
+  frame=single
+}
 
-% Begin document
+% Thesis information (update as needed)
+\title{Sustav za analizu meta podataka otvorenih skupova podataka}
+\naslov{Sustav za analizu meta podataka otvorenih skupova podataka}
+\brojrada{874}
+\author{Luka Habuš}
+\mentor{Igor Čavrak, izv. prof. dr. sc.}
+\date{May, 2025}
+\datum{svibanj, 2025.}
+
 \begin{document}
 
-% Front matter
-\frontmatter
+% Title page
 \maketitle
 
-\selectlanguage{croatian}
-\begin{abstract}
+% Duplicate title page (identical to the first)
+\maketitleHR{2}
 
-A System for Metadata Analysis of Open Datasets\\
- 
-Sve veća dostupnost otvorenih podataka ne podrazumijeva i njihovu veću iskoristivost. Iako normirani formati meta podataka (npr. DCAT) omogućuju jednostavnije pronalaženje i tumačenje objavljenih pojedinačnih skupova podataka, dodatna vrijednost nalazi se u njihovom povezivanju i pronalaženju novih uvida i skrivenog znanja. Nagli uspon alata umjetne inteligencije temeljenih na velikim jezičnim modelima predstavlja obećavajući smjer za izradu na njima temeljenih alata, a koji bi običnim korisnicima pružili novi uvid u korištenje otvorenih podataka.\\
- 
-U ovom diplomskom radu potrebno je proučiti mogućnosti velikih jezičnih modela, na njima temeljenih alata i tehnika. Također je potrebno proučiti problematiku opisivanja skupova otvorenih podataka korištenjem norme DCAT i mogućnosti automatiziranog traženja veza između skupova podataka. Predložiti alat za dohvat i analizu meta podataka otvorenih skupova podataka, kao i za pružanje podrške korisnicima u povezivanju skupova podataka temeljene na analizi metapodataka. Naposljetku, potrebno je implementirati prototip sustava za portal CKAN korištenjem alata temeljenih na velikim jezičnim modelima i ocijeniti uporabljivost sustava.
+% Thesis assignment (if available)
+\zadatak{hr_0036517946_92.pdf}
 
+% Acknowledgments (optional)
+\begin{zahvale}
+%  Ovdje upišite zahvale / Write in the acknowledgment
+\end{zahvale}
 
-
-
-\tableofcontents
-
-% Main content
+% Start page numbering
 \mainmatter
 
-% Include chapters
+% Table of contents
+\tableofcontents
+
+% Main chapters
 \include{chapters/introduction}
 \include{chapters/background}
 \include{chapters/related_work}
@@ -74,8 +82,40 @@ U ovom diplomskom radu potrebno je proučiti mogućnosti velikih jezičnih model
 \include{chapters/evaluation}
 \include{chapters/conclusion}
 
-% Back matter
-\backmatter
-\printbibliography
+% References
+\bibliography{references}
+
+% Abstract in Croatian
+\begin{sazetak}
+Sve veća dostupnost otvorenih podataka ne podrazumijeva i njihovu veću iskoristivost. Iako normirani formati meta podataka (npr. DCAT) omogućuju jednostavnije pronalaženje i tumačenje objavljenih pojedinačnih skupova podataka, dodatna vrijednost nalazi se u njihovom povezivanju i pronalaženju novih uvida i skrivenog znanja. Nagli uspon alata umjetne inteligencije temeljenih na velikim jezičnim modelima predstavlja obećavajući smjer za izradu na njima temeljenih alata, a koji bi običnim korisnicima pružili novi uvid u korištenje otvorenih podataka.
+
+U ovom diplomskom radu potrebno je proučiti mogućnosti velikih jezičnih modela, na njima temeljenih alata i tehnika. Također je potrebno proučiti problematiku opisivanja skupova otvorenih podataka korištenjem norme DCAT i mogućnosti automatiziranog traženja veza između skupova podataka. Predložiti alat za dohvat i analizu meta podataka otvorenih skupova podataka, kao i za pružanje podrške korisnicima u povezivanju skupova podataka temeljene na analizi metapodataka. Naposljetku, potrebno je implementirati prototip sustava za portal CKAN korištenjem alata temeljenih na velikim jezičnim modelima i ocijeniti uporabljivost sustava.
+\end{sazetak}
+
+% Keywords in Croatian
+\begin{kljucnerijeci}
+    otvoreni podaci; DCAT; metapodaci; umjetna inteligencija; vektorska baza podataka; RAG; SPARQL
+\end{kljucnerijeci}
+
+% Abstract in English
+\begin{abstract}
+Open data availability does not guarantee its usability. While standardized metadata formats (e.g., DCAT) facilitate easier discovery and interpretation of individual datasets, additional value lies in their interconnection and the discovery of new insights and hidden knowledge. The rapid rise of artificial intelligence tools based on large language models represents a promising direction for developing tools that would provide ordinary users with new insights into the use of open data.
+
+This thesis explores the capabilities of large language models, their tools, and techniques. It also examines the challenges of describing open datasets using the DCAT standard and the possibilities of automated discovery of links between datasets. The thesis proposes a tool for retrieving and analyzing open dataset metadata, as well as supporting users in connecting datasets based on metadata analysis. Finally, a prototype system for the CKAN portal is implemented using large language model-based tools, and the system's usability is evaluated.
+\end{abstract}
+
+% Keywords in English
+\begin{keywords}
+    open data; DCAT; metadata; artificial intelligence; vector database; RAG; SPARQL
+\end{keywords}
+
+% List of figures and tables
+%\listoffigures
+%\listoftables
+
+% Appendices (if any)
+%\backmatter
+%\chapter{Dodatak}
+%\Blindtext
 
 \end{document} 

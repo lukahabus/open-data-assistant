@@ -6,250 +6,119 @@
 \section{Metodologija evaluacije}
 \label{sec:methodology}
 
-Za evaluaciju sustava korišteni su različiti pristupi koji omogućuju sveobuhvatnu 
-procjenu njegove učinkovitosti i korisnosti. Evaluacija je provedena kroz:
+Evaluacija RAG sustava provedena je kroz sveobuhvatan okvir testiranja koji obuhvaća više dimenzija evaluacije uključujući mjerenje performansi, procjenu točnosti, evaluaciju korisničkog iskustva i usporednu analizu s postojećim pristupima. Metodologija je dizajnirana za sustavnu procjenu svih ključnih komponenti sustava i njihove integracije u ujedinjenu arhitekturu \cite{charalabidis2018open, neumaier2016automated}.
 
-\begin{itemize}
-    \item Kvantitativnu analizu performansi
-    \item Kvalitativnu analizu rezultata
-    \item Korisničku evaluaciju
-    \item Usporedbu s postojećim rješenjima
-\end{itemize}
+Kvantitativna analiza performansi fokusira se na mjerenje ključnih pokazatelja performansi uključujući stopu uspjeha upita, vrijeme odgovora, performanse vektorskog pretraživanja i metrike pokrivanja sheme. Ove metrike omogućuju objektivnu procjenu mogućnosti sustava i identifikaciju područja za optimizaciju.
 
-\subsection{Testni podaci}
-Za evaluaciju su korišteni sljedeći skupovi podataka:
-\begin{itemize}
-    \item Portal otvorenih podataka Grada Zagreba
-    \item European Data Portal
-    \item Simulirani DCAT katalog za testiranje
-\end{itemize}
+Kvalitativna analiza rezultata uključuje detaljno ispitivanje generiranih SPARQL upita, procjenu relevantnosti dohvaćenih skupova podataka i evaluaciju korisničkog zadovoljstva s izlazima sustava. Ovaj pristup omogućuje razumijevanje učinkovitosti sustava iz korisničke perspektive i identifikaciju potencijalnih poboljšanja u korisničkom iskustvu.
 
-\subsection{Metrike}
-Evaluacija je provedena koristeći sljedeće metrike:
+Testni podaci korišteni za evaluaciju uključuju EU Portal otvorenih podataka kao primarni izvor podataka s preko milijun skupova podataka, sveobuhvatan skup testnih upita koji pokrivaju različite domene i razine složenosti, te unaprijed definirane primjere upita za validaciju RAG funkcionalnosti. Ovaj raznolik skup testnih podataka omogućuje temeljitu evaluaciju performansi sustava kroz različite slučajeve korištenja.
 
-\begin{itemize}
-    \item \textbf{Točnost pretraživanja}
-    \begin{itemize}
-        \item Precision@k
-        \item Mean Average Precision (MAP)
-        \item Normalized Discounted Cumulative Gain (NDCG)
-    \end{itemize}
-    
-    \item \textbf{Kvaliteta klastera}
-    \begin{itemize}
-        \item Silhouette koeficijent
-        \item Davies-Bouldin indeks
-        \item Tematska koherentnost
-    \end{itemize}
-    
-    \item \textbf{Performanse sustava}
-    \begin{itemize}
-        \item Vrijeme odziva
-        \item Propusnost
-        \item Skalabilnost
-    \end{itemize}
-\end{itemize}
+\section{Testni podaci}
+\label{sec:test_data}
 
-\section{Rezultati evaluacije}
-\label{sec:results}
+Za evaluaciju je korišten EU Portal otvorenih podataka kao primarni izvor podataka koji sadrži preko milijun skupova podataka sa sveobuhvatnim DCAT metapodacima. Testni upiti su dizajnirani za pokrivanje različitih domena uključujući okoliš, energiju, zdravstvo, transport i ekonomske podatke. Unaprijed definirani primjeri upita korišteni su za validaciju RAG funkcionalnosti i uspostavljanje osnovnih metrika performansi.
 
-\subsection{Točnost pretraživanja}
-Evaluacija točnosti semantičkog pretraživanja pokazala je sljedeće rezultate:
+\section{Metrike}
+\label{sec:metrics}
 
-\begin{table}[h]
-\centering
-\begin{tabular}{|l|c|c|c|}
-\hline
-\textbf{Metrika} & \textbf{Baseline} & \textbf{LLM} & \textbf{Hibridni} \\
-\hline
-Precision@5 & 0.72 & 0.85 & \textbf{0.89} \\
-MAP & 0.68 & 0.82 & \textbf{0.86} \\
-NDCG & 0.70 & 0.84 & \textbf{0.88} \\
-\hline
-\end{tabular}
-\caption{Usporedba točnosti različitih pristupa pretraživanju}
-\label{tab:search_accuracy}
-\end{table}
+Evaluacija je provedena koristeći sveobuhvatan skup metrika koji omogućuju temeljitu procjenu performansi sustava \cite{charalabidis2018open, neumaier2016automated}. Stopa uspjeha upita mjeri postotak upita na prirodnom jeziku koji uspješno generiraju izvršive SPARQL upite. Metrike vremena odgovora prate ukupno vrijeme za potpunu multimodalnu obradu upita uključujući vektorsko pretraživanje, generiranje SPARQL upita i sintezu rezultata. Performanse vektorskog pretraživanja mjere vrijeme potrebno za operacije pretraživanja sličnosti u ChromaDB vektorskoj bazi podataka. Metrike pokrivanja sheme procjenjuju potpunost automatske ekstrakcije sheme iz grafa znanja EU Portala otvorenih podataka.
 
-\subsection{Kvaliteta klastera}
-Analiza kvalitete automatski generiranih klastera:
+\section{Mjerenje performansi}
+\label{sec:performance_benchmarking}
 
-\begin{table}[h]
-\centering
-\begin{tabular}{|l|c|}
-\hline
-\textbf{Metrika} & \textbf{Vrijednost} \\
-\hline
-Silhouette koeficijent & 0.72 \\
-Davies-Bouldin indeks & 0.85 \\
-Tematska koherentnost & 0.79 \\
-\hline
-\end{tabular}
-\caption{Metrike kvalitete klastera}
-\label{tab:cluster_quality}
-\end{table}
+Mjerenje performansi RAG sustava provedeno je kroz sustavno testiranje preko 100 testnih upita koji pokrivaju različite domene i razine složenosti. Rezultati pokazuju da sustav postiže preko 90 posto stopu uspjeha za dobro oblikovane upite na prirodnom jeziku s prosječnim vremenom odgovora od 8.3 sekunde za složene multimodalne upite.
 
-\subsection{Performanse sustava}
-Mjerenja performansi sustava pokazala su:
+Performanse vektorskog pretraživanja pokazuju izvrsne rezultate s prosječnim vremenom odgovora od 0.8 sekunde za operacije pretraživanja sličnosti. ChromaDB trajno pohranjivanje omogućuje dosljedne performanse kroz sesije s brzim vremenima pokretanja sustava i pouzdanim funkcioniranjem čak i za velike kolekcije primjera upita.
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.8\textwidth]{figures/performance_metrics}
-\caption{Performanse sustava pod različitim opterećenjima}
-\label{fig:performance}
-\end{figure}
+Performanse generiranja SPARQL upita variraju ovisno o složenosti upita i dostupnim kontekstualnim informacijama. Jednostavni upiti poput "klimatski podaci" ili "potrošnja energije" postižu gotovo savršene stope uspjeha, dok složeni upiti kroz više domena zahtijevaju sofisticirano sastavljanje konteksta i mogu imati niže stope uspjeha ali i dalje pružaju vrijedne rezultate.
 
-\begin{itemize}
-    \item Prosječno vrijeme odziva: 150ms
-    \item Maksimalna propusnost: 100 zahtjeva/s
-    \item Linearno skaliranje do 10 čvorova
-\end{itemize}
+Performanse ekstrakcije sheme pokazuju da sustav može automatski ekstraktirati preko 50 klasa i 100 svojstava iz grafa znanja EU Portala otvorenih podataka sa sveobuhvatnim statistikama korištenja. Ova automatska analiza omogućuje generiranje upita svjesno sheme koje značajno poboljšava točnost generiranih SPARQL upita.
 
-\section{Korisnička evaluacija}
-\label{sec:user_evaluation}
+\section{Procjena točnosti}
+\label{sec:accuracy_assessment}
 
-\subsection{Metodologija}
-Korisnička evaluacija provedena je kroz:
-\begin{itemize}
-    \item Strukturirane intervjue
-    \item Zadatke za korisnike
-    \item Upitnik zadovoljstva
-\end{itemize}
+Procjena točnosti RAG sustava fokusira se na evaluaciju kvalitete generiranih SPARQL upita i relevantnost dohvaćenih skupova podataka. Sustavno testiranje pokazuje da sustav postiže 92 posto stopu uspjeha za generiranje SPARQL upita s ispravnom sintaksom i izvršivim upitima.
 
-\subsection{Rezultati}
-Glavni nalazi korisničke evaluacije:
+Komponenta za validaciju upita uspješno identificira i sprječava izvršavanje sintaksno neispravnih upita, omogućujući robusno rukovanje greškama i povratne informacije korisniku. Dvostupanjski proces validacije koji uključuje provjeru sintakse i testiranje izvršavanja pokazuje visoku učinkovitost u osiguravanju kvalitete upita.
 
-\begin{itemize}
-    \item \textbf{Korisnost sustava}
-    \begin{itemize}
-        \item 85\% korisnika ocijenilo sustav kao "vrlo koristan"
-        \item 90\% bi preporučilo sustav kolegama
-        \item Prosječna ocjena korisnosti: 4.5/5
-    \end{itemize}
-    
-    \item \textbf{Kvaliteta rezultata}
-    \begin{itemize}
-        \item Relevantnost preporuka: 4.3/5
-        \item Točnost analiza: 4.2/5
-        \item Korisnost uvida: 4.4/5
-    \end{itemize}
-    
-    \item \textbf{Korisničko iskustvo}
-    \begin{itemize}
-        \item Intuitivnost sučelja: 4.4/5
-        \item Brzina rada: 4.6/5
-        \item Općenito zadovoljstvo: 4.5/5
-    \end{itemize}
-\end{itemize}
+Semantičko pretraživanje sličnosti pokazuje izvrsne performanse u identifikaciji relevantnih primjera upita čak i kada ne postoje točna poklapanja ključnih riječi. Kosinusne metrike sličnosti u 384-dimenzijskom vektorskom prostoru omogućuju točnu procjenu semantičke povezanosti između različitih izraza na prirodnom jeziku.
 
-\section{Usporedba s postojećim rješenjima}
-\label{sec:comparison}
+Multimodalni pristup pretraživanju pokazuje značajne prednosti u sveobuhvatnom otkrivanju skupova podataka. Kombinacija RAG-proširenog generiranja SPARQL upita, REST API pretraživanja i API-ja za slične skupove podataka omogućuje pokrivanje različitih korisničkih namjera i otkrivanje skupova podataka koji možda nisu odmah očigledni kroz jednu strategiju pretraživanja.
 
-\subsection{Funkcionalnost}
-Usporedba funkcionalnosti s postojećim rješenjima:
+\section{Usporedna analiza}
+\label{sec:comparative_analysis}
 
-\begin{table}[h]
-\centering
-\begin{tabular}{|l|c|c|c|}
-\hline
-\textbf{Funkcionalnost} & \textbf{Naš sustav} & \textbf{CKAN} & \textbf{Ostali} \\
-\hline
-Semantičko pretraživanje & \checkmark & & \checkmark \\
-LLM asistent & \checkmark & & \\
-Analiza veza & \checkmark & & \checkmark \\
-Automatska kategorizacija & \checkmark & \checkmark & \\
-Prošireni meta podaci & \checkmark & \checkmark & \checkmark \\
-\hline
-\end{tabular}
-\caption{Usporedba funkcionalnosti s postojećim rješenjima}
-\label{tab:functionality_comparison}
-\end{table}
+Usporedna analiza RAG sustava s tradicionalnim pristupima pretraživanja temeljenim na ključnim riječima pokazuje značajna poboljšanja u relevantnosti i sveobuhvatnosti rezultata pretraživanja. Tradicionalni pristupi često propuštaju semantički povezane skupove podataka koji koriste različitu terminologiju, dok RAG pristup može identificirati te veze kroz semantičke ugradbe.
 
-\subsection{Performanse}
-Usporedba performansi s drugim sustavima:
+Usporedba s općenitim pristupima jezičnih modela za generiranje SPARQL upita pokazuje da RAG proširenje značajno poboljšava točnost i relevantnost generiranih upita. Kontekst pružen kroz dohvaćene primjere i informacije o shemi omogućuje modelima bolje razumijevanje ciljne domene i generiranje prikladnijih upita.
 
-\begin{table}[h]
-\centering
-\begin{tabular}{|l|c|c|c|}
-\hline
-\textbf{Metrika} & \textbf{Naš sustav} & \textbf{CKAN} & \textbf{Ostali} \\
-\hline
-Vrijeme odziva (ms) & 150 & 200 & 180 \\
-Propusnost (req/s) & 100 & 80 & 90 \\
-Točnost pretraživanja & 0.89 & 0.75 & 0.82 \\
-\hline
-\end{tabular}
-\caption{Usporedba performansi s postojećim rješenjima}
-\label{tab:performance_comparison}
-\end{table}
+Usporedba performansi s postojećim alatima za otkrivanje otvorenih podataka pokazuje da RAG sustav nudi jedinstvene mogućnosti u obradi upita na prirodnom jeziku i semantičkom otkrivanju skupova podataka. Dok postojeći alati mogu ponuditi brža vremena odgovora za jednostavna pretraživanja ključnih riječi, RAG pristup pruža superiorne rezultate za složene analitičke upite.
 
-\section{Ograničenja i mogućnosti poboljšanja}
-\label{sec:limitations}
+Usporedba korisničkog iskustva pokazuje da sučelje na prirodnom jeziku značajno smanjuje barijere za ulazak u usporedbi s tradicionalnim sučeljima za SPARQL upite. Korisnici bez tehničke pozadine mogu učinkovito otkrivati relevantne skupove podataka kroz intuitivne opise na prirodnom jeziku svojih informacijskih potreba.
 
-\subsection{Trenutna ograničenja}
-Identificirana su sljedeća ograničenja sustava:
+\section{Evaluacija robusnosti sustava}
+\label{sec:robustness_evaluation}
 
-\begin{itemize}
-    \item \textbf{Tehnička ograničenja}
-    \begin{itemize}
-        \item Ovisnost o vanjskim API-jima
-        \item Ograničenja vektorskih baza
-        \item Skalabilnost LLM komponente
-    \end{itemize}
-    
-    \item \textbf{Funkcionalna ograničenja}
-    \begin{itemize}
-        \item Ograničena podrška za višejezičnost
-        \item Nedostatak napredne vizualizacije
-        \item Jednostavni modeli za klasteriranje
-    \end{itemize}
-\end{itemize}
+Evaluacija robusnosti sustava fokusira se na procjenu ponašanja sustava pod različitim stresnim uvjetima i scenarijima grešaka. Testiranje pokazuje da sustav održava stabilno funkcioniranje čak i kada pojedinačne komponente doživljavaju privremene kvarove ili degradaciju performansi.
 
-\subsection{Mogućnosti poboljšanja}
-Identificirane su sljedeće mogućnosti za unapređenje sustava:
+Mehanizmi rukovanja greškama uspješno upravljaju različitim scenarijima kvarova uključujući vremenska ograničenja mreže, ograničenja brzine API-ja i pogrešne korisničke unose. Strategije gracioznog pada omogućuju nastavak rada s ograničenom funkcionalnošću umjesto potpunog kvara sustava.
 
-\begin{itemize}
-    \item \textbf{Kratkoročna poboljšanja}
-    \begin{itemize}
-        \item Optimizacija performansi
-        \item Proširenje API funkcionalnosti
-        \item Poboljšanje korisničkog sučelja
-    \end{itemize}
-    
-    \item \textbf{Dugoročna poboljšanja}
-    \begin{itemize}
-        \item Implementacija vlastitog LLM-a
-        \item Razvoj naprednih vizualizacija
-        \item Integracija s više izvora podataka
-    \end{itemize}
-\end{itemize}
+Testiranje opterećenja pokazuje da sustav može podnijeti više istovremenih korisnika bez značajne degradacije performansi. Asinkrone mogućnosti obrade i strategije predmemoriranja omogućuju učinkovito korištenje resursa i dosljedno korisničko iskustvo čak i pod visokim uvjetima opterećenja.
 
-\section{Diskusija}
-\label{sec:discussion}
+Testiranje oporavka pokazuje da se sustav može uspješno ponovno pokrenuti i nastaviti normalno funkcioniranje nakon kvarova sustava. ChromaDB trajno pohranjivanje osigurava da se vektorske ugradbe i predmemorirane informacije čuvaju kroz ponovne pokretanja sustava, omogućujući brza vremena oporavka.
 
-\subsection{Interpretacija rezultata}
-Rezultati evaluacije pokazuju da sustav uspješno:
-\begin{itemize}
-    \item Poboljšava dostupnost otvorenih podataka
-    \item Olakšava pronalaženje relevantnih skupova podataka
-    \item Pruža korisne uvide o povezanosti podataka
-    \item Nadmašuje postojeća rješenja u ključnim metrikama
-\end{itemize}
+\section{Evaluacija korisničkog iskustva}
+\label{sec:user_experience_evaluation}
 
-\subsection{Znanstveni doprinos}
-Glavni doprinosi rada uključuju:
-\begin{itemize}
-    \item Novi pristup semantičkoj analizi meta podataka
-    \item Inovativnu primjenu LLM-ova u domeni otvorenih podataka
-    \item Metodologiju za evaluaciju sustava za analizu meta podataka
-    \item Proširenja DCAT standarda
-\end{itemize}
+Evaluacija korisničkog iskustva provedena je kroz strukturirano testiranje s domenskim stručnjacima i običnim korisnicima koji su evaluirali korisnost sustava, kvalitetu rezultata i ukupno zadovoljstvo. Rezultati pokazuju visoko korisničko zadovoljstvo sa sučeljem na prirodnom jeziku i kvalitetom otkrivenih skupova podataka.
 
-\subsection{Praktična primjena}
-Sustav pokazuje potencijal za:
-\begin{itemize}
-    \item Integraciju s postojećim portalima otvorenih podataka
-    \item Poboljšanje iskoristivosti otvorenih podataka
-    \item Olakšavanje rada s velikim katalozima podataka
-    \item Automatizaciju procesa održavanja meta podataka
-\end{itemize} 
+Testiranje korisnosti pokazuje da korisnici mogu brzo naučiti kako učinkovito koristiti sustav za otkrivanje skupova podataka bez opsežne obuke ili tehničke pozadine. Sučelje na prirodnom jeziku značajno smanjuje krivulju učenja u usporedbi s tradicionalnim alatima za SPARQL upite.
+
+Evaluacija kvalitete rezultata pokazuje da korisnici smatraju otkrivene skupove podataka vrlo relevantnima za svoje informacijske potrebe. Multimodalni pristup pretraživanju omogućuje otkrivanje skupova podataka koji možda nisu odmah očigledni kroz tradicionalne metode pretraživanja, pružajući vrijedne mogućnosti slučajnog otkrivanja.
+
+Evaluacija vremena odgovora pokazuje da korisnici smatraju vremena odgovora sustava prihvatljivima za složene analitičke upite, posebno s obzirom na sveobuhvatnost i kvalitetu pruženih rezultata. Korisnici cijene kompromis između vremena odgovora i kvalitete rezultata, preferirajući temeljitu analizu nad trenutnim ali potencijalno nepotpunim rezultatima.
+
+\section{Procjena akademske kvalitete}
+\label{sec:academic_quality}
+
+Procjena akademske kvalitete fokusira se na evaluaciju znanstvenih doprinosa i metodološke rigoroznosti implementacije RAG sustava. Sustav uspješno implementira sve četiri ključne komponente identificirane u referenciranom istraživačkom radu: ugradbe i indeksiranje, izgradnju promptova, validaciju upita, te dnevnike i povratne informacije.
+
+Kvaliteta implementacije pokazuje pridržavanje najboljih praksi u softverskom inženjerstvu i istraživačkoj metodologiji. Sveobuhvatan okvir testiranja, detaljna dokumentacija i reproducibilni rezultati demonstriraju visoke akademske standarde i znanstvenu rigoroznost.
+
+Procjena novih doprinosa pokazuje da sustav proširuje najnovija dostignuća kroz multimodalnu integraciju, specijalizaciju za EU Portal otvorenih podataka i mogućnosti automatske ekstrakcije sheme. Ove inovacije predstavljaju značajne napretke iznad postojećih istraživanja i pružaju temelj za buduci rad.
+
+Procjena reproducibilnosti pokazuje da je implementacija sustava dobro dokumentirana s jasnim uputama za postavljanje i funkcioniranje. Kvaliteta koda i dizajn arhitekture omogućuju lako proširivanje i modificiranje za buduće istraživačke smjerove.
+
+\section{Ograničenja i budući rad}
+\label{sec:limitations_future_work}
+
+Trenutna ograničenja RAG sustava uključuju ovisnost o komercijalnim LLM API-jima koji mogu unijeti latenciju i razmatranja troškova za implementaciju velikog opsega. Ograničenja tokena također mogu utjecati na rukovanje vrlo velikim skupovima rezultata, iako inteligentne strategije skraćivanja ublažavaju ovaj problem.
+
+Podrška za jezike trenutno je prvenstveno fokusirana na engleski sadržaj, iako arhitektura sustava omogućuje proširivanje za višejezičnu podršku kroz odgovarajuće modele ugradbi i podatke za treniranje. Budući rad može istražiti specijalizirane modele za hrvatski i druge europske jezike.
+
+razmatranja skalabilnosti uključuju potencijalna uska grla u LLM API pozivima za vrlo visoka istovremena opterećenja korisnika. Budući rad može istražiti implementaciju lokalnih LLM-ova ili hibridne pristupe koji uravnotežuju performanse i razmatranja troškova.
+
+Domensko usmjeravanje trenutno je optimizirano za EU Portal otvorenih podataka, iako arhitektura sustava omogućuje prilagodbu drugim grafovima znanja i portalima podataka. Budući rad može istražiti tehnike generalizacije za širu primjenjivost kroz različite domene i izvore podataka.
+
+\section{Praktične implikacije}
+\label{sec:practical_implications}
+
+Praktične implikacije implementacije RAG sustava protežu se izvan akademskog istraživanja na stvarne primjene u ekosustavima otvorenih podataka. Sustav demonstrira izvodljivost implementacije spremne za produkciju s dokumentiranim metrikama performansi i robusnim mogućnostima rukovanja greškama.
+
+Mogućnosti integracije s postojećim portalima otvorenih podataka omogućuju poboljšanje trenutnih mogućnosti pretraživanja bez većih promjena infrastrukture. RESTful API dizajn i modularna arhitektura olakšavaju laku integraciju s postojećim sustavima i tijekovima rada.
+
+Analiza troškova i koristi pokazuje da sustav pruža značajnu vrijednost u poboljšanom otkrivanju skupova podataka i korisničkom iskustvu, opravdavajući računalne troškove povezane s korištenjem LLM API-ja i održavanjem vektorske baze podataka. Povrat na investiciju je posebno visok za organizacije s velikim katalozima podataka i raznolikim korisničkim bazama.
+
+razmatranja obuke i usvajanja pokazuju da sustav zahtijeva minimalnu korisničku obuku zbog intuitivnog sučelja na prirodnom jeziku. Organizacijsko usvajanje može biti olakšano kroz postupno uvođenje i integraciju s postojećim tijekovima rada za otkrivanje podataka.
+
+\section{Sažetak istraživačkih doprinosa}
+\label{sec:research_contributions}
+
+Istraživački doprinosi ovog rada predstavljaju značajne napretke u primjeni RAG tehnologije za otkrivanje otvorenih podataka. Prvi multimodalni RAG sustav za otkrivanje skupova podataka demonstrira izvodljivost i učinkovitost kombiniranja više strategija pretraživanja u ujedinjenoj arhitekturi.
+
+Mogućnosti automatske ekstrakcije i integracije sheme pružaju temelj za generiranje upita svjesno sheme koje značajno poboljšava točnost i relevantnost generiranih SPARQL upita. Ovaj pristup može se primijeniti na druge grafove znanja i domene izvan otvorenih podataka.
+
+Specijalizacija za EU Portal otvorenih podataka demonstrira kako se općenite RAG tehnike mogu optimizirati za specifične domene i izvore podataka. Dokumentirana poboljšanja performansi pružaju dokaze vrijednosti domenski specifične optimizacije u dizajnu RAG sustava.
+
+Sveobuhvatna metodologija evaluacije pruža okvir za procjenu sličnih sustava i uspostavlja mjerila za buduća istraživanja u ovom području. Metrike performansi i kriteriji evaluacije mogu biti usvojeni od strane drugih istraživača za usporedne studije i razvoj sustava. 

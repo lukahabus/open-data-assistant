@@ -3,123 +3,74 @@
 
 \selectlanguage{croatian}
 
-\section{Otvoreni podaci}
+\section{Otvoreni podaci i EU Portal otvorenih podataka}
 \label{sec:open_data}
 
-Otvoreni podaci predstavljaju koncept prema kojem određeni podaci trebaju biti slobodno 
-dostupni svima za korištenje i ponovno korištenje bez ograničenja \cite{janssen2012benefits}. 
-U kontekstu javne uprave i znanstvenih institucija, otvoreni podaci igraju ključnu ulogu 
-u promicanju transparentnosti, inovacija i ekonomskog razvoja.
+Otvoreni podaci predstavljaju temeljni resurs suvremenog digitalnog društva koji omogućuje transparentnost, inovacije i demokratski razvoj \cite{janssen2012benefits, charalabidis2018open, bizer2009linked}. Europska unija kroz svoj Portal otvorenih podataka (EU Open Data Portal) omogućuje pristup milijunima skupova podataka \cite{wilson2013developing}. Portal koristi SPARQL krajnju točku na adresi https://data.europa.eu/sparql koji omogućuje strukturirane upite nad grafom znanja koji sadrži preko milijun skupova podataka.
 
-\subsection{Karakteristike otvorenih podataka}
-Prema općeprihvaćenim načelima, otvoreni podaci moraju biti:
-\begin{itemize}
-    \item Dostupni - podaci moraju biti dostupni u cjelini, po razumnoj cijeni reprodukcije
-    \item Ponovno iskoristivi - podaci moraju biti dostupni u obliku koji omogućuje ponovno korištenje
-    \item Univerzalno sudjelovanje - svi moraju moći koristiti, ponovno koristiti i redistribuirati podatke
-\end{itemize}
+Karakteristike otvorenih podataka prema općeprihvaćenim načelima uključuju dostupnost podataka u cjelini po razumnoj cijeni reprodukcije, mogućnost ponovnog korištenja kroz dostupnost u obliku koji omogućuje redistribuciju, te univerzalno sudjelovanje gdje svi mogu koristiti, ponovno koristiti i redistribuirati podatke bez diskriminacije. EU Portal otvorenih podataka implementira ove principe kroz standardizirane API-je, SPARQL krajnju točku i sveobuhvatan katalog metapodataka.
 
-\subsection{Izazovi u korištenju otvorenih podataka}
-Unatoč rastućoj dostupnosti otvorenih podataka, njihova stvarna iskoristivost često je 
-ograničena zbog nekoliko ključnih izazova:
-\begin{itemize}
-    \item Fragmentacija - podaci su raspršeni kroz različite portale i formate
-    \item Kvaliteta meta podataka - nepotpuni ili nekonzistentni opisi podataka
-    \item Povezanost - nedostatak eksplicitnih veza između povezanih skupova podataka
-    \item Pristupačnost - složeni mehanizmi pristupa i nedostatak standardizacije
-\end{itemize}
+Unatoč rastućoj dostupnosti otvorenih podataka, njihova stvarna iskoristivost često je ograničena zbog fragmentacije podataka kroz različite portale i formate, nepotpunih ili nekonzistentnih metapodataka, nedostajućih eksplicitnih veza između povezanih skupova podataka, te složenih mehanizama pristupa koji zahtijevaju poznavanje formalnih jezika za upite poput SPARQL-a.
 
-\section{DCAT (Data Catalog Vocabulary)}
+\section{DCAT (Data Catalog Vocabulary) i VoID}
 \label{sec:dcat}
 
-DCAT je W3C preporuka dizajnirana za olakšavanje interoperabilnosti između podatkovnih 
-kataloga objavljenih na webu \cite{dcat2020}. Predstavlja standardni model za opisivanje 
-skupova podataka u podatkovnim katalozima.
+DCAT predstavlja W3C preporuku dizajniranu za olakšavanje međuoperabilnosti između kataloga podataka objavljenih na webu \cite{dcat2020}. Standard definira model za opisivanje skupova podataka u katalozima podataka kroz strukturirane RDF reprezentacije. EU Portal otvorenih podataka ekstenzivno koristi DCAT rječnik za opisivanje svojih skupova podataka, što omogućuje standardizirane upite i analizu.
 
-\subsection{Osnovni koncepti}
-DCAT definira nekoliko ključnih klasa:
-\begin{itemize}
-    \item \texttt{dcat:Catalog} - kolekcija meta podataka o skupovima podataka
-    \item \texttt{dcat:Dataset} - kolekcija podataka koju objavljuje jedan agent
-    \item \texttt{dcat:Distribution} - specifična reprezentacija skupa podataka
-    \item \texttt{dcat:DataService} - servis koji omogućuje pristup podacima
-\end{itemize}
+Osnovni DCAT koncepti uključuju dcat:Catalog kao kolekciju metapodataka o skupovima podataka, dcat:Dataset kao kolekciju podataka koju objavljuje jedan agent, dcat:Distribution kao specifičnu reprezentaciju skupa podataka u određenom formatu, te dcat:DataService kao servis koji omogućuje pristup podacima. Dodatno, DCAT koristi Dublin Core Terms (dct:) za opisivanje svojstava poput naslova, opisa, izdavača i datuma.
 
-\subsection{Primjena u praksi}
-DCAT se široko primjenjuje u:
-\begin{itemize}
-    \item Portalima otvorenih podataka (npr. CKAN)
-    \item Znanstvenim repozitorijima
-    \item Integraciji podatkovnih kataloga
-\end{itemize}
+VoID (Vocabulary of Interlinked Datasets) predstavlja komplementarni standard koji opisuje strukturu i statistike RDF skupova podataka \cite{bizer2009linked}. VoID deskriptori omogućuju automatsku analizu grafova znanja kroz informacije o broju trojki, klasa, svojstava i veza između skupova podataka. Kombinacija DCAT-a i VoID-a omogućuje sveobuhvatnu ekstrakciju sheme koja je ključna za RAG sustav.
 
-\section{Veliki jezični modeli}
-\label{sec:llm}
+\section{Tehnologija povratnog dohvaćanja i generiranja (RAG)}
+\label{sec:rag}
 
-Veliki jezični modeli (Large Language Models, LLM) predstavljaju značajan napredak u 
-području obrade prirodnog jezika \cite{brown2020language}. Ovi modeli, temeljeni na 
-transformerskoj arhitekturi, pokazuju impresivne sposobnosti u razumijevanju i 
-generiranju teksta.
+RAG tehnologija predstavlja napredni pristup koji kombinira metode temeljene na dohvaćanju i metode temeljene na generiranju za poboljšanje performansi velikih jezičnih modela. RAG sustavi koriste vanjske baze znanja za dohvaćanje relevantnih informacija koje se zatim koriste kao kontekst za generiranje odgovora. Ovaj pristup omogućuje modelima pristup ažurnim i domenski specifičnim informacijama bez potrebe za ponovnim treniranjem.
 
-\subsection{Arhitektura i principi rada}
-Moderni jezični modeli temelje se na nekoliko ključnih koncepata:
-\begin{itemize}
-    \item Transformerska arhitektura - omogućuje paralelnu obradu teksta
-    \item Mehanizam pažnje - fokusira se na relevantne dijelove ulaznog teksta
-    \item Predtrening i fino podešavanje - učenje općih i specifičnih znanja
-\end{itemize}
+Arhitektura RAG sustava sastoji se od tri ključne komponente: komponente za dohvaćanje koja dohvaća relevantne dokumente ili informacije iz vanjske baze znanja, komponente za proširivanje koja integrira dohvaćene informacije u prompt za generativni model, te komponente za generiranje koja koristi prošireni prompt za generiranje konačnog odgovora. Ovaj pristup omogućuje značajna poboljšanja u točnosti i relevantnosti generiranih odgovora.
 
-\subsection{Primjena u analizi meta podataka}
-LLM-ovi donose nekoliko prednosti u kontekstu analize meta podataka:
-\begin{itemize}
-    \item Semantičko razumijevanje - sposobnost razumijevanja konteksta i značenja
-    \item Generiranje opisa - automatsko obogaćivanje meta podataka
-    \item Otkrivanje veza - prepoznavanje semantičkih odnosa između skupova podataka
-\end{itemize}
+U kontekstu generiranja SPARQL upita, RAG tehnologija omogućuje korištenje povijesnih primjera upita i informacija o shemi za poboljšanje kvalitete generiranih upita. Sustav može dohvatiti slične primjere upita iz vektorske baze podataka i koristiti ih kao kontekst za generiranje novih SPARQL upita, što rezultira značajno boljim performansama u odnosu na općenite pristupe jezičnih modela.
 
-\section{Semantičko pretraživanje}
-\label{sec:semantic_search}
+\section{Vektorske baze podataka i semantičko pretraživanje}
+\label{sec:vector_databases}
 
-Semantičko pretraživanje nadilazi tradicionalno tekstualno podudaranje fokusirajući se 
-na razumijevanje značenja i konteksta \cite{zhang2022survey}. Ova tehnologija posebno 
-je relevantna za pretraživanje i povezivanje meta podataka.
+Vektorske baze podataka predstavljaju specijalizirane sustave za pohranjivanje i pretraživanje visokodimenzijskih vektorskih ugradbi \cite{wang2023vector}. ChromaDB, korišten u ovom radu, omogućuje trajno pohranjivanje vektorskih ugradbi s optimiziranim algoritmima za pretraživanje sličnosti. Sustav koristi kosinusnu sličnost za mjerenje semantičke bliskosti između ugradbi upita i pohranjenih primjera.
 
-\subsection{Tehnike semantičkog pretraživanja}
-Moderne tehnike semantičkog pretraživanja uključuju:
-\begin{itemize}
-    \item Vektorske reprezentacije - pretvaranje teksta u numeričke vektore
-    \item Izračun semantičke sličnosti - mjerenje bliskosti značenja
-    \item Kontekstualno rangiranje - prilagodba rezultata kontekstu upita
-\end{itemize}
+Sentence Transformers modeli, posebno all-MiniLM-L6-v2 korišten u implementaciji, omogućuju generiranje visokokvalitetnih semantičkih ugradbi iz teksta na prirodnom jeziku \cite{reimers2019sentence}. Model generira 384-dimenzijske vektorske reprezentacije koje hvataju semantičko značenje teksta, omogućujući točno pretraživanje sličnosti čak i kada ne postoje točna poklapanja ključnih riječi.
 
-\subsection{Primjena u otkrivanju podataka}
-Semantičko pretraživanje omogućuje:
-\begin{itemize}
-    \item Intuitivnije pronalaženje podataka
-    \item Otkrivanje skrivenih veza između skupova podataka
-    \item Poboljšanu relevantnost rezultata pretraživanja
-\end{itemize}
+Semantičko pretraživanje nadilazi tradicionalno tekstualno poklapanje fokusirajući se na razumijevanje značenja i konteksta \cite{zhang2022survey}. Algoritmi k-najbližih susjeda u vektorskom prostoru omogućuju pronalaženje semantički sličnih primjera koji mogu biti korisni za generiranje upita čak i kada ne postoji površinska sličnost. Ovaj pristup je posebno važan za generiranje upita kroz domene gdje različite domene mogu koristiti različitu terminologiju za slične koncepte.
 
-\section{Evaluacija kvalitete meta podataka}
-\label{sec:metadata_quality}
+\section{Veliki jezični modeli i generiranje SPARQL upita}
+\label{sec:llm_sparql}
 
-Kvaliteta meta podataka ključna je za učinkovito pronalaženje i korištenje otvorenih 
-podataka \cite{neumaier2016automated}. Evaluacija kvalitete obuhvaća nekoliko dimenzija.
+Veliki jezični modeli poput GPT-4 pokazuju impresivne sposobnosti u generiranju strukturiranih upita iz opisa na prirodnom jeziku \cite{brown2020language, devlin2018bert}. Transformer arhitektura omogućuje modelima razumijevanje složenih jezičnih uzoraka i generiranje sintaksno ispravnih SPARQL upita. Međutim, općeniti jezični modeli često se bore s domenski specifičnim rječnicima i složenim strukturama shema.
 
-\subsection{Dimenzije kvalitete}
-Ključne dimenzije kvalitete meta podataka uključuju:
-\begin{itemize}
-    \item Potpunost - prisutnost svih relevantnih informacija
-    \item Točnost - preciznost i istinitost informacija
-    \item Konzistentnost - usklađenost s definiranim standardima
-    \item Pravodobnost - ažurnost informacija
-\end{itemize}
+Kontekstualno generiranje SPARQL upita kroz RAG pristup omogućuje značajna poboljšanja u kvaliteti upita \cite{lewis2020retrieval}. Pružanje relevantnih primjera i informacija o shemi u promptu omogućuje modelu bolje razumijevanje ciljne domene i generiranje preciznijih upita. Ovaj pristup je posebno važan za složene domene poput EU Portala otvorenih podataka gdje složenost sheme i specifičnost rječnika mogu predstavljati izazove za općenite pristupe.
 
-\subsection{Metrike i mjerenje}
-Za evaluaciju kvalitete koriste se različite metrike:
-\begin{itemize}
-    \item Automatske provjere usklađenosti
-    \item Semantička analiza sadržaja
-    \item Korisnička povratna informacija
-    \item Statističke analize kompletnosti
-\end{itemize} 
+Validacija upita predstavlja ključnu komponentu pipeline-a za generiranje SPARQL upita. Validacija sintakse kroz parsiranje i validacija izvršavanja kroz testne upite omogućuju automatsko otkrivanje i ispravljanje grešaka u generiranim upitima. Ova petlja povratne veze omogućuje iterativno poboljšanje kvalitete upita i robusno rukovanje greškama.
+
+\section{Multimodalni pristup pretraživanju podataka}
+\label{sec:multimodal_search}
+
+Multimodalni pristup kombinira različite strategije pretraživanja za sveobuhvatno otkrivanje podataka. EU Portal otvorenih podataka omogućuje pristup podacima kroz tri komplementarna kanala: SPARQL krajnju točku za strukturirane upite, REST API za fleksibilno tekstualno pretraživanje s mogućnostima facetiranja, te API za slične skupove podataka za vlastito otkrivanje sličnosti platforme.
+
+SPARQL krajnja točka omogućuje precizne strukturirane upite nad RDF grafom znanja, što je idealno za složene analitičke upite i spajanja između skupova podataka. REST API omogućuje fleksibilno pretraživanje ključnih riječi s filtriranjem po različitim aspektima poput izdavača, formata, teme i vremenskog pokrivanja. API za slične skupove podataka koristi unutarnje algoritme platforme za pronalaženje povezanih skupova podataka na temelju sličnosti metapodataka.
+
+Inteligentna orkestracija ovih različitih pristupa kroz arhitekturu temeljenu na agentima omogućuje optimalan odabir strategije na temelju karakteristika upita i namjere korisnika. LangChain okvir omogućuje sofisticirano upravljanje tijekom rada s automatskim strategijama za vraćanje i sintezu rezultata kroz više modaliteta pretraživanja.
+
+\section{Ekstrakcija sheme i analiza grafa znanja}
+\label{sec:schema_extraction}
+
+Automatska ekstrakcija sheme iz SPARQL krajnjih točaka omogućuje dinamičko razumijevanje strukture grafa znanja. Ekstrakcija VoID opisa omogućuje sveobuhvatne statistike o strukturi skupa podataka uključujući broj trojki, različitih subjekata, klasa i svojstava. Ove informacije su ključne za informirano generiranje i optimizaciju upita.
+
+DCAT-specifična analiza omogućuje ekstrakciju domenski specifičnih statistika relevantnih za EU Portal otvorenih podataka. Analiza uključuje broj skupova podataka, distribucija, izdavača, tema i vremenskih uzoraka pokrivanja. Ove informacije omogućuju generiranje upita svjesno sheme koje je optimizirano za specifične karakteristike EU Portala otvorenih podataka.
+
+Nabrajanje klasa i svojstava s statistikama korištenja omogućuje razumijevanje najčešće korištenih pojmova rječnika i njihovih odnosa. Ova informacija je ključna za generiranje upita koji koriste odgovarajući rječnik i slijede ustaljene uzorke u grafu znanja. Automatska integracija sheme u proces izgradnje RAG promptova omogućuje značajna poboljšanja u točnosti generiranja upita.
+
+\section{Optimizacija performansi i skalabilnost}
+\label{sec:performance}
+
+Optimizacija performansi u RAG sustavima zahtijeva pažljivu ravnotežu između točnosti i vremena odgovora. Optimizacija vektorskog pretraživanja kroz odgovarajuće strategije indeksiranja i operacije u skupinama omogućuje performanse pretraživanja sličnosti u sekundama čak i za velike kolekcije primjera upita. ChromaDB trajno pohranjivanje omogućuje brzo pokretanje sustava i dosljedne performanse kroz sesije.
+
+Upravljanje ograničenjima tokena predstavlja važnu komponentu pri radu s komercijalnim LLM API-jima. Inteligentne strategije skraćivanja i sažimanja rezultata omogućuju učinkovito rukovanje velikim skupovima rezultata dok ostaju unutar ograničenja API-ja. Ovaj pristup omogućuje robusno funkcioniranje sustava čak i za složene multimodalne upite koji mogu generirati opsežne rezultate.
+
+Strategije predmemoriranja na više razina omogućuju značajna poboljšanja performansi za ponavljane upite. Predmemoriranje vektorskih ugradbi, informacija o shemi i rezultata upita omogućuje smanjenu latenciju i poboljšano korisničko iskustvo. Asinkrone mogućnosti obrade omogućuju paralelno izvršavanje više strategija pretraživanja što rezultira bržim ukupnim vremenima odgovora. 
