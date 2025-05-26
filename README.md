@@ -110,3 +110,8 @@ This project is part of a master's thesis at the Faculty of Electrical Engineeri
 ## License
 
 [MIT License](LICENSE)
+
+
+python simple_rag_test.py
+
+python interactive_dataset_assistant.py
