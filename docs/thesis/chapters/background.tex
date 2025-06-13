@@ -6,7 +6,7 @@
 \section{Otvoreni podaci i EU Portal otvorenih podataka}
 \label{sec:open_data}
 
-Otvoreni podaci predstavljaju temeljni resurs suvremenog digitalnog društva koji omogućuje transparentnost, inovacije i demokratski razvoj \cite{janssen2012benefits, charalabidis2018open, bizer2009linked}. Europska unija kroz svoj Portal otvorenih podataka (EU Open Data Portal) omogućuje pristup milijunima skupova podataka \cite{wilson2013developing}. Portal koristi SPARQL krajnju točku na adresi https://data.europa.eu/sparql koji omogućuje strukturirane upite nad grafom znanja koji sadrži preko milijun skupova podataka.
+Otvoreni podaci predstavljaju temeljni resurs suvremenog digitalnog društva koji omogućuje transparentnost, inovacije i demokratski razvoj \cite{janssen2012benefits, charalabidis2018open, bizer2009linked}. Europska unija kroz svoj Portal otvorenih podataka (EU Open Data Portal) omogućuje pristup milijunima skupova podataka. Portal koristi SPARQL krajnju točku na adresi https://data.europa.eu/sparql koji omogućuje strukturirane upite nad grafom znanja koji sadrži preko milijun skupova podataka.
 
 Karakteristike otvorenih podataka prema općeprihvaćenim načelima uključuju dostupnost podataka u cjelini po razumnoj cijeni reprodukcije, mogućnost ponovnog korištenja kroz dostupnost u obliku koji omogućuje redistribuciju, te univerzalno sudjelovanje gdje svi mogu koristiti, ponovno koristiti i redistribuirati podatke bez diskriminacije. EU Portal otvorenih podataka implementira ove principe kroz standardizirane API-je, SPARQL krajnju točku i sveobuhvatan katalog metapodataka.
 
@@ -37,12 +37,12 @@ Vektorske baze podataka predstavljaju specijalizirane sustave za pohranjivanje i
 
 Sentence Transformers modeli, posebno all-MiniLM-L6-v2 korišten u implementaciji, omogućuju generiranje visokokvalitetnih semantičkih ugradbi iz teksta na prirodnom jeziku \cite{reimers2019sentence}. Model generira 384-dimenzijske vektorske reprezentacije koje hvataju semantičko značenje teksta, omogućujući točno pretraživanje sličnosti čak i kada ne postoje točna poklapanja ključnih riječi.
 
-Semantičko pretraživanje nadilazi tradicionalno tekstualno poklapanje fokusirajući se na razumijevanje značenja i konteksta \cite{zhang2022survey}. Algoritmi k-najbližih susjeda u vektorskom prostoru omogućuju pronalaženje semantički sličnih primjera koji mogu biti korisni za generiranje upita čak i kada ne postoji površinska sličnost. Ovaj pristup je posebno važan za generiranje upita kroz domene gdje različite domene mogu koristiti različitu terminologiju za slične koncepte.
+Semantičko pretraživanje nadilazi tradicionalno tekstualno poklapanje fokusirajući se na razumijevanje značenja i konteksta. Algoritmi k-najbližih susjeda u vektorskom prostoru omogućuju pronalaženje semantički sličnih primjera koji mogu biti korisni za generiranje upita čak i kada ne postoji površinska sličnost. Ovaj pristup je posebno važan za generiranje upita kroz domene gdje različite domene mogu koristiti različitu terminologiju za slične koncepte.
 
 \section{Veliki jezični modeli i generiranje SPARQL upita}
 \label{sec:llm_sparql}
 
-Veliki jezični modeli poput GPT-4 pokazuju impresivne sposobnosti u generiranju strukturiranih upita iz opisa na prirodnom jeziku \cite{brown2020language, devlin2018bert}. Transformer arhitektura omogućuje modelima razumijevanje složenih jezičnih uzoraka i generiranje sintaksno ispravnih SPARQL upita. Međutim, općeniti jezični modeli često se bore s domenski specifičnim rječnicima i složenim strukturama shema.
+Veliki jezični modeli poput GPT-4 pokazuju impresivne sposobnosti u generiranju strukturiranih upita iz opisa na prirodnom jeziku \cite{brown2020language, devlin2018bert, emonet2024llm}. Transformer arhitektura omogućuje modelima razumijevanje složenih jezičnih uzoraka i generiranje sintaksno ispravnih SPARQL upita. Međutim, općeniti jezični modeli često se bore s domenski specifičnim rječnicima i složenim strukturama shema.
 
 Kontekstualno generiranje SPARQL upita kroz RAG pristup omogućuje značajna poboljšanja u kvaliteti upita \cite{lewis2020retrieval}. Pružanje relevantnih primjera i informacija o shemi u promptu omogućuje modelu bolje razumijevanje ciljne domene i generiranje preciznijih upita. Ovaj pristup je posebno važan za složene domene poput EU Portala otvorenih podataka gdje složenost sheme i specifičnost rječnika mogu predstavljati izazove za općenite pristupe.
 
@@ -65,6 +65,19 @@ Automatska ekstrakcija sheme iz SPARQL krajnjih točaka omogućuje dinamičko ra
 DCAT-specifična analiza omogućuje ekstrakciju domenski specifičnih statistika relevantnih za EU Portal otvorenih podataka. Analiza uključuje broj skupova podataka, distribucija, izdavača, tema i vremenskih uzoraka pokrivanja. Ove informacije omogućuju generiranje upita svjesno sheme koje je optimizirano za specifične karakteristike EU Portala otvorenih podataka.
 
 Nabrajanje klasa i svojstava s statistikama korištenja omogućuje razumijevanje najčešće korištenih pojmova rječnika i njihovih odnosa. Ova informacija je ključna za generiranje upita koji koriste odgovarajući rječnik i slijede ustaljene uzorke u grafu znanja. Automatska integracija sheme u proces izgradnje RAG promptova omogućuje značajna poboljšanja u točnosti generiranja upita.
+
+\section{Teorijski temelji semantičkog pretraživanja}
+\label{sec:semantic_search_theory}
+
+Semantičko pretraživanje predstavlja napredni pristup pretraživanju informacija koji se temelji na razumijevanju značenja i konteksta upita, a ne samo na podudaranju ključnih riječi. Vektorski prostori i semantička sličnost čine temelj ovog pristupa, gdje se svaki tekst mapira u točku u n-dimenzionalnom prostoru, a kosinusna sličnost i Manhattan udaljenost koriste se kao metrike za mjerenje sličnosti između vektora.
+
+Distribuirane reprezentacije riječi (word embeddings) predstavljaju ključnu komponentu semantičkog pretraživanja. Modeli poput Word2Vec-a, GloVe-a i FastText-a omogućuju generiranje vektorskih reprezentacija riječi koje hvataju semantičko značenje. Arhitektura transformera revolucionirala je područje kroz mehanizam samopozornosti i generiranje kontekstualnih ugradbi koje uzimaju u obzir cijeli kontekst teksta.
+
+Semantički jaz predstavlja ključni izazov u pretraživanju podataka, definiran kao razlika između korisničke namjere i tehničkih metapodataka. Korisnici koriste prirodni jezik, dok su metapodaci tehnički, što zahtijeva višestruke pristupe za premošćivanje jaza kroz ekstrakciju semantičkih koncepata, pojednostavljenje upita i inteligentno rangiranje rezultata.
+
+Evaluacija semantičkog pretraživanja temelji se na nekoliko ključnih metrika: preciznost (omjer relevantnih rezultata u ukupnom broju rezultata), odziv (omjer pronađenih relevantnih rezultata u ukupnom broju relevantnih), F1-mjera (harmonijska sredina preciznosti i odziva) i MRR (Mean Reciprocal Rank) koja mjeri prosječnu recipročnu vrijednost ranga prvog relevantnog rezultata.
+
+Integracija semantičkog pretraživanja s postojećim sustavima zahtijeva hibridni pristup koji kombinira semantičko i klasično pretraživanje. RAG (Retrieval-Augmented Generation) tehnologija poboljšava generiranje kroz semantičko pretraživanje, dok adaptivno učenje omogućuje kontinuirano poboljšanje na temelju povratnih informacija.
 
 \section{Optimizacija performansi i skalabilnost}
 \label{sec:performance}

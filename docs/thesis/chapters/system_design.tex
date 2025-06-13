@@ -8,6 +8,13 @@
 
 Predloženi RAG sustav temelji se na troslojnoj arhitekturi koja omogućuje skalabilnu i održivu implementaciju naprednog semantičkog pretraživanja nad EU Portalom otvorenih podataka. Arhitektura je dizajnirana prema načelima modularnosti, proširivosti i optimizacije performansi, omogućujući robusno funkcioniranje u produkcijskom okruženju.
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/system_architecture.png}
+    \caption{Arhitektura sustava za analizu DCAT metapodataka}
+    \label{fig:system_architecture}
+\end{figure}
+
 Sloj pohrane čini ChromaDB vektorska baza podataka koja omogućuje trajno pohranjivanje visokodimenzijskih ugradbi s optimiziranim mogućnostima pretraživanja sličnosti. Ovaj sloj također uključuje predmemoriju informacija o shemi i mehanizme predmemoriranja rezultata upita koji omogućuju značajna poboljšanja performansi za ponavljane operacije.
 
 Sloj obrade sastoji se od Sentence Transformers modela za generiranje ugradbi, OpenAI GPT-4 integracije za generiranje SPARQL upita, te komponenti za automatsku ekstrakciju sheme koje dinamički analiziraju strukturu grafa znanja. Ovaj sloj implementira osnovnu RAG funkcionalnost kroz inteligentno dohvaćanje i procese proširenog generiranja.

@@ -266,261 +266,305 @@ Analysis:""",
         )
 
 
+def extract_semantic_concepts(user_input: str) -> Dict[str, List[str]]:
+    """Extract semantic concepts from user query using few-shot prompting"""
+    try:
+        llm = OpenAI(temperature=0)
+
+        prompt = PromptTemplate(
+            template="""You are an expert at understanding data queries and extracting semantic concepts.
+
+Examples:
+
+Query: "Show me datasets about air pollution in European cities"
+Concepts:
+- Main Topics: ["air pollution", "air quality", "environmental monitoring"]
+- Variables: ["pollution levels", "air quality index", "emissions", "PM2.5", "PM10", "NO2"]
+- Geographic: ["European cities", "Europe", "urban areas"]
+- Related Terms: ["environmental data", "atmospheric monitoring", "urban pollution"]
+
+Query: "I need data on renewable energy production and consumption in Germany"
+Concepts:
+- Main Topics: ["renewable energy", "energy production", "energy consumption"]
+- Variables: ["solar energy", "wind power", "hydroelectric", "biomass", "energy generation", "energy usage"]
+- Geographic: ["Germany", "German states", "Deutschland"]
+- Related Terms: ["sustainable energy", "clean energy", "green energy", "energy statistics"]
+
+Query: "Find datasets linking education levels to income across different countries"
+Concepts:
+- Main Topics: ["education levels", "income", "education-income relationship"]
+- Variables: ["educational attainment", "income levels", "salary", "wages", "degrees", "qualifications"]
+- Geographic: ["different countries", "international", "cross-country", "global"]
+- Related Terms: ["socioeconomic data", "human capital", "education statistics", "income statistics"]
+
+Query: "What datasets exist on COVID-19 vaccination rates and hospitalization data"
+Concepts:
+- Main Topics: ["COVID-19 vaccination", "COVID-19 hospitalization", "pandemic data"]
+- Variables: ["vaccination rates", "vaccine doses", "hospital admissions", "ICU occupancy", "immunization coverage"]
+- Geographic: ["global", "worldwide", "all countries"]
+- Related Terms: ["coronavirus", "SARS-CoV-2", "public health data", "epidemiological data"]
+
+Now analyze this query:
+Query: "{user_input}"
+
+Extract semantic concepts following the same format. Think about:
+1. What are the main topics/themes?
+2. What specific variables or indicators might be relevant?
+3. What geographic scope is implied?
+4. What related terms might help find relevant datasets?
+
+Concepts:""",
+            input_variables=["user_input"],
+        )
+
+        chain = prompt | llm
+        result = chain.invoke({"user_input": user_input})
+
+        # Parse the concepts
+        concepts = {
+            "main_topics": [],
+            "variables": [],
+            "geographic": [],
+            "related_terms": [],
+        }
+
+        current_category = None
+        for line in result.strip().split("\n"):
+            line = line.strip()
+            if line.startswith("- Main Topics:"):
+                current_category = "main_topics"
+                # Extract list from the line
+                items = line[14:].strip().strip("[]")
+                if items:
+                    concepts["main_topics"] = [
+                        item.strip().strip('"') for item in items.split(",")
+                    ]
+            elif line.startswith("- Variables:"):
+                current_category = "variables"
+                items = line[12:].strip().strip("[]")
+                if items:
+                    concepts["variables"] = [
+                        item.strip().strip('"') for item in items.split(",")
+                    ]
+            elif line.startswith("- Geographic:"):
+                current_category = "geographic"
+                items = line[13:].strip().strip("[]")
+                if items:
+                    concepts["geographic"] = [
+                        item.strip().strip('"') for item in items.split(",")
+                    ]
+            elif line.startswith("- Related Terms:"):
+                current_category = "related_terms"
+                items = line[16:].strip().strip("[]")
+                if items:
+                    concepts["related_terms"] = [
+                        item.strip().strip('"') for item in items.split(",")
+                    ]
+
+        logger.info(f"Extracted semantic concepts: {concepts}")
+        return concepts
+
+    except Exception as e:
+        logger.error(f"Error extracting semantic concepts: {e}")
+        # Fallback to simple extraction
+        return {
+            "main_topics": [user_input],
+            "variables": [],
+            "geographic": ["europe", "EU"],
+            "related_terms": [],
+        }
+
+
+def generate_semantic_search_queries(
+    user_input: str, concepts: Dict[str, List[str]]
+) -> List[str]:
+    """Generate multiple search queries based on semantic concepts - using SIMPLE queries"""
+    try:
+        # Start with simple queries based on concepts
+        queries = []
+
+        # Add main topics as individual queries
+        for topic in concepts.get("main_topics", [])[:3]:
+            # Split multi-word topics and use individually
+            words = topic.split()
+            for word in words:
+                if len(word) > 3:  # Skip very short words
+                    queries.append(word.lower())
+            # Also add the full topic if it's short enough
+            if len(topic.split()) <= 2:
+                queries.append(topic.lower())
+
+        # Add key variables as simple terms
+        for variable in concepts.get("variables", [])[:3]:
+            # Extract the key word from the variable
+            words = variable.split()
+            for word in words:
+                if len(word) > 4 and word.lower() not in [
+                    "data",
+                    "statistics",
+                    "information",
+                ]:
+                    queries.append(word.lower())
+
+        # Add geographic terms if specific
+        for geo in concepts.get("geographic", [])[:2]:
+            if geo.lower() not in ["global", "worldwide", "all countries"]:
+                queries.append(geo.lower())
+
+        # Add some two-word combinations of main concepts
+        main_topics = concepts.get("main_topics", [])
+        if len(main_topics) >= 2:
+            # Combine first two topics
+            queries.append(
+                f"{main_topics[0].split()[0]} {main_topics[1].split()[0]}".lower()
+            )
+
+        # Add related terms that are simple
+        for term in concepts.get("related_terms", [])[:2]:
+            if len(term.split()) <= 2:
+                queries.append(term.lower())
+
+        # Remove duplicates while preserving order
+        seen = set()
+        unique_queries = []
+        for query in queries:
+            if query and query not in seen and len(query) > 2:
+                seen.add(query)
+                unique_queries.append(query)
+
+        # If we don't have enough queries, add some basic fallbacks
+        if len(unique_queries) < 3:
+            # Extract key words from the original input
+            words = user_input.lower().split()
+            key_words = [
+                w
+                for w in words
+                if len(w) > 4
+                and w not in ["about", "datasets", "related", "between", "give"]
+            ]
+            for word in key_words[:3]:
+                if word not in seen:
+                    unique_queries.append(word)
+
+        logger.info(
+            f"Generated {len(unique_queries)} simple search queries: {unique_queries}"
+        )
+        return unique_queries[:10]  # Limit to 10 simple queries
+
+    except Exception as e:
+        logger.error(f"Error generating semantic search queries: {e}")
+        # Fallback to very simple queries
+        words = user_input.lower().split()
+        simple_queries = [w for w in words if len(w) > 4][:5]
+        return simple_queries if simple_queries else ["data"]
+
+
 def find_relevant_datasets(
     user_input: str, analysis: QueryAnalysis, max_results: int = 10
 ) -> List[Dict]:
-    """Find datasets relevant to user's query by directly querying EU Open Data Portal"""
+    """Find datasets relevant to user's query using semantic analysis and multiple searches"""
     try:
-        logger.info(f"Starting dataset search for: '{user_input}'")
+        logger.info(f"Starting semantic dataset search for: '{user_input}'")
 
-        # Strategy 1: Try specific search strategies for better results
-        datasets = []
+        # Step 1: Extract semantic concepts from the query
+        logger.info("Extracting semantic concepts...")
+        concepts = extract_semantic_concepts(user_input)
 
-        # For location-specific queries, try different approaches
-        if analysis.location != "any":
-            location = analysis.location.lower()
+        # Step 2: Generate multiple search queries based on concepts
+        logger.info("Generating semantic search queries...")
+        search_queries = generate_semantic_search_queries(user_input, concepts)
 
-            search_strategies = [
-                location,  # Just the location name
-                f'"{location}"',  # Quoted location name for exact match
-                f"{location} data",  # Location + data
-                f"{location} statistics",  # Location + statistics
-                f"{location} datasets",  # Location + datasets
-                user_input.lower(),  # Original query
-            ]
+        logger.info(f"Generated {len(search_queries)} search queries: {search_queries}")
 
-            # Remove duplicates while preserving order
-            seen = set()
-            unique_strategies = []
-            for strategy in search_strategies:
-                if strategy not in seen:
-                    seen.add(strategy)
-                    unique_strategies.append(strategy)
-
-            search_strategies = unique_strategies
-        else:
-            # For non-location queries, try variations
-            search_strategies = [
-                user_input.lower(),
-                f"{user_input} data",
-                f"{user_input} datasets",
-                f"{user_input} statistics",
-            ]
-
-        for strategy in search_strategies:
-            logger.info(f"Trying search strategy: '{strategy}'")
-            api_results = query_eu_api_robust(strategy, max_results)
-
-            if api_results:
-                logger.info(
-                    f"Found {len(api_results)} relevant datasets with strategy: '{strategy}'"
-                )
-                datasets.extend(api_results)
-
-                # If we found good results, try to get similar datasets
-                for dataset in api_results[
-                    :2
-                ]:  # Try similar datasets for top 2 results
-                    similar = get_similar_datasets(dataset.get("dataset_uri", ""))
-                    if similar:
-                        # Filter similar datasets too
-                        filtered_similar = filter_relevant_datasets(similar, user_input)
-                        datasets.extend(
-                            filtered_similar[:1]
-                        )  # Add top 1 similar dataset
-
-                break  # Stop after first successful strategy
-
-        # Strategy 2: If no API results, try SPARQL with location filtering
-        if not datasets:
-            logger.info(
-                "No API results found, trying SPARQL approach with location filtering"
-            )
-            sparql_results = query_eu_open_data_portal_filtered(user_input, analysis)
-            if sparql_results:
-                datasets.extend(sparql_results)
-
-        # Strategy 3: If still no results, try broader searches
-        if not datasets:
-            logger.info("No results found, trying broader search terms")
-
-            # Try broader terms based on analysis
-            broader_terms = []
-            if analysis.location != "any":
-                broader_terms.extend(
-                    [
-                        f"{analysis.location}",
-                        f"europe {analysis.location}",
-                        f"european {analysis.location}",
-                    ]
-                )
-
-            if analysis.domain != "general":
-                broader_terms.extend(
-                    [
-                        analysis.domain,
-                        f"{analysis.domain} data",
-                        f"{analysis.domain} statistics",
-                    ]
-                )
-
-            # Remove duplicates
-            broader_terms = list(set(broader_terms))
-
-            for term in broader_terms[:3]:  # Try max 3 broader terms
-                logger.info(f"Trying broader search: '{term}'")
-                api_results = query_eu_api_robust(term, max_results)
-                if api_results:
-                    # Apply stricter filtering for broader searches
-                    filtered_results = filter_relevant_datasets(api_results, user_input)
-                    if filtered_results:
-                        datasets.extend(filtered_results)
-                        break
-
-        # Remove duplicates and limit results
-        unique_datasets = []
+        # Step 3: Execute searches with each query
+        all_datasets = []
         seen_titles = set()
 
-        for dataset in datasets:
-            title = dataset.get("title", dataset.get("question", ""))
-            if title not in seen_titles:
-                seen_titles.add(title)
-                unique_datasets.append(dataset)
+        for i, query in enumerate(search_queries, 1):
+            logger.info(f"Executing search {i}/{len(search_queries)}: '{query}'")
 
-                if len(unique_datasets) >= max_results:
-                    break
+            # Try API search
+            api_results = query_eu_api_robust(query, max_results)
 
-        logger.info(f"Returning {len(unique_datasets)} unique datasets")
+            if api_results:
+                logger.info(f"Found {len(api_results)} results for query: '{query}'")
 
-        if not unique_datasets:
-            logger.warning(f"No relevant datasets found for query: '{user_input}'")
-            return []
+                # Add unique results
+                for dataset in api_results:
+                    title = dataset.get("title", "")
+                    if title and title not in seen_titles:
+                        seen_titles.add(title)
+                        # Add query information for ranking
+                        dataset["search_query"] = query
+                        dataset["query_index"] = i
+                        all_datasets.append(dataset)
 
-        return unique_datasets
+                        # Stop if we have enough results
+                        if len(all_datasets) >= max_results * 2:
+                            break
+
+            # Also try SPARQL for more specific searches
+            if len(all_datasets) < max_results and i <= 3:  # Only for first 3 queries
+                logger.info(f"Trying SPARQL search for: '{query}'")
+                sparql_results = query_eu_open_data_portal_with_semantic_filter(
+                    query, concepts
+                )
+
+                for dataset in sparql_results[:3]:  # Limit SPARQL results
+                    title = dataset.get("title", "")
+                    if title and title not in seen_titles:
+                        seen_titles.add(title)
+                        dataset["search_query"] = query
+                        dataset["query_index"] = i
+                        all_datasets.append(dataset)
+
+            # Stop if we have enough results
+            if len(all_datasets) >= max_results * 2:
+                break
+
+        # Step 4: Rank results by relevance to original query
+        logger.info(f"Ranking {len(all_datasets)} total results by relevance...")
+        ranked_datasets = rank_datasets_by_relevance(all_datasets, user_input, concepts)
+
+        # Return top results
+        final_results = ranked_datasets[:max_results]
+        logger.info(f"Returning {len(final_results)} most relevant datasets")
+
+        return final_results
 
     except Exception as e:
-        logger.error(f"Error finding datasets: {e}")
-        return []
+        logger.error(f"Error in semantic dataset search: {e}")
+        # Fallback to simpler search
+        return query_eu_api_robust(user_input, max_results)
 
 
-def query_eu_open_data_portal_filtered(
-    user_input: str, analysis: QueryAnalysis
+def query_eu_open_data_portal_with_semantic_filter(
+    query: str, concepts: Dict[str, List[str]]
 ) -> List[Dict]:
-    """Query EU Open Data Portal with better location filtering"""
+    """Query EU Open Data Portal using SPARQL with semantic filtering"""
     try:
-        # Generate SPARQL query with stronger location filtering
-        sparql_query = generate_sparql_for_query_filtered(user_input, analysis)
+        # Build filter conditions based on concepts
+        filter_conditions = []
 
-        if not sparql_query or sparql_query.startswith("Error"):
-            logger.error(f"Failed to generate SPARQL query: {sparql_query}")
-            return []
+        # Add filters for main topics and variables
+        all_terms = concepts.get("main_topics", []) + concepts.get("variables", [])
+        for term in all_terms[:5]:  # Limit to avoid query complexity
+            term_lower = term.lower()
+            filter_conditions.append(f'CONTAINS(LCASE(STR(?title)), "{term_lower}")')
+            filter_conditions.append(
+                f'(BOUND(?description) && CONTAINS(LCASE(STR(?description)), "{term_lower}"))'
+            )
 
-        # Execute the SPARQL query
-        results = execute_sparql_query(
-            sparql_query, "https://data.europa.eu/sparql", 20
+        # Combine with OR
+        combined_filter = (
+            " || ".join(filter_conditions)
+            if filter_conditions
+            else 'CONTAINS(LCASE(STR(?title)), "data")'
         )
 
-        if "error" in results:
-            logger.error(f"SPARQL execution failed: {results['error']}")
-            return []
-
-        # Convert SPARQL results to dataset format
-        datasets = convert_sparql_results_to_datasets(results, user_input, sparql_query)
-
-        # Apply additional filtering
-        if analysis.location != "any":
-            filtered_datasets = []
-            location_lower = analysis.location.lower()
-
-            for dataset in datasets:
-                title = dataset.get("title", "").lower()
-                description = dataset.get("dataset_description", "").lower()
-
-                if location_lower in title or location_lower in description:
-                    filtered_datasets.append(dataset)
-                    logger.info(
-                        f"SPARQL result passed location filter: {dataset.get('title', '')[:50]}..."
-                    )
-                else:
-                    logger.info(
-                        f"SPARQL result filtered out: {dataset.get('title', '')[:50]}..."
-                    )
-
-            return filtered_datasets
-
-        return datasets
-
-    except Exception as e:
-        logger.error(f"Error querying EU Open Data Portal with filtering: {e}")
-        return []
-
-
-def generate_sparql_for_query_filtered(user_input: str, analysis: QueryAnalysis) -> str:
-    """Generate SPARQL query with stronger location filtering"""
-    try:
-        # Build stronger location filter
-        location_filter = ""
-        if analysis.location != "any":
-            location_term = analysis.location.lower()
-            location_filter = f"""
-      # Strong location filtering - must contain location in title, description, or spatial data
-      FILTER (
-        CONTAINS(LCASE(STR(?title)), "{location_term}") ||
-        (BOUND(?description) && CONTAINS(LCASE(STR(?description)), "{location_term}")) ||
-        EXISTS {{ 
-          ?dataset dct:spatial ?spatialUri . 
-          ?spatialUri skos:prefLabel ?spatialLabel .
-          FILTER(CONTAINS(LCASE(STR(?spatialLabel)), "{location_term}"))
-        }} ||
-        EXISTS {{ 
-          ?dataset dcat:keyword ?kw . 
-          FILTER(CONTAINS(LCASE(STR(?kw)), "{location_term}"))
-        }}
-      )"""
-
-        # Extract key terms from user input
-        common_words = {
-            "find",
-            "show",
-            "get",
-            "datasets",
-            "data",
-            "about",
-            "in",
-            "for",
-            "from",
-            "with",
-            "list",
-        }
-        input_words = [
-            word.lower()
-            for word in user_input.split()
-            if word.lower() not in common_words and len(word) > 2
-        ]
-
-        # Build content filter - but make it optional if we have location filter
-        content_filter = ""
-        if input_words and analysis.location == "any":
-            content_conditions = []
-            for term in input_words:
-                content_conditions.append(f'CONTAINS(LCASE(STR(?title)), "{term}")')
-                content_conditions.append(
-                    f'(BOUND(?description) && CONTAINS(LCASE(STR(?description)), "{term}"))'
-                )
-                content_conditions.append(
-                    f'EXISTS {{ ?dataset dcat:keyword ?kw . FILTER(CONTAINS(LCASE(STR(?kw)), "{term}")) }}'
-                )
-
-            content_filter = f"""
-      FILTER (
-        {" || ".join(content_conditions)}
-      )"""
-
-        # Construct SPARQL query
         sparql_query = f"""PREFIX dct: <http://purl.org/dc/terms/>
 PREFIX dcat: <http://www.w3.org/ns/dcat#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
 SELECT DISTINCT ?dataset ?title ?description ?publisherName ?landingPage
@@ -533,19 +577,135 @@ WHERE {{
     ?dataset dct:publisher ?publisherOrg .
     ?publisherOrg foaf:name ?publisherName .
   }}
-  {location_filter}
-  {content_filter}
   
+  FILTER({combined_filter})
   FILTER(LANGMATCHES(LANG(?title), "en") || LANG(?title) = "")
 }}
-LIMIT 20"""
+LIMIT 10"""
 
-        logger.info(f"Generated filtered SPARQL query for '{user_input}'")
-        return sparql_query
+        logger.info(f"Executing semantic SPARQL query")
+
+        results = execute_sparql_query(
+            sparql_query, "https://data.europa.eu/sparql", 10
+        )
+
+        if "error" not in results:
+            datasets = convert_sparql_results_to_datasets(results, query, sparql_query)
+            return datasets
+        else:
+            logger.error(f"SPARQL query failed: {results.get('error')}")
+            return []
 
     except Exception as e:
-        logger.error(f"Error generating filtered SPARQL query: {e}")
-        return f"Error: Failed to generate SPARQL query: {e}"
+        logger.error(f"Error in semantic SPARQL query: {e}")
+        return []
+
+
+def rank_datasets_by_relevance(
+    datasets: List[Dict], original_query: str, concepts: Dict[str, List[str]]
+) -> List[Dict]:
+    """Rank datasets by relevance to the original query and semantic concepts"""
+    try:
+        # Calculate relevance scores
+        for dataset in datasets:
+            score = 0
+
+            title = dataset.get("title", "").lower()
+            description = dataset.get("dataset_description", "").lower()
+            keywords = " ".join(dataset.get("keywords", [])).lower()
+            themes = " ".join(dataset.get("themes", [])).lower()
+
+            # Full text for searching
+            full_text = f"{title} {description} {keywords} {themes}"
+
+            # Count how many concept terms appear
+            concept_matches = 0
+
+            # Score based on main topics (highest weight)
+            for topic in concepts.get("main_topics", []):
+                # Check each word in the topic
+                topic_words = topic.lower().split()
+                for word in topic_words:
+                    if len(word) > 3 and word in full_text:
+                        score += 8
+                        concept_matches += 1
+                        if word in title:
+                            score += 4  # Extra points for title match
+
+            # Score based on variables (medium weight)
+            for variable in concepts.get("variables", []):
+                variable_words = variable.lower().split()
+                for word in variable_words:
+                    if len(word) > 4 and word in full_text:
+                        score += 4
+                        concept_matches += 1
+
+            # Score based on related terms (lower weight)
+            for term in concepts.get("related_terms", []):
+                if term.lower() in full_text:
+                    score += 2
+                    concept_matches += 1
+
+            # Bonus for multiple concept matches (synergy bonus)
+            if concept_matches >= 3:
+                score += 10  # Significant bonus for matching multiple concepts
+            elif concept_matches >= 2:
+                score += 5
+
+            # Check for co-occurrence of key terms
+            main_topics_lower = [t.lower() for t in concepts.get("main_topics", [])]
+            if len(main_topics_lower) >= 2:
+                # Check if both main topics appear together
+                topic1_found = any(
+                    word in full_text for word in main_topics_lower[0].split()
+                )
+                topic2_found = any(
+                    word in full_text for word in main_topics_lower[1].split()
+                )
+                if topic1_found and topic2_found:
+                    score += 15  # Big bonus for having both main concepts
+
+            # Penalty for irrelevant results
+            irrelevant_keywords = [
+                "presentation",
+                "service",
+                "wlv",
+                "austria",
+                "global value chains",
+            ]
+            for keyword in irrelevant_keywords:
+                if keyword in title:
+                    score -= 20
+
+            # Store the relevance score
+            dataset["semantic_relevance_score"] = max(0, score)  # Don't go negative
+
+        # Sort by relevance score
+        ranked_datasets = sorted(
+            datasets, key=lambda x: x.get("semantic_relevance_score", 0), reverse=True
+        )
+
+        # Log top results
+        for i, dataset in enumerate(ranked_datasets[:5]):
+            logger.info(
+                f"Rank {i+1}: {dataset.get('title', '')[:50]}... (score: {dataset.get('semantic_relevance_score', 0)})"
+            )
+
+        # Filter out very low scoring results
+        threshold = 5
+        filtered_datasets = [
+            d
+            for d in ranked_datasets
+            if d.get("semantic_relevance_score", 0) >= threshold
+        ]
+
+        return (
+            filtered_datasets if filtered_datasets else ranked_datasets[:5]
+        )  # Return at least 5 results
+
+    except Exception as e:
+        logger.error(f"Error ranking datasets: {e}")
+        return datasets
 
 
 def convert_sparql_results_to_datasets(
@@ -569,6 +729,7 @@ def convert_sparql_results_to_datasets(
             "dataset_description": binding.get("description", {}).get("value", ""),
             "publisher": binding.get("publisherName", {}).get("value", ""),
             "landing_page": binding.get("landingPage", {}).get("value", ""),
+            "source": "SPARQL",
         }
         datasets.append(dataset)
 
@@ -580,6 +741,8 @@ def generate_comprehensive_response(
     analysis: QueryAnalysis,
     datasets: List[Dict],
     sparql_results: List[Dict],
+    semantic_concepts: Dict[str, List[str]] = None,
+    search_queries: List[str] = None,
 ) -> str:
     """Generate a comprehensive response using LLM"""
     try:
@@ -605,7 +768,10 @@ def generate_comprehensive_response(
 
                 # Add relevance score if available
                 relevance = dataset.get(
-                    "calculated_relevance", dataset.get("relevance_score", 0)
+                    "semantic_relevance_score",
+                    dataset.get(
+                        "calculated_relevance", dataset.get("relevance_score", 0)
+                    ),
                 )
                 if relevance > 0:
                     dataset_info += f"- Relevance Score: {relevance}\n"
@@ -625,6 +791,22 @@ def generate_comprehensive_response(
                     f"\nQuery {i} had issues: {result.get('error', 'Unknown error')}\n"
                 )
 
+        # Add semantic concepts information
+        concepts_info = ""
+        if semantic_concepts:
+            concepts_info = f"""
+Semantic Analysis:
+- Main Topics: {', '.join(semantic_concepts.get('main_topics', []))}
+- Key Variables: {', '.join(semantic_concepts.get('variables', []))}
+- Geographic Focus: {', '.join(semantic_concepts.get('geographic', []))}
+- Related Terms: {', '.join(semantic_concepts.get('related_terms', []))}
+
+Search Queries Used: {len(search_queries) if search_queries else 0}
+"""
+            if search_queries:
+                for i, query in enumerate(search_queries[:5], 1):
+                    concepts_info += f"{i}. {query}\n"
+
         # Determine the primary source of results
         primary_source = "EU Open Data Portal"
 
@@ -641,6 +823,8 @@ Query Analysis:
 - Data Format: {data_format}
 - Complexity: {complexity}
 
+{concepts_info}
+
 Found Datasets from {primary_source}:
 {dataset_info}
 
@@ -651,14 +835,14 @@ EU Portal Results: {direct_results_count} out of {total_datasets}
 Successful Queries: {successful_queries} out of {total_queries}
 
 Please provide a comprehensive response that:
-1. Acknowledges the user's request and the location/domain focus
+1. Acknowledges the user's request and explain how semantic analysis was used
 2. Summarizes what datasets were found and their relevance to the query
-3. Highlights the quality and source of the data from the EU Open Data Portal
-4. If location-specific (like Croatia), emphasize whether results are actually relevant to that location
+3. Highlights the most relevant datasets based on the semantic concepts identified
+4. Explains which search queries were most effective
 5. Suggests next steps for accessing and using the data
 6. Mentions any limitations or considerations
 
-Make your response helpful, informative, and actionable. Be honest about the relevance of results.
+Make your response helpful, informative, and actionable. Focus on the semantic relevance of results.
 
 Response:""",
             input_variables=[
@@ -671,6 +855,7 @@ Response:""",
                 "complexity",
                 "dataset_info",
                 "results_info",
+                "concepts_info",
                 "primary_source",
                 "direct_results_count",
                 "total_datasets",
@@ -692,6 +877,7 @@ Response:""",
                 "complexity": analysis.complexity,
                 "dataset_info": dataset_info,
                 "results_info": results_info,
+                "concepts_info": concepts_info,
                 "primary_source": primary_source,
                 "direct_results_count": direct_results_count,
                 "total_datasets": len(datasets),
@@ -705,6 +891,163 @@ Response:""",
     except Exception as e:
         logger.error(f"Error generating response: {e}")
         return f"I found {len(datasets)} datasets from the EU Open Data Portal but encountered an error generating a detailed response. The results above show the actual datasets found for your query."
+
+
+def break_down_complex_query(
+    user_input: str, analysis: QueryAnalysis
+) -> List[Dict[str, Any]]:
+    """Break down a complex query into simpler sub-queries using LangChain's chain of thought"""
+    try:
+        llm = OpenAI(temperature=0)
+
+        # First, analyze if the query needs to be broken down
+        if analysis.complexity.lower() != "complex":
+            return [
+                {
+                    "query": user_input,
+                    "reasoning": "Query is simple enough to process directly",
+                }
+            ]
+
+        prompt = PromptTemplate(
+            template="""Break down the following complex query into simpler sub-queries that can be processed independently:
+
+Original Query: "{user_input}"
+
+Query Analysis:
+- Intent: {intent}
+- Domain: {domain}
+- Location: {location}
+- Time Period: {time_period}
+- Data Format: {data_format}
+- Complexity: {complexity}
+
+Please break this down into 2-3 simpler sub-queries that:
+1. Each focus on a specific aspect of the original query
+2. Can be processed independently
+3. When combined, will provide a complete answer to the original query
+
+For each sub-query, provide:
+1. The sub-query text
+2. Brief reasoning for why this sub-query is needed
+3. Which aspects of the original query it addresses
+
+Respond in this format:
+SUB-QUERY 1:
+Query: [sub-query text]
+Reasoning: [why this sub-query is needed]
+Aspects: [which parts of original query it addresses]
+
+SUB-QUERY 2:
+[repeat format...]
+
+Analysis:""",
+            input_variables=[
+                "user_input",
+                "intent",
+                "domain",
+                "location",
+                "time_period",
+                "data_format",
+                "complexity",
+            ],
+        )
+
+        # Use the newer RunnableSequence format
+        chain = prompt | llm
+        result = chain.invoke(
+            {
+                "user_input": user_input,
+                "intent": analysis.intent,
+                "domain": analysis.domain,
+                "location": analysis.location,
+                "time_period": analysis.time_period,
+                "data_format": analysis.data_format,
+                "complexity": analysis.complexity,
+            }
+        )
+
+        # Parse the sub-queries
+        sub_queries = []
+        current_query = {}
+
+        for line in result.strip().split("\n"):
+            line = line.strip()
+            if line.startswith("SUB-QUERY"):
+                if current_query:
+                    sub_queries.append(current_query)
+                current_query = {}
+            elif line.startswith("Query:"):
+                current_query["query"] = line[6:].strip()
+            elif line.startswith("Reasoning:"):
+                current_query["reasoning"] = line[10:].strip()
+            elif line.startswith("Aspects:"):
+                current_query["aspects"] = line[8:].strip()
+
+        if current_query:
+            sub_queries.append(current_query)
+
+        return sub_queries
+
+    except Exception as e:
+        logger.error(f"Error breaking down complex query: {e}")
+        return [
+            {
+                "query": user_input,
+                "reasoning": "Failed to break down query, processing as is",
+            }
+        ]
+
+
+def combine_sub_query_results(
+    sub_query_results: List[Dict[str, Any]], original_query: str
+) -> str:
+    """Combine results from sub-queries into a comprehensive response"""
+    try:
+        llm = OpenAI(temperature=0.3)
+
+        # Prepare the results for combination
+        results_text = ""
+        for i, result in enumerate(sub_query_results, 1):
+            results_text += f"\nSub-Query {i} Results:\n"
+            results_text += f"Query: {result.get('query', '')}\n"
+            results_text += f"Reasoning: {result.get('reasoning', '')}\n"
+            results_text += f"Datasets Found: {len(result.get('datasets', []))}\n"
+            results_text += f"Key Findings: {result.get('key_findings', '')}\n"
+            results_text += "---\n"
+
+        prompt = PromptTemplate(
+            template="""Combine the following sub-query results into a comprehensive response for the original query:
+
+Original Query: "{original_query}"
+
+Sub-Query Results:
+{results_text}
+
+Please provide a comprehensive response that:
+1. Synthesizes the findings from all sub-queries
+2. Identifies any patterns or relationships between the results
+3. Highlights the most relevant datasets and insights
+4. Provides a clear, actionable summary
+5. Suggests next steps or additional queries if needed
+
+Keep the response focused and practical, avoiding redundancy.
+
+Response:""",
+            input_variables=["original_query", "results_text"],
+        )
+
+        # Use the newer RunnableSequence format
+        chain = prompt | llm
+        result = chain.invoke(
+            {"original_query": original_query, "results_text": results_text}
+        )
+
+        return result
+
+    except Exception as e:
+        logger.error(f"Error combining sub-query results: {e}")
+        return "Error combining results from sub-queries. Please try a simpler query."
 
 
 def process_user_query(user_input: str):
@@ -723,8 +1066,27 @@ def process_user_query(user_input: str):
     print(f"   Data Format: {analysis.data_format}")
     print(f"   Complexity: {analysis.complexity}")
 
-    # Step 2: Find relevant datasets (now gets top 10)
-    print("\nStep 2: Finding relevant datasets...")
+    # Step 2: Extract semantic concepts
+    print("\nStep 2: Extracting semantic concepts...")
+    semantic_concepts = extract_semantic_concepts(user_input)
+
+    print(f"   Main Topics: {', '.join(semantic_concepts.get('main_topics', []))}")
+    print(f"   Key Variables: {', '.join(semantic_concepts.get('variables', []))}")
+    print(f"   Geographic Focus: {', '.join(semantic_concepts.get('geographic', []))}")
+    print(f"   Related Terms: {', '.join(semantic_concepts.get('related_terms', []))}")
+
+    # Step 3: Generate search queries
+    print("\nStep 3: Generating semantic search queries...")
+    search_queries = generate_semantic_search_queries(user_input, semantic_concepts)
+
+    print(f"Generated {len(search_queries)} search queries:")
+    for i, query in enumerate(search_queries[:5], 1):
+        print(f"   {i}. {query}")
+    if len(search_queries) > 5:
+        print(f"   ... and {len(search_queries) - 5} more")
+
+    # Step 4: Find relevant datasets using semantic search
+    print("\nStep 4: Finding relevant datasets using semantic search...")
     datasets = find_relevant_datasets(user_input, analysis, max_results=10)
 
     if not datasets:
@@ -746,8 +1108,8 @@ def process_user_query(user_input: str):
 
     print(f"Found {len(datasets)} relevant datasets")
 
-    # Step 3: Display comprehensive dataset results
-    print("\nStep 3: Comprehensive Dataset Analysis...")
+    # Step 5: Display comprehensive dataset results
+    print("\nStep 5: Comprehensive Dataset Analysis...")
     sparql_results = []
 
     for i, dataset in enumerate(datasets, 1):
@@ -767,14 +1129,11 @@ def process_user_query(user_input: str):
             spatial_coverage = dataset.get("spatial_coverage", [])
             temporal_coverage = dataset.get("temporal_coverage", "")
             formats = dataset.get("formats", [])
-            relevance_score = dataset.get(
-                "calculated_relevance", dataset.get("relevance_score", 0)
-            )
+            semantic_score = dataset.get("semantic_relevance_score", 0)
+            search_query_used = dataset.get("search_query", "")
 
-            print(f"\n{'='*60}")
-            print(f"DATASET: {title}")
-            print(f"{'='*60}")
-            print(f"RELEVANCE SCORE: {relevance_score}")
+            print(f"SEMANTIC RELEVANCE SCORE: {semantic_score}")
+            print(f"FOUND WITH QUERY: '{search_query_used}'")
             print(
                 f"DESCRIPTION: {description[:300]}{'...' if len(description) > 300 else ''}"
             )
@@ -801,16 +1160,17 @@ def process_user_query(user_input: str):
             # Add to results for comprehensive analysis
             sparql_results.append({"api_result": True, "dataset": dataset})
 
-        elif "Dataset found for:" in dataset.get("question", ""):
+        elif dataset.get("source") == "SPARQL":
             # Display direct SPARQL result information
             title = dataset.get("title", "No title available")
             description = dataset.get("dataset_description", "No description available")
             publisher = dataset.get("publisher", "Unknown publisher")
             landing_page = dataset.get("landing_page", "No landing page")
+            semantic_score = dataset.get("semantic_relevance_score", 0)
+            search_query_used = dataset.get("search_query", "")
 
-            print(f"\n{'='*60}")
-            print(f"DATASET: {title}")
-            print(f"{'='*60}")
+            print(f"SEMANTIC RELEVANCE SCORE: {semantic_score}")
+            print(f"FOUND WITH QUERY: '{search_query_used}'")
             print(
                 f"DESCRIPTION: {description[:200]}{'...' if len(description) > 200 else ''}"
             )
@@ -819,30 +1179,22 @@ def process_user_query(user_input: str):
                 print(f"LINK: {landing_page}")
             print(f"SOURCE: EU Open Data Portal SPARQL")
 
-            # Execute SPARQL query for verification
-            sparql_query = dataset.get("sparql_query", "")
-            if sparql_query and not sparql_query.startswith("#"):
-                endpoint = dataset.get("endpoint", "https://data.europa.eu/sparql")
-                results = execute_sparql_query(sparql_query, endpoint, 5)
-                sparql_results.append(results)
-
-                if "error" not in results:
-                    bindings = results.get("results", {}).get("bindings", [])
-                    print(f"SPARQL VERIFICATION: {len(bindings)} total results found")
-                else:
-                    print(f"SPARQL NOTE: {results.get('error', 'Unknown error')}")
-
-    # Step 4: Generate comprehensive analysis
+    # Step 6: Generate comprehensive analysis
     print(f"\n{'='*80}")
     print("COMPREHENSIVE ANALYSIS")
     print(f"{'='*80}")
 
     comprehensive_response = generate_comprehensive_response(
-        user_input, analysis, datasets, sparql_results
+        user_input,
+        analysis,
+        datasets,
+        sparql_results,
+        semantic_concepts,
+        search_queries,
     )
     print(comprehensive_response)
 
-    # Step 5: Provide similar dataset recommendations
+    # Step 7: Provide similar dataset recommendations
     if len(datasets) > 0:
         print(f"\n{'='*80}")
         print("SIMILAR DATASET RECOMMENDATIONS")

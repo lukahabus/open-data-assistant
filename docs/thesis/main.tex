@@ -20,6 +20,18 @@
 \usepackage{listings}
 \usepackage{xcolor}
 
+% Configure listings for proper diacritic handling
+\lstset{
+  basicstyle=\footnotesize\ttfamily,
+  breaklines=true,
+  xleftmargin=0.5cm,
+  xrightmargin=0.5cm,
+  frame=single,
+  extendedchars=true,
+  inputencoding=utf8,
+  literate={č}{{\v{c}}}1 {ć}{{\'c}}1 {ž}{{\v{z}}}1 {š}{{\v{s}}}1 {đ}{{\dj}}1 {Č}{{\v{C}}}1 {Ć}{{\'C}}1 {Ž}{{\v{Z}}}1 {Š}{{\v{S}}}1 {Đ}{{\DJ}}1
+}
+
 % Hyperlinks
 \usepackage{hyperref}
 \hypersetup{

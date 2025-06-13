@@ -58,7 +58,7 @@
 % Background System Boundary
 \begin{scope}[on background layer]
 \node[rectangle, draw=gray, dashed, thick, fit=(adapter) (embedding) (rag) (llm) (metadata_db) (vector_db) (cache_db) (prompt_db), inner sep=0.5cm] (system) {};
-\node[above=0.2cm of system] {DCAT Metadata Analysis System};
+\node[fill=white, align=center] at ($(system.north)!0.5!(system.north east)$) {DCAT Metadata Analysis System};
 \end{scope}
 
 % Connections
@@ -84,4 +84,4 @@
 \draw[arrow, bend left=45] (rag) to (embedding);
 
 \end{tikzpicture}
-\end{document} 
+\end{document}
