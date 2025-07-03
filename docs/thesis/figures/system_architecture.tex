@@ -5,83 +5,47 @@
 \begin{document}
 \begin{tikzpicture}[
     node distance=1.5cm,
-    box/.style={
-        rectangle,
-        draw=black,
-        thick,
-        minimum height=1cm,
-        minimum width=2.5cm,
-        align=center
-    },
-    interface/.style={
-        draw=black,
-        thick,
-        trapezium,
-        trapezium left angle=70,
-        trapezium right angle=110,
-        minimum height=1cm,
-        minimum width=2.5cm,
-        align=center
-    },
-    database/.style={
-        cylinder,
-        draw=black,
-        thick,
-        shape border rotate=90,
-        minimum height=1cm,
-        minimum width=2cm,
-        align=center
-    },
-    arrow/.style={
-        ->,
-        >=latex,
-        thick
-    }
+    box/.style={rectangle, draw, rounded corners, minimum width=2.5cm, minimum height=1cm, align=center},
+    component/.style={rectangle, draw, rounded corners, minimum width=3cm, minimum height=1.2cm, align=center, fill=blue!10},
+    data/.style={rectangle, draw, rounded corners, minimum width=2.5cm, minimum height=1cm, align=center, fill=green!10},
+    arrow/.style={->, thick},
+    label/.style={font=\small}
 ]
 
-% External Systems
-\node[interface] (ckan) {CKAN\\Portal};
-\node[interface, right=6cm of ckan] (user) {Web\\Interface};
+% Main components
+\node[component] (user) {Korisničko\\Sučelje};
+\node[component, right=of user] (rag) {RAG Sustav};
+\node[component, right=of rag] (llm) {LLM\\(GPT-4)};
+\node[component, below=of rag] (vector) {Vektorska\\Baza\\(ChromaDB)};
+\node[component, below=of llm] (sparql) {SPARQL\\Procesor};
+\node[component, below=of sparql] (euportal) {EU Portal\\Otvorenih\\Podataka};
 
-% Core Components
-\node[box, below right=1cm and 1cm of ckan] (adapter) {DCAT\\Adapter};
-\node[box, right=1cm of adapter] (embedding) {Embedding\\Engine};
-\node[box, right=1cm of embedding] (rag) {RAG\\Engine};
-\node[box, right=1cm of rag] (llm) {LLM\\Assistant};
+% Data stores
+\node[data, left=of vector] (examples) {Primjeri\\Upita};
+\node[data, left=of examples] (schema) {Shema\\Podataka};
 
-% Databases
-\node[database, below=1.5cm of adapter] (metadata_db) {Metadata\\Store};
-\node[database, below=1.5cm of embedding] (vector_db) {Vector\\Store};
-\node[database, below=1.5cm of rag] (cache_db) {Cache\\Store};
-\node[database, below=1.5cm of llm] (prompt_db) {Prompt\\Store};
-
-% Background System Boundary
+% Background boxes
 \begin{scope}[on background layer]
-\node[rectangle, draw=gray, dashed, thick, fit=(adapter) (embedding) (rag) (llm) (metadata_db) (vector_db) (cache_db) (prompt_db), inner sep=0.5cm] (system) {};
-\node[fill=white, align=center] at ($(system.north)!0.5!(system.north east)$) {DCAT Metadata Analysis System};
+    \node[fit=(rag)(vector)(examples)(schema), draw, dashed, inner sep=0.5cm, label=above:Obrada] {};
+    \node[fit=(llm)(sparql), draw, dashed, inner sep=0.5cm, label=above:Generiranje] {};
 \end{scope}
 
-% Connections
-\draw[arrow] (ckan) -- (adapter);
-\draw[arrow] (adapter) -- (embedding);
-\draw[arrow] (embedding) -- (rag);
-\draw[arrow] (rag) -- (llm);
-\draw[arrow] (llm) -- (user);
+% Arrows
+\draw[arrow] (user) -- node[label, above] {Upit} (rag);
+\draw[arrow] (rag) -- node[label, above] {Prompt} (llm);
+\draw[arrow] (llm) -- node[label, above] {SPARQL} (sparql);
+\draw[arrow] (sparql) -- node[label, right] {Izvršavanje} (euportal);
+\draw[arrow] (euportal) -- node[label, left] {Rezultati} (sparql);
+\draw[arrow] (sparql) -- node[label, left] {Podaci} (user);
 
-% Database connections
-\draw[arrow] (adapter) -- (metadata_db);
-\draw[arrow] (embedding) -- (vector_db);
-\draw[arrow] (rag) -- (cache_db);
-\draw[arrow] (llm) -- (prompt_db);
+% Data flow arrows
+\draw[arrow] (rag) -- node[label, right] {Pretraga} (vector);
+\draw[arrow] (vector) -- node[label, above] {Slični primjeri} (rag);
+\draw[arrow] (examples) -- node[label, above] {Primjeri} (vector);
+\draw[arrow] (schema) -- node[label, above] {Shema} (rag);
 
-% Bidirectional connections
-\draw[arrow, <->] (metadata_db) -- (vector_db);
-\draw[arrow, <->] (vector_db) -- (cache_db);
-\draw[arrow, <->] (cache_db) -- (prompt_db);
-
-% Feedback loops
-\draw[arrow, bend left=45] (llm) to (rag);
-\draw[arrow, bend left=45] (rag) to (embedding);
+% Feedback loop
+\draw[arrow, bend left=45] (sparql) to node[label, left] {Validacija} (rag);
 
 \end{tikzpicture}
 \end{document}

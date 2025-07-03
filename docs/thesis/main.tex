@@ -20,6 +20,8 @@
 \usepackage{listings}
 \usepackage{xcolor}
 
+\renewcommand{\lstlistingname}{Primjer}
+
 % Configure listings for proper diacritic handling
 \lstset{
   basicstyle=\footnotesize\ttfamily,
@@ -29,7 +31,8 @@
   frame=single,
   extendedchars=true,
   inputencoding=utf8,
-  literate={č}{{\v{c}}}1 {ć}{{\'c}}1 {ž}{{\v{z}}}1 {š}{{\v{s}}}1 {đ}{{\dj}}1 {Č}{{\v{C}}}1 {Ć}{{\'C}}1 {Ž}{{\v{Z}}}1 {Š}{{\v{S}}}1 {Đ}{{\DJ}}1
+  literate={č}{{\v{c}}}1 {ć}{{\'c}}1 {ž}{{\v{z}}}1 {š}{{\v{s}}}1 {đ}{{\dj}}1 
+           {Č}{{\v{C}}}1 {Ć}{{\'C}}1 {Ž}{{\v{Z}}}1 {Š}{{\v{S}}}1 {Đ}{{\DJ}}1
 }
 
 % Hyperlinks
@@ -45,14 +48,11 @@
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\system}{DCAT Metadata Analysis System}
 
-% For code listings: global settings
-\lstset{
-  basicstyle=\footnotesize\ttfamily,
-  breaklines=true,
-  xleftmargin=0.5cm,
-  xrightmargin=0.5cm,
-  frame=single
-}
+% Set bibliography title in Croatian
+\renewcommand{\bibname}{Literatura}
+
+% Add bibliography and other lists to the table of contents
+\usepackage{tocbibind}
 
 % Thesis information (update as needed)
 \title{Sustav za analizu meta podataka otvorenih skupova podataka}
@@ -60,8 +60,8 @@
 \brojrada{874}
 \author{Luka Habuš}
 \mentor{Igor Čavrak, izv. prof. dr. sc.}
-\date{May, 2025}
-\datum{svibanj, 2025.}
+\date{July 2025}
+\datum{srpanj 2025.}
 
 \begin{document}
 
@@ -86,11 +86,8 @@
 \tableofcontents
 
 % Main chapters
-\include{chapters/introduction}
-\include{chapters/background}
-\include{chapters/related_work}
-\include{chapters/system_design}
-\include{chapters/implementation}
+\include{chapters/introduction_background}
+\include{chapters/system_design_implementation}
 \include{chapters/evaluation}
 \include{chapters/conclusion}
 
@@ -99,9 +96,9 @@
 
 % Abstract in Croatian
 \begin{sazetak}
-Sve veća dostupnost otvorenih podataka ne podrazumijeva i njihovu veću iskoristivost. Iako normirani formati meta podataka (npr. DCAT) omogućuju jednostavnije pronalaženje i tumačenje objavljenih pojedinačnih skupova podataka, dodatna vrijednost nalazi se u njihovom povezivanju i pronalaženju novih uvida i skrivenog znanja. Nagli uspon alata umjetne inteligencije temeljenih na velikim jezičnim modelima predstavlja obećavajući smjer za izradu na njima temeljenih alata, a koji bi običnim korisnicima pružili novi uvid u korištenje otvorenih podataka.
+Sve veća dostupnost otvorenih podataka ne podrazumijeva automatski i njihovu veću iskoristivost. Iako normirani formati metapodataka (npr. DCAT) omogućuju jednostavnije pronalaženje i tumačenje objavljenih pojedinačnih skupova podataka, dodatna vrijednost nalazi se u njihovom povezivanju i pronalaženju novih uvida te skrivenog znanja. Nagli uspon alata umjetne inteligencije temeljenih na velikim jezičnim modelima predstavlja obećavajući smjer za izradu alata koji bi običnim korisnicima pružili novi uvid u korištenje otvorenih podataka.
 
-U ovom diplomskom radu potrebno je proučiti mogućnosti velikih jezičnih modela, na njima temeljenih alata i tehnika. Također je potrebno proučiti problematiku opisivanja skupova otvorenih podataka korištenjem norme DCAT i mogućnosti automatiziranog traženja veza između skupova podataka. Predložiti alat za dohvat i analizu meta podataka otvorenih skupova podataka, kao i za pružanje podrške korisnicima u povezivanju skupova podataka temeljene na analizi metapodataka. Naposljetku, potrebno je implementirati prototip sustava za portal CKAN korištenjem alata temeljenih na velikim jezičnim modelima i ocijeniti uporabljivost sustava.
+U ovom diplomskom radu potrebno je proučiti mogućnosti velikih jezičnih modela, alata i tehnika temeljenih na njima. Također je potrebno proučiti problematiku opisivanja skupova otvorenih podataka korištenjem norme DCAT i mogućnosti automatiziranog pronalaženja veza između skupova podataka. Predložiti alat za dohvat i analizu metapodataka otvorenih skupova podataka, kao i za pružanje podrške korisnicima u povezivanju skupova podataka temeljene na analizi metapodataka. Naposljetku, potrebno je implementirati prototip sustava za portal CKAN korištenjem alata temeljenih na velikim jezičnim modelima i ocijeniti uporabljivost sustava.
 \end{sazetak}
 
 % Keywords in Croatian
@@ -111,9 +108,9 @@ U ovom diplomskom radu potrebno je proučiti mogućnosti velikih jezičnih model
 
 % Abstract in English
 \begin{abstract}
-Open data availability does not guarantee its usability. While standardized metadata formats (e.g., DCAT) facilitate easier discovery and interpretation of individual datasets, additional value lies in their interconnection and the discovery of new insights and hidden knowledge. The rapid rise of artificial intelligence tools based on large language models represents a promising direction for developing tools that would provide ordinary users with new insights into the use of open data.
+Open data availability does not automatically guarantee its usability. While standardized metadata formats (e.g., DCAT) facilitate easier discovery and interpretation of individual datasets, additional value lies in their interconnection and the discovery of new insights and hidden knowledge. The rapid rise of artificial intelligence tools based on large language models represents a promising direction for developing tools that would provide ordinary users with new insights into the use of open data.
 
-This thesis explores the capabilities of large language models, their tools, and techniques. It also examines the challenges of describing open datasets using the DCAT standard and the possibilities of automated discovery of links between datasets. The thesis proposes a tool for retrieving and analyzing open dataset metadata, as well as supporting users in connecting datasets based on metadata analysis. Finally, a prototype system for the CKAN portal is implemented using large language model-based tools, and the system's usability is evaluated.
+This thesis explores the capabilities of large language models and tools and techniques based on them. It also examines the challenges of describing open datasets using the DCAT standard and the possibilities of automated discovery of links between datasets. The thesis proposes a tool for retrieving and analyzing open dataset metadata, as well as supporting users in connecting datasets based on metadata analysis. Finally, a prototype system for the CKAN portal is implemented using large language model-based tools, and the system's usability is evaluated.
 \end{abstract}
 
 % Keywords in English

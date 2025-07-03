@@ -146,7 +146,7 @@
 \RequirePackage{graphicx}
 
 % Popis referenci (literatura) se nalazi u sadržaju
-\RequirePackage[nottoc]{tocbibind}
+\RequirePackage[numbib]{tocbibind}
 
 % Za automatsko povezivanje referenci, slika i tablica koristimo hyperref
 \PassOptionsToPackage{hyphens}{url}
@@ -347,7 +347,6 @@
   \egroup
   \else\closein15
   \includepdf[pages=-]{#1}%
-  \fi
   \fi
   \fi
 }

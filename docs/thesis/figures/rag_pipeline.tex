@@ -1,0 +1,64 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,fit,backgrounds}
+
+\begin{document}
+\begin{tikzpicture}[
+    node distance=2cm,
+    step/.style={rectangle, draw, rounded corners, minimum width=3cm, minimum height=1.5cm, align=center, fill=blue!15},
+    data/.style={rectangle, draw, rounded corners, minimum width=2.5cm, minimum height=1cm, align=center, fill=green!15},
+    process/.style={rectangle, draw, rounded corners, minimum width=2.5cm, minimum height=1cm, align=center, fill=orange!15},
+    arrow/.style={->, thick},
+    label/.style={font=\small}
+]
+
+% Pipeline steps
+\node[step] (query) {1. Korisnički\\Upit};
+\node[step, right=of query] (embed) {2. Generiranje\\Embeddinga};
+\node[step, right=of embed] (search) {3. Vektorska\\Pretraga};
+\node[step, right=of search] (prompt) {4. Konstruiranje\\Prompta};
+\node[step, right=of prompt] (generate) {5. Generiranje\\SPARQL-a};
+\node[step, right=of generate] (validate) {6. Validacija\\i Izvršavanje};
+
+% Data stores
+\node[data, below=of embed] (vector_db) {Vektorska\\Baza};
+\node[data, below=of search] (examples) {Primjeri\\Upita};
+\node[data, below=of prompt] (schema) {Shema\\Podataka};
+
+% Process nodes
+\node[process, above=of embed] (sentence_trans) {Sentence\\Transformers};
+\node[process, above=of search] (similarity) {Kosinusna\\Sličnost};
+\node[process, above=of prompt] (rag_build) {RAG\\Prompt Builder};
+\node[process, above=of generate] (gpt4) {GPT-4\\Model};
+
+% Background pipeline
+\begin{scope}[on background layer]
+    \node[fit=(query)(embed)(search)(prompt)(generate)(validate), draw, thick, inner sep=0.5cm, label=above:RAG Pipeline] {};
+\end{scope}
+
+% Main flow arrows
+\draw[arrow] (query) -- (embed);
+\draw[arrow] (embed) -- (search);
+\draw[arrow] (search) -- (prompt);
+\draw[arrow] (prompt) -- (generate);
+\draw[arrow] (generate) -- (validate);
+
+% Data flow arrows
+\draw[arrow] (embed) -- (vector_db);
+\draw[arrow] (vector_db) -- (search);
+\draw[arrow] (search) -- (examples);
+\draw[arrow] (examples) -- (prompt);
+\draw[arrow] (schema) -- (prompt);
+
+% Process connections
+\draw[arrow] (sentence_trans) -- (embed);
+\draw[arrow] (similarity) -- (search);
+\draw[arrow] (rag_build) -- (prompt);
+\draw[arrow] (gpt4) -- (generate);
+
+% Feedback arrows
+\draw[arrow, bend left=45] (validate) to node[label, above] {Poboljšanje} (examples);
+\draw[arrow, bend left=45] (validate) to node[label, above] {Ažuriranje} (schema);
+
+\end{tikzpicture}
+\end{document} 
