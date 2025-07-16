@@ -71,6 +71,7 @@ def main():
         "multimodal_search.tex",
         "schema_extraction.tex",
         "validation_error_handling.tex",
+        "system_architecture_detailed.tex",
     ]
 
     # Get the directory where this script is located

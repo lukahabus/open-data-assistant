@@ -4,48 +4,56 @@
 
 \begin{document}
 \begin{tikzpicture}[
-    node distance=1.5cm,
+    node distance=2cm,
     box/.style={rectangle, draw, rounded corners, minimum width=2.5cm, minimum height=1cm, align=center},
-    component/.style={rectangle, draw, rounded corners, minimum width=3cm, minimum height=1.2cm, align=center, fill=blue!10},
-    data/.style={rectangle, draw, rounded corners, minimum width=2.5cm, minimum height=1cm, align=center, fill=green!10},
-    arrow/.style={->, thick},
-    label/.style={font=\small}
+    component/.style={rectangle, draw, rounded corners, minimum width=3.2cm, minimum height=1.4cm, align=center, fill=blue!15, thick},
+    data/.style={rectangle, draw, rounded corners, minimum width=2.8cm, minimum height=1.2cm, align=center, fill=green!15, thick},
+    external/.style={rectangle, draw, rounded corners, minimum width=3.2cm, minimum height=1.4cm, align=center, fill=orange!15, thick},
+    arrow/.style={->, thick, color=blue!70},
+    data_arrow/.style={->, thick, color=green!70},
+    feedback_arrow/.style={->, thick, color=red!70, dashed},
+    label/.style={font=\footnotesize, color=black!80}
 ]
 
-% Main components
+% Top row - User Interface
 \node[component] (user) {Korisničko\\Sučelje};
-\node[component, right=of user] (rag) {RAG Sustav};
-\node[component, right=of rag] (llm) {LLM\\(GPT-4)};
-\node[component, below=of rag] (vector) {Vektorska\\Baza\\(ChromaDB)};
-\node[component, below=of llm] (sparql) {SPARQL\\Procesor};
-\node[component, below=of sparql] (euportal) {EU Portal\\Otvorenih\\Podataka};
 
-% Data stores
-\node[data, left=of vector] (examples) {Primjeri\\Upita};
-\node[data, left=of examples] (schema) {Shema\\Podataka};
+% Middle row - Core processing
+\node[component, below=2.5cm of user] (rag) {RAG Sustav};
+\node[component, right=3cm of rag] (llm) {LLM\\(GPT-4)};
 
-% Background boxes
+% Bottom row - Data and services
+\node[data, below left=2cm and 1cm of rag] (schema) {Shema\\Podataka};
+\node[component, below=2cm of rag] (vector) {Vektorska Baza\\(ChromaDB)};
+\node[data, below right=2cm and 1cm of rag] (examples) {Primjeri\\Upita};
+
+\node[component, below=2cm of llm] (sparql) {SPARQL\\Procesor};
+\node[external, below=2cm of sparql] (euportal) {EU Portal\\Otvorenih\\Podataka};
+
+% Background grouping boxes
 \begin{scope}[on background layer]
-    \node[fit=(rag)(vector)(examples)(schema), draw, dashed, inner sep=0.5cm, label=above:Obrada] {};
-    \node[fit=(llm)(sparql), draw, dashed, inner sep=0.5cm, label=above:Generiranje] {};
+    \node[fit=(rag)(vector)(examples)(schema), draw, dashed, inner sep=0.7cm, 
+          fill=blue!5, label={[font=\small]above:Obrada i Pretraga}] {};
+    \node[fit=(llm)(sparql), draw, dashed, inner sep=0.7cm, 
+          fill=yellow!5, label={[font=\small]above:Generiranje i Izvršavanje}] {};
 \end{scope}
 
-% Arrows
-\draw[arrow] (user) -- node[label, above] {Upit} (rag);
-\draw[arrow] (rag) -- node[label, above] {Prompt} (llm);
-\draw[arrow] (llm) -- node[label, above] {SPARQL} (sparql);
-\draw[arrow] (sparql) -- node[label, right] {Izvršavanje} (euportal);
-\draw[arrow] (euportal) -- node[label, left] {Rezultati} (sparql);
-\draw[arrow] (sparql) -- node[label, left] {Podaci} (user);
+% Main flow arrows
+\draw[arrow] (user) -- node[label, left] {Prirodni upit} (rag);
+\draw[arrow] (rag) -- node[label, above] {Kontekstualizirani\\prompt} (llm);
+\draw[arrow] (llm) -- node[label, right] {SPARQL\\upit} (sparql);
+\draw[arrow] (sparql) -- node[label, right] {HTTP zahtjev} (euportal);
+\draw[arrow] (euportal) -- node[label, left] {JSON\\rezultati} (sparql);
+\draw[arrow] (sparql) -| node[label, near end, left] {Formatirani\\odgovor} (user);
 
 % Data flow arrows
-\draw[arrow] (rag) -- node[label, right] {Pretraga} (vector);
-\draw[arrow] (vector) -- node[label, above] {Slični primjeri} (rag);
-\draw[arrow] (examples) -- node[label, above] {Primjeri} (vector);
-\draw[arrow] (schema) -- node[label, above] {Shema} (rag);
+\draw[data_arrow] (rag) -- node[label, left] {Semantička\\pretraga} (vector);
+\draw[data_arrow] (vector) -- node[label, right] {Slični\\primjeri} (rag);
+\draw[data_arrow] (examples) -- node[label, below] {Punjenje} (vector);
+\draw[data_arrow] (schema) -- node[label, above left] {Metadata} (rag);
 
 % Feedback loop
-\draw[arrow, bend left=45] (sparql) to node[label, left] {Validacija} (rag);
+\draw[feedback_arrow, bend right=30] (sparql.west) to node[label, below] {Validacija grešaka} (rag.south);
 
 \end{tikzpicture}
 \end{document}

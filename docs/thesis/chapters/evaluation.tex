@@ -90,11 +90,11 @@ Za sveobuhvatnu evaluaciju sustava definirane su sljedeće metrike:
     \item \textbf{Propusnost (\textit{Throughput})} - broj upita po sekundi koje sustav može obraditi
 \end{enumerate}
 
-\subsubsection{Metrike kvalitete korisničkog iskustva}
+\subsubsection{Metrike kvalitete rezultata}
 
 \begin{enumerate}
     \item \textbf{Relevantnost rangiranja} - mjeri koliko su najrelevantniji rezultati visoko rangirani
-    \item \textbf{Potpunost odgovora} - procjenjuje pokriva li odgovor sve aspekte korisničkog upita
+    \item \textbf{Potpunost odgovora} - procjenjuje pokriva li odgovor sve aspekte upita
     \item \textbf{Razumljivost objašnjenja} - kvaliteta generiranog sažetka rezultata
 \end{enumerate}
 
@@ -225,14 +225,7 @@ Analiza neuspješnih upita (8\%) otkriva sljedeće kategorije grešaka:
 
 \subsection{Analiza performansi i vremena odziva}
 
-Performanse sustava ključne su za korisničko iskustvo, posebno u interaktivnim scenarijima korištenja.
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.9\textwidth]{figures/izvjestaj_image_62.png}
-    \caption{Distribucija vremena odziva po komponentama sustava}
-    \label{fig:response_time_breakdown}
-\end{figure}
+Performanse sustava ključne su za praktičnu primjenu, posebno u interaktivnim scenarijima korištenja.
 
 \subsubsection{Prosječno vrijeme odziva}
 
@@ -299,13 +292,6 @@ Sustav pokazuje dobru skalabilnost do 10 istovremenih korisnika, nakon čega per
 \subsection{Predmemoriranje i optimizacija}
 
 Implementirani sustav predmemoriranja poboljšava performanse za ponavljajuće upite:
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/izvjestaj_image_66.png}
-    \caption{Utjecaj predmemoriranja na vrijeme odziva}
-    \label{fig:cache_effectiveness}
-\end{figure}
 
 Statistike predmemoriranja:
 \begin{itemize}
@@ -422,53 +408,9 @@ Besmisleni tekst & "asdf jkl; qwerty" & 0 (odbačeno) \\
 \end{tabular}
 \end{table}
 
-\subsection{Evaluacija korisničkog iskustva}
-
-Kvalitativna evaluacija provedena je kroz simulirane korisničke sesije s fokus grupom od 10 sudionika različitih profila.
-
-\subsubsection{Profili sudionika}
-
-\begin{itemize}
-    \item 3 podatkovni analitičari
-    \item 2 novinara
-    \item 2 istraživača
-    \item 2 studenta
-    \item 1 državni službenik
-\end{itemize}
-
-\subsubsection{Rezultati evaluacije korisničkog iskustva}
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/izvjestaj_image_4.png}
-    \caption{Ocjene korisničkog iskustva po kategorijama (skala 1-5)}
-    \label{fig:user_experience_ratings}
-\end{figure}
-
-Prosječne ocjene:
-\begin{itemize}
-    \item \textbf{Intuitivnost}: 4.3/5 - "Prirodan način postavljanja pitanja"
-    \item \textbf{Brzina}: 3.8/5 - "Prihvatljivo za analitičke zadatke"
-    \item \textbf{Kvaliteta rezultata}: 4.5/5 - "Relevantni i korisni rezultati"
-    \item \textbf{Razumljivost}: 4.1/5 - "Jasna objašnjenja i sažeci"
-    \item \textbf{Korisnost}: 4.6/5 - "Olakšava pristup podacima"
-\end{itemize}
-
-\subsubsection{Identificirani izazovi}
-
-Korisnici su identificirali sljedeće izazove:
-
-\begin{enumerate}
-    \item \textbf{Vrijeme čekanja}: 30\% korisnika smatra 8s predugim
-    \item \textbf{Složenost rezultata}: Početnici trebaju dodatna objašnjenja
-    \item \textbf{Jezik}: Potrebna bolja podrška za hrvatski jezik
-    \item \textbf{Vizualizacije}: Želja za grafičkim prikazima rezultata
-    \item \textbf{Eksport}: Potrebne opcije za izvoz u različite formate
-\end{enumerate}
-
 \section{Diskusija rezultata evaluacije}
 
-Rezultati evaluacije pokazuju da razvijeni RAG sustav uspješno ispunjava postavljene ciljeve, omogućavajući korisnicima bez tehničkog znanja efikasan pristup kompleksnim skupovima podataka kroz prirodni jezik.
+Rezultati evaluacije pokazuju da razvijeni RAG sustav uspješno ispunjava postavljene ciljeve, omogućavajući efikasan pristup kompleksnim skupovima podataka kroz prirodni jezik.
 
 \subsection{Ključni doprinosi}
 
@@ -477,7 +419,7 @@ Rezultati evaluacije pokazuju da razvijeni RAG sustav uspješno ispunjava postav
     \item \textbf{Semantička točnost} u odnosu na tradicionalne metode
     \item \textbf{Skalabilnost} do 10 istovremenih korisnika bez degradacije
     \item \textbf{Stabilnost} na različite tipove grešaka i neispravnih unosa
-    \item \textbf{Pozitivno korisničko iskustvo} s ocjenom 4.3/5
+    \item \textbf{Tehnička robusnost} potvrđena kroz sveobuhvatno testiranje
 \end{enumerate}
 
 \subsection{Područja za poboljšanje}

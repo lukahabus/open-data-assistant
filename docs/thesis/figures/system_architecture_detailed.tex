@@ -1,0 +1,67 @@
+\documentclass[tikz,border=10pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,fit,backgrounds}
+
+\begin{document}
+\begin{tikzpicture}[
+    node distance=2cm,
+    component/.style={rectangle, draw, minimum width=2.5cm, minimum height=1.2cm, align=center, fill=blue!15, thick},
+    storage/.style={cylinder, draw, minimum width=2cm, minimum height=1.5cm, align=center, fill=gray!15, thick, shape border rotate=90},
+    external/.style={trapezium, draw, minimum width=2.5cm, minimum height=1.2cm, align=center, fill=orange!15, thick, trapezium left angle=70, trapezium right angle=110},
+    arrow/.style={->, thick, color=blue!70},
+    data_arrow/.style={->, thick, color=green!70},
+    feedback_arrow/.style={<->, thick, color=purple!70},
+    label/.style={font=\footnotesize, color=black!80}
+]
+
+% External sources
+\node[external] (ckan) {CKAN\\Portal};
+\node[external, right=6cm of ckan] (web) {Web\\Sučelje};
+
+% Main processing components (top row)
+\node[component, below=1.5cm of ckan, xshift=1cm] (dcat) {DCAT\\Adapter};
+\node[component, right=1.5cm of dcat] (embedding) {Embedding\\Engine};
+\node[component, right=1.5cm of embedding] (rag) {RAG\\Engine};
+\node[component, right=1.5cm of rag] (llm) {LLM\\Asistent};
+
+% Storage components (bottom row)
+\node[storage, below=2cm of dcat] (metadata) {Metadata\\Store};
+\node[storage, below=2cm of embedding] (vector) {Vector\\Store};
+\node[storage, below=2cm of rag] (cache) {Cache\\Store};
+\node[storage, below=2cm of llm] (prompt) {Prompt\\Store};
+
+% System boundary
+\begin{scope}[on background layer]
+    \node[fit=(dcat)(embedding)(rag)(llm)(metadata)(vector)(cache)(prompt), 
+          draw, dashed, inner sep=0.8cm, 
+          fill=blue!5, label={[font=\small]above right:Sustav za Analizu Metapodataka}] {};
+\end{scope}
+
+% Main flow arrows
+\draw[arrow] (ckan) -- node[label, above] {DCAT\\podaci} (dcat);
+\draw[arrow] (dcat) -- node[label, above] {Strukturirani\\podaci} (embedding);
+\draw[arrow] (embedding) -- node[label, above] {Vektori} (rag);
+\draw[arrow] (rag) -- node[label, above] {Kontekst} (llm);
+\draw[arrow] (llm) -- node[label, above] {Odgovor} (web);
+
+% Storage connections
+\draw[data_arrow] (dcat) -- node[label, left] {Spremi\\metadata} (metadata);
+\draw[data_arrow] (embedding) -- node[label, left] {Spremi\\vektore} (vector);
+\draw[data_arrow] (rag) -- node[label, left] {Keš\\rezultate} (cache);
+\draw[data_arrow] (llm) -- node[label, left] {Spremi\\promptove} (prompt);
+
+% Feedback connections between components and storage
+\draw[feedback_arrow] (metadata) -- (dcat);
+\draw[feedback_arrow] (vector) -- (embedding);
+\draw[feedback_arrow] (cache) -- (rag);
+\draw[feedback_arrow] (prompt) -- (llm);
+
+% Cross-component data flows
+\draw[data_arrow, bend left=20] (vector.north) to node[label, above] {Semantička\\pretraga} (rag.south);
+\draw[data_arrow, bend left=20] (cache.north) to node[label, above] {Keš\\pristup} (llm.south);
+
+% User interaction
+\draw[arrow, bend left=30] (web.south) to node[label, right] {Upit} (rag.east);
+
+\end{tikzpicture}
+\end{document} 

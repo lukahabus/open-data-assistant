@@ -56,7 +56,7 @@ DCAT definira hijerarhijsku strukturu metapodataka kroz tri glavne klase:
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=1\textwidth]{figures/dcat.png}
-    \caption{DCAT konceptualni model - prikazuje osnovne klase i njihove međusobne veze}
+    \caption{DCAT konceptualni model - prikazuje osnovne klase i njihove međusobne veze~\cite{dcat2020}}
     \label{fig:dcat_conceptual_model}
 \end{figure}
 
@@ -123,7 +123,7 @@ ChromaDB pohranjuje podatke u obliku visokodimenzionalnih numeričkih vektora, p
 Proces rada s ChromaDB odvija se kroz nekoliko koraka:
 
 \begin{enumerate}
-    \item \textbf{Generiranje \textit{embeddings}-a} - tekstualni podaci se transformiraju u vektorske reprezentacije
+    \item \textbf{Generiranje \textit{embedding}-a} - tekstualni podaci se transformiraju u vektorske reprezentacije
     \item \textbf{Pohrana} - vektori se pohranjuju zajedno s metapodacima u optimiziranu strukturu podataka
     \item \textbf{Indeksiranje} - stvaraju se specijalizirani indeksi za brzo pretraživanje (npr. HNSW - \textit{Hierarchical Navigable Small World})
     \item \textbf{Pretraživanje} - korisnikov upit se također pretvara u vektor te se traže najsličniji vektori u bazi
@@ -273,13 +273,6 @@ LangChain-ov agentski okvir omogućava stvaranje inteligentnog asistenta koji mo
     \item Prilagoditi pristup na temelju dobivenih rezultata
 \end{itemize}
 
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=1\textwidth]{figures/izvjestaj_image_4.png}
-    \caption{LangChain komponente u akciji - prikaz orkestracije različitih AI komponenti}
-    \label{fig:langchain_orchestration}
-\end{figure}
-
 Prednosti korištenja LangChain-a uključuju:
 
 \begin{itemize}
@@ -298,13 +291,6 @@ Uspješna implementacija složenog softverskog rješenja uvjetovana je postojanj
 \section{Korištene tehnologije}
 
 Ključne tehnologije korištene u implementaciji uključuju ChromaDB kao vektorsku bazu podataka za pohranu i pretraživanje semantičkih ugradbi, Sentence Transformers modele za generiranje vektorskih reprezentacija teksta, i OpenAI GPT-4 model za generiranje SPARQL upita iz prirodnog jezika.
-
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=1\textwidth]{figures/chroma.png}
-    \caption{ChromaDB arhitektura - prikazuje komponente vektorske baze podataka}
-    \label{fig:chromadb_architecture}
-\end{figure}
 
 LangChain okvir korišten je za orkestraciju različitih komponenti sustava i upravljanje agentima koji omogućavaju složene zadatke poput multimodalnog pretraživanja i inteligentne sinteze rezultata. Ova arhitektura omogućava modularnost i proširivost sustava.
 
@@ -341,12 +327,12 @@ Sustav je dizajniran da bude skalabilan i održiv, s jasno definiranim sučeljim
     \label{fig:system_scalability}
 \end{figure}
 
-Evaluacija korisničkog iskustva pokazuje da sustav pruža sučelje koje omogućava korisnicima bez tehničke pozadine da otkrivaju i analiziraju skupove podataka. Ovo demokratizira pristup otvorenim podacima i omogućava širu primjenu u različitim domenama.
+Sustav pruža sučelje koje omogućava pristup kompleksnim skupovima podataka kroz prirodni jezik. Ovo demokratizira pristup otvorenim podacima i omogućava širu primjenu u različitim domenama.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=1\textwidth]{figures/izvjestaj_image_4.png}
-    \caption{Korisničko sučelje - prikazuje dizajn i funkcionalnosti}
+    \caption{Sučelje sustava - prikazuje dizajn i funkcionalnosti}
     \label{fig:user_interface}
 \end{figure}
 
@@ -1045,7 +1031,7 @@ Cjelokupna arhitektura sustava projektirana je prema načelima modularnosti i sk
 Glavni moduli sustava uključuju:
 
 \begin{enumerate}
-    \item \textbf{Korisničko sučelje (\textit{Web Interface})} - Predstavlja točku interakcije s krajnjim korisnikom. Odgovorno je za prihvaćanje upita na prirodnom jeziku, vizualizaciju rezultata te pružanje intuitivnog korisničkog iskustva. Implementirano je kao React aplikacija s modernim UI komponentama.
+    \item \textbf{Korisničko sučelje (\textit{Web Interface})} - Predstavlja točku interakcije s krajnjim korisnikom. Odgovorno je za prihvaćanje upita na prirodnom jeziku, vizualizaciju rezultata te pružanje intuitivnog sučelja. Implementirano je kao React aplikacija s modernim UI komponentama.
     
     \item \textbf{Multimodalni Asistent (\textit{Unified Data Assistant})} - Djeluje kao središnji orkestrator sustava, implementiran kao LangChain agent. Njegova je zadaća analizirati korisnički upit, identificirati strategiju pretraživanja i koordinirati izvršavanje različitih komponenti.
     

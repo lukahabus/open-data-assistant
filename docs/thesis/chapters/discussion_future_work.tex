@@ -65,7 +65,7 @@ Troškovi mogu biti prohibitivni za:
 Slanje korisničkih upita vanjskim API-jima uvodi zabrinutosti vezane uz:
 
 \begin{itemize}
-    \item \textbf{Privatnost podataka}: Korisničke upite obrađuje treća strana
+    \item \textbf{Privatnost podataka}: Upiti se obrađuju kod treće strane
     \item \textbf{Usklađenost s GDPR}: Pitanja vezana uz obradu osobnih podataka
     \item \textbf{Korporativna sigurnost}: Potencijalno curenje osjetljivih informacija
     \item \textbf{Geopolitička ograničenja}: Neki regioni mogu imati restrikcije
@@ -251,7 +251,7 @@ Implementacija \textit{active learning} pristupa:
     \item \textbf{Automatsko prikupljanje}:
     \begin{itemize}
         \item Svaki uspješan upit dodaje se u bazu
-        \item Korisničke ocjene kvalitete rezultata
+        \item Automatska evaluacija kvalitete rezultata
         \item A/B testiranje različitih formulacija
     \end{itemize}
     
@@ -292,8 +292,8 @@ Implementacija algoritama rangiranja:
 \begin{enumerate}
     \item \textbf{Learning to Rank}:
     \begin{itemize}
-        \item Treniranje modela na korisničkim interakcijama
-        \item Personalizirano rangiranje po korisniku
+        \item Treniranje modela na sistemskim interakcijama
+        \item Adaptivno rangiranje rezultata
         \item Kontekstualni faktori (vrijeme, lokacija)
     \end{itemize}
     
@@ -301,7 +301,7 @@ Implementacija algoritama rangiranja:
     \begin{itemize}
         \item Relevantnost + aktualnost + kvaliteta
         \item Pareto-optimalno rangiranje
-        \item Eksplicitne korisničke preferencije
+        \item Eksplicitne sistemske preferencije
     \end{itemize}
     
     \item \textbf{Eksplanatorno rangiranje}:
@@ -402,7 +402,7 @@ Ključne komponente:
 
 \subsection{Dodatne značajke korisničkog sučelja}
 
-Korisničko iskustvo može se unaprijediti kroz dodatne značajke.
+Sučelje sustava može se proširiti kroz dodatne značajke.
 
 \subsubsection{Vizualizacija podataka}
 
@@ -423,7 +423,7 @@ Omogućavanje iterativnog pristupa:
     \item \textbf{Query refinement}: Postupno usavršavanje upita
     \item \textbf{Faceted search}: Filtriranje rezultata
     \item \textbf{Related queries}: Sugestije sličnih upita
-    \item \textbf{Query history}: Praćenje korisničke sesije
+    \item \textbf{Query history}: Praćenje aktivnih sesija
 \end{itemize}
 
 \subsubsection{Kolaborativne značajke}

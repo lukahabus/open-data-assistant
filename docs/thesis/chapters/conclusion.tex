@@ -5,77 +5,18 @@
 
 Ovaj diplomski rad predstavio je razvoj i evaluaciju inteligentnog sustava za analizu metapodataka otvorenih skupova podataka. Kroz kombinaciju tehnika umjetne inteligencije, posebno RAG (\textit{Retrieval-Augmented Generation}) arhitekture, s tradicionalnim metodama obrade podataka, sustav uspješno premošćuje jaz između tehničke složenosti SPARQL jezika i intuitivnosti prirodnog jezika.
 
-\section{Glavna postignuća}
+Implementirana RAG arhitektura demonstrira kako se veliki jezični modeli mogu kombinirati s vektorskim bazama podataka za stvaranje kontekstualno svjesnih i semantički točnih formalnih upita. Postignuta stopa uspjeha od 92\% za generiranje ispravnih SPARQL upita iz prirodnog jezika nadmašuje tradicionalne pristupe temeljene na ključnim riječima (65\%) i generičke LLM pristupe bez RAG-a (78\%). ChromaDB vektorska baza podataka pokazala se kao prikladna za semantičko pretraživanje, omogućavajući brzo dohvaćanje relevantnih primjera s prosječnim vremenom od 0.8 sekundi. Implementacija predmemoriranja dodatno poboljšava performanse, postižući 34\% pogodetka cache-a za česte upite.
 
-\subsection{Tehnički doprinosi}
+Multimodalni pristup pretraživanju, koji kombinira RAG-generirane SPARQL upite, REST API pozive i pronalaženje sličnih skupova podataka, demonstrira prednosti hibridnog pristupa. Ova hibridna strategija osigurava stabilnost sustava i pokriva različite scenarije korištenja, od jednostavnih pretraživanja do složenih analitičkih upita. Sustav demokratizira pristup otvorenim podacima omogućavajući korisnicima bez specijaliziranog tehničkog znanja da postavljaju složena analitička pitanja.
 
-Implementirana RAG arhitektura demonstrira kako se veliki jezični modeli mogu kombinirati s vektorskim bazama podataka za stvaranje kontekstualno svjesnih i semantički točnih formalnih upita. Postignuta stopa uspjeha od 92\% za generiranje ispravnih SPARQL upita iz prirodnog jezika nadmašuje tradicionalne pristupe temeljene na ključnim riječima (65\%) i generičke LLM pristupe bez RAG-a (78\%).
+Istraživačka pitanja postavljena na početku rada uspješno su riješena. RAG arhitektura može generirati sintaksno ispravne i semantički relevantne SPARQL upite iz prirodnog jezika s 92\% točnosti, gdje ključ uspjeha leži u kombinaciji semantičkog pretraživanja za dohvat relevantnih primjera i velikih jezičnih modela za generiranje upita prilagođenih specifičnom kontekstu. Vektorska baza podataka s reprezentativnim primjerima upita i relevantnim metapodacima o shemi uspješno je uspostavljena i pokazuje dobre performanse, omogućavajući brzo i precizno dohvaćanje relevantnih informacija. Multimodalni pristup koji kombinira SPARQL upite, REST API pozive i pronalaženje sličnih skupova podataka dokazano pruža bolju pokrivenost rezultata od bilo koje pojedinačne metode.
 
-ChromaDB vektorska baza podataka pokazala se kao prikladna za semantičko pretraživanje, omogućavajući brzo dohvaćanje relevantnih primjera s prosječnim vremenom od 0.8 sekundi. Implementacija predmemoriranja dodatno poboljšava performanse, postižući 34\% pogodetka cache-a za česte upite.
+Sustav pokazuje prosječno vrijeme odziva od 8.3 sekunde po upitu, s mogućnošću opsluživanja do 10 istovremenih korisnika bez degradacije performansi. Implementacija predmemoriranja i optimizacija vektorskog pretraživanja omogućavaju prihvatljive performanse za male i srednje implementacije. Sustavna evaluacija performansi, točnosti i stabilnosti provedena je kroz sveobuhvatan skup od 100 testnih scenarija, pružajući jasnu sliku mogućnosti i ograničenja sustava.
 
-Multimodalni pristup pretraživanju, koji kombinira RAG-generirane SPARQL upite, REST API pozive i pronalaženje sličnih skupova podataka, demonstrira prednosti hibridnog pristupa. Ova hibridna strategija osigurava stabilnost sustava i pokriva različite scenarije korištenja, od jednostavnih pretraživanja do složenih analitičkih upita.
+Unatoč postignućima, važno je priznati ograničenja trenutne implementacije. Ovisnost o komercijalnim LLM API-jima uvodi pitanja troškova, latencije i privatnosti koja mogu ograničiti primjenu u određenim scenarijima. Mjesečni troškovi mogu varirati od 80 do 80,000 USD ovisno o broju korisnika i intenzitetu korištenja. Skalabilnost sustava, iako zadovoljavajuća za male i srednje implementacije, zahtijeva poboljšanja za podršku velikog broja istovremenih korisnika. Domensko usmjeravanje na EU Portal i DCAT standard, iako omogućava visoku preciznost, ograničava neposrednu primjenjivost na druge portale otvorenih podataka.
 
-\subsection{Praktični utjecaj}
+Razvijeni sustav ima značajan potencijal utjecaja na različite skupine korisnika. Istraživači i akademici mogu brže pronaći relevantne skupove podataka za svoje analize, novinari i analitičari mogu postavljati složena pitanja bez tehničkih predznanja, kreatori javnih politika mogu lakše pristupiti podacima potrebnim za informirane odluke, a građani mogu transparentnije pratiti javne podatke koji ih zanimaju.
 
-Sustav demokratizira pristup otvorenim podacima omogućavajući korisnicima bez specijaliziranog tehničkog znanja da postavljaju složena analitička pitanja. Evaluacija korisničkog iskustva pokazuje visoku razinu prihvaćanja s prosječnom ocjenom 4.3/5 za intuitivnost i 4.6/5 za korisnost.
+Budući razvoj trebao bi se fokusirati na prelazak na lokalne LLM modele (Llama 3, CodeLlama) za smanjenje troškova i poboljšanje privatnosti, implementaciju distribuirane arhitekture za poboljšanje skalabilnosti, proširenje podrške na druge jezike, posebno nacionalne jezike EU, razvoj domenski specifičnih modela za različite tipove portala te integraciju naprednih vizualizacijskih alata. Prelazak na distribuiranu mikroservisnu arhitekturu omogućit će skaliranje na razinu nacionalnih i pan-europskih portala, dok će integracija vizualizacijskih i analitičkih alata pretvoriti sustav iz alata za pristup podacima u platformu za otkrivanje znanja.
 
-Stabilnost sustava na različite tipove grešaka i neispravnih unosa čini ga pogodnim za stvarnu upotrebu. Sustav uspješno rukuje mrežnim prekidima, API ograničenjima, pravopisnim greškama i drugim realnim izazovima.
-
-\section{Odgovori na istraživačka pitanja}
-
-Ovaj rad postavio je nekoliko ključnih istraživačkih pitanja. Njihovi odgovori sažimaju doprinos ovog istraživanja:
-
-\textbf{1. Može li RAG arhitektura omogućiti generiranje sintaksno ispravnih i semantički relevantnih SPARQL upita iz prirodnog jezika?}
-
-Da, rezultati pokazuju da RAG arhitektura može uspješno generirati SPARQL upite s 92\% točnosti. Ključ uspjeha leži u kombinaciji semantičkog pretraživanja za dohvat relevantnih primjera i velikih jezičnih modela za generiranje upita prilagođenih specifičnom kontekstu.
-
-\textbf{2. Kako projektirati vektorsku bazu podataka optimiziranu za brzo i precizno dohvaćanje relevantnih primjera?}
-
-Vektorska baza podataka s reprezentativnim primjerima upita i relevantnim metapodacima o shemi uspješno je uspostavljena i pokazuje dobre performanse. Struktura baze omogućava brzo i precizno dohvaćanje relevantnih informacija, što je ključno za kvalitetu generiranih upita.
-
-\textbf{3. Može li multimodalni pristup pretraživanju pružiti bolju pokrivenost i točnost od tradicionalnih metoda?}
-
-Da, multimodalni pristup koji kombinira SPARQL upite, REST API pozive i pronalaženje sličnih skupova podataka dokazano pruža bolju pokrivenost rezultata od bilo koje pojedinačne metode. Ovaj hibridni pristup osigurava stabilnost sustava i pokriva različite scenarije korištenja.
-
-\textbf{4. Kakve su performanse i skalabilnost ovakvog sustava?}
-
-Sustav pokazuje prosječno vrijeme odziva od 8.3 sekunde po upitu, s mogućnošću opsluživanja do 10 istovremenih korisnika bez degradacije performansi. Implementacija predmemoriranja i optimizacija vektorskog pretraživanja omogućavaju prihvatljive performanse za male i srednje implementacije.
-
-\textbf{5. Koja su ograničenja i izazovi u implementaciji?}
-
-Sustavna evaluacija performansi, točnosti i stabilnosti uspješno je provedena kroz sveobuhvatan skup od 100 testnih scenarija. Rezultati pružaju jasnu sliku mogućnosti i ograničenja sustava, omogućavajući informirane odluke o daljnjem razvoju.
-
-\section{Ograničenja i budući rad}
-
-Unatoč postignućima, važno je priznati ograničenja trenutne implementacije. Ovisnost o komercijalnim LLM API-jima uvodi pitanja troškova, latencije i privatnosti koja mogu ograničiti primjenu u određenim scenarijima. Mjesečni troškovi mogu varirati od 80 do 80,000 USD ovisno o broju korisnika i intenzitetu korištenja.
-
-Skalabilnost sustava, iako zadovoljavajuća za male i srednje implementacije, zahtijeva poboljšanja za podršku velikog broja istovremenih korisnika. Domensko usmjeravanje na EU Portal i DCAT standard, iako omogućava visoku preciznost, ograničava neposrednu primjenjivost na druge portale otvorenih podataka.
-
-\section{Smjernice za budući razvoj}
-
-Razvijeni sustav ima potencijal utjecaja na način kako različite skupine korisnika pristupaju i koriste otvorene podatke:
-
-\begin{itemize}
-    \item \textbf{Istraživači i akademici} mogu brže pronaći relevantne skupove podataka za svoje analize
-    \item \textbf{Novinari i analitičari} mogu postavljati složena pitanja bez tehničkih predznanja
-    \item \textbf{Kreatori javnih politika} mogu lakše pristupiti podacima potrebnim za informirane odluke
-    \item \textbf{Građani} mogu transparentnije pratiti javne podatke koji ih zanimaju
-\end{itemize}
-
-Budući razvoj trebao bi se fokusirati na:
-
-\begin{enumerate}
-    \item Prelazak na lokalne LLM modele (Llama 3, CodeLlama) za smanjenje troškova i poboljšanje privatnosti
-    \item Implementaciju distribuirane arhitekture za poboljšanje skalabilnosti
-    \item Proširenje podrške na druge jezike, posebno nacionalne jezike EU
-    \item Razvoj domenski specifičnih modela za različite tipove portala
-    \item Integraciju naprednih vizualizacijskih alata
-\end{enumerate}
-
-Prelazak na distribuiranu mikroservisnu arhitekturu omogućit će skaliranje na razinu nacionalnih i pan-europskih portala. Integracija vizualizacijskih i analitičkih alata pretvorit će sustav iz alata za pristup podacima u platformu za otkrivanje znanja.
-
-\section{Završna razmatranja}
-
-Ovaj rad demonstrira da je moguće premostiti jaz između tehničke složenosti modernih portala otvorenih podataka i potreba običnih korisnika. Kombinacija umjetne inteligencije s tradicionalnim pristupima otvara nove mogućnosti za demokratizaciju pristupa javnim podacima.
-
-Razvijeni sustav predstavlja korak prema budućnosti u kojoj će pristup i analiza otvorenih podataka biti dostupni svima, neovisno o tehničkoj ekspertizi. Time se ostvaruje puni potencijal otvorenih podataka kao resursa za transparentnost, inovacije i društveni napredak. 
+Ovaj rad demonstrira da je moguće premostiti jaz između tehničke složenosti modernih portala otvorenih podataka i potreba običnih korisnika. Kombinacija umjetne inteligencije s tradicionalnim pristupima otvara nove mogućnosti za demokratizaciju pristupa javnim podacima. Razvijeni sustav predstavlja korak prema budućnosti u kojoj će pristup i analiza otvorenih podataka biti dostupni svima, neovisno o tehničkoj ekspertizi. Time se ostvaruje puni potencijal otvorenih podataka kao resursa za transparentnost, inovacije i društveni napredak. 
