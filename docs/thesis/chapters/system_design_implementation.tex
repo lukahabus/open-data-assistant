@@ -1,11 +1,303 @@
-\chapter{Dizajn i implementacija sustava}
-\label{ch:system_design_implementation}
+\chapter{Korištene tehnologije i alati}
+\label{ch:technologies}
 
 \selectlanguage{croatian}
 
+Realizacija sustava ovakve složenosti nužno je podrazumijevala selekciju skupa suvremenih i međusobno komplementarnih tehnologija. Ovo poglavlje detaljno obrazlaže izbor svake od ključnih tehnologija, koje su klasificirane u dvije temeljne skupine: tehnologije za upravljanje podacima i komponente umjetne inteligencije. Važno je napomenuti da redoslijed predstavljanja prati logički tok - prvo se opisuju tehnologije za rad s podacima koje čine temelj sustava, a zatim komponente umjetne inteligencije koje omogućavaju njihovu inteligentnu obradu.
+
+\section{Tehnologije za upravljanje podacima}
+
+Ova sekcija opisuje temeljne tehnologije koje omogućuju strukturirano opisivanje, pohranu i dohvat podataka unutar sustava. Predstavljene su redom kojim se koriste u sustavu: prvo SPARQL kao ciljni upitni jezik, zatim DCAT standard koji definira strukturu metapodataka, te naposljetku ChromaDB kao moderna vektorska baza podataka.
+
+\subsection{SPARQL (SPARQL Protocol and RDF Query Language)}
+
+SPARQL predstavlja službeni upitni jezik W3C konzorcija, specificiran za interakciju s podacima pohranjenim u RDF (\textit{Resource Description Framework}) formatu~\cite{sparql2013}. S obzirom na to da EU Portal otvorenih podataka, kao i brojni drugi suvremeni portali, svoje metapodatke izlaže putem javno dostupnog SPARQL \textit{endpoint}-a, kompetentno korištenje ovog jezika nameće se kao imperativ za pristup podacima.
+
+Za razliku od SQL-a, koji operira nad relacijskim tablicama s fiksnom shemom, SPARQL djeluje nad grafom sačinjenim od trojki oblika subjekt-predikat-objekt. Ova fundamentalna razlika omogućava SPARQL-u veću fleksibilnost u radu s heterogenim i distribuiranim podacima. Njegova sintaksa omogućuje formuliranje složenih upita, uključujući:
+
+\begin{itemize}
+    \item \textbf{Spajanje podataka} iz različitih dijelova grafa kroz \texttt{JOIN} operacije
+    \item \textbf{Višestruko filtriranje} kroz \texttt{FILTER} klauzule s bogatim skupom funkcija
+    \item \textbf{Agregacijske funkcije} poput \texttt{COUNT}, \texttt{SUM}, \texttt{AVG} za statističke analize
+    \item \textbf{Dohvaćanje opcionalnih podataka} kroz \texttt{OPTIONAL} klauzule
+    \item \textbf{Federacijske upite} koji kombiniraju podatke s više različitih \textit{endpoint}-a
+\end{itemize}
+
+Primjer jednostavnog SPARQL upita koji dohvaća sve skupove podataka o okolišu:
+
+\begin{lstlisting}[language=SPARQL, caption=Primjer SPARQL upita za dohvaćanje skupova podataka o okolišu]
+PREFIX dcat: <http://www.w3.org/ns/dcat#>
+PREFIX dct: <http://purl.org/dc/terms/>
+
+SELECT ?dataset ?title ?description
+WHERE {
+  ?dataset a dcat:Dataset ;
+           dct:title ?title ;
+           dct:description ?description ;
+           dcat:theme <http://publications.europa.eu/resource/authority/data-theme/ENVI> .
+}
+LIMIT 100
+\end{lstlisting}
+
+Ova izražajnost čini SPARQL prikladnim alatom za kompleksne analize, ali istovremeno i kompleksnim za učenje i korištenje. Sintaksa zahtijeva poznavanje RDF modela podataka, razumijevanje \textit{namespace} koncepta te vladanje semantikom različitih tipova obrazaca (\textit{pattern}) pretraživanja. U kontekstu ovog rada, SPARQL je ciljni jezik u koji se vrši prevođenje korisničkih upita s prirodnog jezika, što predstavlja ključni izazov koji sustav rješava.
+
+\subsection{DCAT (Data Catalog Vocabulary)}
+
+DCAT (\textit{Data Catalog Vocabulary}) je RDF rječnik čija je primarna funkcija standardizirano opisivanje kataloga podataka i pripadajućih skupova podataka~\cite{dcat2020}. Razvijen je od strane W3C konzorcija s ciljem omogućavanja interoperabilnosti između različitih portala otvorenih podataka, čime se stvara preduvjet za njihovo federacijsko pretraživanje i integraciju.
+
+DCAT definira hijerarhijsku strukturu metapodataka kroz tri glavne klase:
+
+\begin{enumerate}
+    \item \textbf{\texttt{dcat:Catalog}} - predstavlja kolekciju ili katalog skupova podataka
+    \item \textbf{\texttt{dcat:Dataset}} - opisuje pojedinačni skup podataka
+    \item \textbf{\texttt{dcat:Distribution}} - predstavlja konkretnu distribuciju skupa podataka u određenom formatu
+\end{enumerate}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/dcat.png}
+    \caption{DCAT konceptualni model - prikazuje osnovne klase i njihove međusobne veze}
+    \label{fig:dcat_conceptual_model}
+\end{figure}
+
+\subsubsection{DCAT-AP (Application Profile for Data Portals in Europe)}
+
+Za potrebe europskih institucija, razvijen je DCAT-AP (\textit{Application Profile for data portals in Europe}), specifičan profil koji normira upotrebu DCAT rječnika~\cite{dcatap2020}. DCAT-AP definira precizna pravila o tome koje su klase i svojstva:
+
+\begin{itemize}
+    \item \textbf{Obavezna (\textit{mandatory})} - moraju biti prisutna za svaki entitet
+    \item \textbf{Preporučena (\textit{recommended})} - trebala bi biti prisutna kada su dostupna
+    \item \textbf{Opcionalna (\textit{optional})} - mogu biti uključena po potrebi
+\end{itemize}
+
+Za klasu \texttt{dcat:Dataset}, DCAT-AP definira sljedeća obavezna svojstva:
+
+\begin{itemize}
+    \item \texttt{dct:title} - naslov skupa podataka
+    \item \texttt{dct:description} - opis skupa podataka
+    \item \texttt{dcat:distribution} - veza na barem jednu distribuciju
+\end{itemize}
+
+Preporučena svojstva uključuju:
+
+\begin{itemize}
+    \item \texttt{dct:publisher} - organizacija odgovorna za publiciranje
+    \item \texttt{dcat:theme} - tematska kategorija iz kontroliranog rječnika
+    \item \texttt{dcat:keyword} - ključne riječi za pretraživanje
+    \item \texttt{dct:spatial} - geografsko pokrivanje podataka
+    \item \texttt{dct:temporal} - vremensko pokrivanje podataka
+    \item \texttt{dct:issued} - datum prvog publiciranja
+    \item \texttt{dct:modified} - datum zadnje izmjene
+\end{itemize}
+
+Poznavanje ove specifikacije od presudne je važnosti za razvijeni sustav. Informacija da svaki skup podataka mora posjedovati određena svojstva pruža ključne smjernice jezičnom modelu pri konstrukciji upita. Također, razumijevanje hijerarhije i međusobnih veza između klasa omogućava generiranje složenijih upita koji navigiraju kroz graf metapodataka.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/Data_Europe.png}
+    \caption{EU Portal otvorenih podataka - sučelje koje koristi DCAT standard za organizaciju podataka}
+    \label{fig:eu_data_portal}
+\end{figure}
+
+\subsection{ChromaDB Vektorska Baza Podataka}
+
+Tradicionalne relacijske i NoSQL baze podataka nisu projektirane za pretragu temeljenu na semantičkoj sličnosti. Njihovi indeksi optimizirani su za egzaktno podudaranje ili pretraživanje po rasponu vrijednosti, ali ne mogu rukovati visokodimenzionalnim vektorskim reprezentacijama. U tu svrhu razvijene su specijalizirane vektorske baze podataka. Za potrebe ovog projekta, odabrana je ChromaDB zbog nekoliko prednosti:
+
+\begin{itemize}
+    \item \textbf{Jednostavnost korištenja} - Python sučelje koje ne zahtijeva kompleksnu konfiguraciju
+    \item \textbf{Performanse} - optimiziran za brzo pretraživanje kroz velike kolekcije vektora
+    \item \textbf{Fleksibilnost} - podrška za različite metrike sličnosti i tipove \textit{embedding} modela
+    \item \textbf{\textit{Open source}} licenca - omogućava prilagodbu i proširivanje prema potrebi
+    \item \textbf{Integracija s popularnim okvirima} - izravna podrška za LangChain i druge AI alate
+\end{itemize}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/chroma.png}
+    \caption{ChromaDB arhitektura - prikazuje komponente vektorske baze podataka i tok obrade podataka}
+    \label{fig:chromadb_architecture}
+\end{figure}
+
+ChromaDB pohranjuje podatke u obliku visokodimenzionalnih numeričkih vektora, poznatih kao ugradbe (\textit{embeddings}), gdje svaki vektor predstavlja sažetu semantičku reprezentaciju određenog tekstualnog fragmenta. Ovi vektori tipično imaju između 384 i 1536 dimenzija, ovisno o korištenom modelu za generiranje \textit{embeddings}-a.
+
+Proces rada s ChromaDB odvija se kroz nekoliko koraka:
+
+\begin{enumerate}
+    \item \textbf{Generiranje \textit{embeddings}-a} - tekstualni podaci se transformiraju u vektorske reprezentacije
+    \item \textbf{Pohrana} - vektori se pohranjuju zajedno s metapodacima u optimiziranu strukturu podataka
+    \item \textbf{Indeksiranje} - stvaraju se specijalizirani indeksi za brzo pretraživanje (npr. HNSW - \textit{Hierarchical Navigable Small World})
+    \item \textbf{Pretraživanje} - korisnikov upit se također pretvara u vektor te se traže najsličniji vektori u bazi
+    \item \textbf{Rangiranje} - rezultati se rangiraju prema stupnju sličnosti (tipično kosinusna sličnost)
+\end{enumerate}
+
+U arhitekturi ovog sustava, ChromaDB se koristi za pohranu:
+
+\begin{itemize}
+    \item \textbf{Parova pitanje-SPARQL upit} - omogućava pronalaženje sličnih upita iz prošlosti
+    \item \textbf{Fragmenata DCAT sheme} - pomaže u kontekstualizaciji korisničkih upita
+    \item \textbf{Opisa klasa i svojstava} - pruža semantički kontekst za generiranje upita
+    \item \textbf{Primjera uspješnih upita} - služe kao predlošci za nove upite
+\end{itemize}
+
+Izbor kosinusne sličnosti kao primarne metrike zaslužuje dodatno objašnjenje. Iako postoje alternative poput euklidske udaljenosti ili Manhattan udaljenosti, kosinusna sličnost pokazala se prikladnom za semantičko pretraživanje iz nekoliko razloga:
+
+\begin{itemize}
+    \item Mjeri orijentaciju vektora u prostoru, što bolje odražava semantičku sličnost
+    \item Nije osjetljiva na magnitudu vektora, što je važno za tekstove različite duljine
+    \item Vrijednosti su normalizirane između -1 i 1, što olakšava interpretaciju
+    \item Računski je jednostavnija od kompleksnijih hibridnih metoda
+\end{itemize}
+
+Pitanje zašto ne koristiti hibridne pristupe koji kombiniraju vektorsko pretraživanje s tradicionalnim "\textit{bag of words}" metodama je opravdano. Takvi pristupi mogu pružiti dodatne prednosti, posebno za specifične domene. Međutim, za potrebe ovog prototipa, čista vektorska pretraga pokazala se dostatnom iz sljedećih razloga:
+
+\begin{itemize}
+    \item Jednostavnost implementacije i održavanja
+    \item Konzistentnost rezultata kroz različite tipove upita
+    \item Dovoljna preciznost za identificirane slučajeve korištenja
+    \item Mogućnost naknadnog proširenja s hibridnim pristupom
+\end{itemize}
+
+\section{Komponente umjetne inteligencije}
+
+Ova sekcija opisuje komponente umjetne inteligencije koje sustavu daju sposobnost razumijevanja, rezoniranja i generiranja prirodnog i formalnog jezika. Redoslijed predstavljanja slijedi logiku njihove uporabe u sustavu: od jezičnih modela koji generiraju upite, preko modela za stvaranje semantičkih reprezentacija, do orkestracijskih okvira koji sve povezuju.
+
+\subsection{Veliki jezični modeli (LLM) - OpenAI GPT-4}
+
+Veliki jezični modeli (\textit{Large Language Models} - LLM) predstavljaju razvojni napredak u području obrade prirodnog jezika. Ovi modeli, trenirani na velikim količinama tekstualnih podataka, pokazuju sposobnosti razumijevanja konteksta, rezoniranja i generiranja koherentnog teksta. U sklopu ovog rada, korišten je OpenAI-jev model GPT-4~\cite{openai2023gpt4}.
+
+GPT-4 odabran je zbog nekoliko karakteristika:
+
+\begin{itemize}
+    \item \textbf{Sposobnosti razumijevanja} - može interpretirati složene instrukcije i kontekst
+    \item \textbf{Generiranje strukturiranog koda} - sposobnost stvaranja sintaksno ispravnog SPARQL koda
+    \item \textbf{Kontekstualno rezoniranje} - razumijevanje veza između različitih koncepata u upitu
+    \item \textbf{Višejezičnost} - rad s upitima na hrvatskom i engleskom jeziku
+    \item \textbf{Stabilnost i pouzdanost} - konzistentnost u generiranju odgovora
+\end{itemize}
+
+U kontekstu ovog sustava, GPT-4 se primjenjuje u \textit{Generation} fazi RAG procesa. Njegov zadatak uključuje:
+
+\begin{enumerate}
+    \item \textbf{Analizu korisničkog upita} - razumijevanje namjere i identificiranje ključnih entiteta
+    \item \textbf{Sinteza kontekstualnih informacija} - kombiniranje korisničkog upita s dohvaćenim primjerima i shemom
+    \item \textbf{Generiranje SPARQL koda} - prevođenje prirodnog jezika u formalni upitni jezik
+    \item \textbf{Validacija logike} - osiguravanje da generirani upit odgovara korisničkoj namjeri
+\end{enumerate}
+
+Važno je napomenuti ograničenja GPT-4 modela koja utječu na dizajn sustava:
+
+\begin{itemize}
+    \item \textbf{Ograničenje konteksta} - maksimalno 8,000 tokena za standardnu verziju
+    \item \textbf{Stohastička priroda} - može generirati različite odgovore za isti upit
+    \item \textbf{Nedostatak stvarnog znanja o specifičnoj shemi} - zahtijeva eksplicitno pružanje konteksta
+    \item \textbf{Troškovi API poziva} - mogu biti značajni za intenzivnu upotrebu
+    \item \textbf{Latencija} - vrijeme odziva može biti nekoliko sekundi
+\end{itemize}
+
+Ova ograničenja motivirala su uporabu RAG arhitekture koja minimizira broj poziva prema modelu i maksimizira kvalitetu konteksta koji mu se pruža.
+
+\subsection{Modeli za semantičke ugradbe - Sentence Transformers}
+
+Da bi se tekstualni podaci mogli pretraživati po semantičkoj sličnosti, nužno ih je prethodno preslikati u numerički, vektorski prostor. Taj proces, poznat kao generiranje ugradbi (\textit{embedding generation}), temeljna je komponenta sustava za pretraživanje i analizu teksta.
+
+Za potrebe ovog rada korištena je biblioteka \textit{Sentence Transformers}~\cite{reimers2019sentence}, koja omogućava generiranje semantičkih reprezentacija rečenica i paragrafa. Specifično je korišten model \texttt{all-MiniLM-L6-v2}, koji je odabran nakon testiranja nekoliko alternativa.
+
+Karakteristike modela \texttt{all-MiniLM-L6-v2}:
+
+\begin{itemize}
+    \item \textbf{Dimenzionalnost} - generira 384-dimenzijske vektore
+    \item \textbf{Brzina} - može procesirati ~14,000 rečenica po sekundi na modernom CPU-u
+    \item \textbf{Veličina} - samo 80MB, što omogućava brzo učitavanje i malu memorijsku potrošnju
+    \item \textbf{Kvaliteta} - dobre rezultate na standardnim \textit{benchmark} testovima
+    \item \textbf{Višejezičnost} - funkcionira s hrvatskim i engleskim tekstom
+\end{itemize}
+
+Proces generiranja \textit{embeddings}-a odvija se kroz nekoliko faza:
+
+\begin{enumerate}
+    \item \textbf{Tokenizacija} - tekst se dijeli na osnovne jedinice (tokene)
+    \item \textbf{Enkodiranje} - tokeni se procesiraju kroz transformer arhitekturu
+    \item \textbf{Agregacija} - reprezentacije tokena se kombiniraju u jedinstveni vektor
+    \item \textbf{Normalizacija} - vektor se normalizira za lakše računanje sličnosti
+\end{enumerate}
+
+U kontekstu ovog sustava, \textit{Sentence Transformers} se koriste za:
+
+\begin{itemize}
+    \item Generiranje \textit{embeddings}-a za korisničke upite
+    \item Stvaranje vektorskih reprezentacija primjera u bazi
+    \item Enkodiranje fragmenata DCAT sheme
+    \item Omogućavanje brzog semantičkog pretraživanja
+\end{itemize}
+
+Kvaliteta \textit{embeddings}-a direktno utječe na uspješnost RAG sustava. Bolji \textit{embeddings} znače precizniji dohvat relevantnih primjera, što rezultira kvalitetnijim kontekstom za jezični model i, konačno, boljim SPARQL upitima.
+
+\subsection{Orkestracijski okviri - LangChain}
+
+Razvoj kompleksnih aplikacija temeljenih na velikim jezičnim modelima često podrazumijeva orkestraciju višestrukih komponenti u koherentan procesni lanac. Potrebno je koordinirati dohvat podataka, njihovu obradu, pozive prema različitim modelima, parsiranje odgovora i rukovanje greškama. LangChain~\cite{chase2022langchain} je softverski okvir koji pojednostavljuje ovaj proces kroz visoku razinu apstrakcije.
+
+LangChain nudi nekoliko ključnih koncepata:
+
+\begin{itemize}
+    \item \textbf{Lanci (\textit{Chains})} - sekvencijalno povezivanje operacija
+    \item \textbf{Agenti (\textit{Agents})} - autonomni sustavi koji mogu donositi odluke
+    \item \textbf{Alati (\textit{Tools})} - funkcionalnosti koje agenti mogu koristiti
+    \item \textbf{Memorija (\textit{Memory})} - održavanje konteksta kroz interakcije
+    \item \textbf{Promptovi} - strukturirani predlošci za komunikaciju s modelima
+\end{itemize}
+
+U ovom radu, LangChain se koristi za dvije ključne svrhe:
+
+\subsubsection{Orkestracija RAG pipeline-a}
+
+LangChain omogućava elegantno povezivanje pojedinačnih koraka RAG procesa:
+
+\begin{enumerate}
+    \item Dohvat relevantnih primjera iz ChromaDB baze
+    \item Dohvat informacija o DCAT shemi
+    \item Dinamička konstrukcija prompta s kontekstom
+    \item Poziv GPT-4 modela s optimiziranim parametrima
+    \item Parsiranje i validacija generiranog SPARQL koda
+    \item Rukovanje greškama i pokušaji ponovnog generiranja
+\end{enumerate}
+
+\subsubsection{Upravljanje multimodalnim agentom}
+
+LangChain-ov agentski okvir omogućava stvaranje inteligentnog asistenta koji može:
+
+\begin{itemize}
+    \item Analizirati korisnički upit i identificirati strategiju
+    \item Autonomno odlučiti koje alate koristiti (SPARQL, REST API, similarity search)
+    \item Paralelno izvršavati različite strategije pretraživanja
+    \item Inteligentno kombinirati rezultate iz različitih izvora
+    \item Prilagoditi pristup na temelju dobivenih rezultata
+\end{itemize}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/izvjestaj_image_4.png}
+    \caption{LangChain komponente u akciji - prikaz orkestracije različitih AI komponenti}
+    \label{fig:langchain_orchestration}
+\end{figure}
+
+Prednosti korištenja LangChain-a uključuju:
+
+\begin{itemize}
+    \item \textbf{Modularnost} - lako dodavanje novih komponenti
+    \item \textbf{Standardizacija} - konzistentan način rada s različitim modelima
+    \item \textbf{Skalabilnost} - podrška za asinkrono izvršavanje
+    \item \textbf{Ekstenzibilnost} - mogućnost stvaranja prilagođenih komponenti
+    \item \textbf{Debugging} - ugrađeni alati za praćenje i analizu
+\end{itemize}
+
+\chapter{Arhitektura sustava}
+\label{ch:system_architecture}
+
+Uspješna implementacija složenog softverskog rješenja uvjetovana je postojanjem dobro definirane arhitekture. Ovo poglavlje pruža detaljan opis arhitekture razvijenog sustava, koristeći standardiziranu UML notaciju za vizualizaciju komponenti, njihovih međuodnosa i cjelokupnog toka podataka. Arhitektura je dizajnirana s naglaskom na modularnost, skalabilnost i održivost, omogućavajući lakše proširivanje i prilagodbu budućim zahtjevima.
+
 \section{Korištene tehnologije}
 
-Ključne tehnologije korištene u implementaciji uključuju ChromaDB kao vektorsku bazu podataka za pohranu i pretraživanje semantičkih ugradbi, Sentence Transformers modele za generiranje visokokvalitetnih vektorskih reprezentacija teksta, i OpenAI GPT-4 model za generiranje SPARQL upita iz prirodnog jezika.
+Ključne tehnologije korištene u implementaciji uključuju ChromaDB kao vektorsku bazu podataka za pohranu i pretraživanje semantičkih ugradbi, Sentence Transformers modele za generiranje vektorskih reprezentacija teksta, i OpenAI GPT-4 model za generiranje SPARQL upita iz prirodnog jezika.
 
 \begin{figure}[h!]
     \centering
@@ -40,7 +332,7 @@ Multimodalni pristup pretraživanju omogućava kombiniranje različitih strategi
 
 \section{Arhitektura i skalabilnost}
 
-Sustav je dizajniran da bude skalabilan i održiv, s jasno definiranim sučeljima između komponenti i robusnim mehanizmima rukovanja greškama. Ova arhitektura omogućava lako proširivanje i prilagodbu drugim portalima otvorenih podataka.
+Sustav je dizajniran da bude skalabilan i održiv, s jasno definiranim sučeljima između komponenti i mehanizmima rukovanja greškama. Ova arhitektura omogućava lako proširivanje i prilagodbu drugim portalima otvorenih podataka.
 
 \begin{figure}[htbp]
     \centering
@@ -49,24 +341,24 @@ Sustav je dizajniran da bude skalabilan i održiv, s jasno definiranim sučeljim
     \label{fig:system_scalability}
 \end{figure}
 
-Evaluacija korisničkog iskustva pokazuje da sustav pruža intuitivno sučelje koje omogućava korisnicima bez tehničke pozadine da učinkovito otkrivaju i analiziraju skupove podataka. Ovo demokratizira pristup otvorenim podacima i omogućava širu primjenu u različitim domenama.
+Evaluacija korisničkog iskustva pokazuje da sustav pruža sučelje koje omogućava korisnicima bez tehničke pozadine da otkrivaju i analiziraju skupove podataka. Ovo demokratizira pristup otvorenim podacima i omogućava širu primjenu u različitim domenama.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=1\textwidth]{figures/izvjestaj_image_4.png}
-    \caption{Korisničko sučelje - prikazuje intuitivan dizajn i funkcionalnosti}
+    \caption{Korisničko sučelje - prikazuje dizajn i funkcionalnosti}
     \label{fig:user_interface}
 \end{figure}
 
 Sustav je dizajniran kao modularna arhitektura s jasno definiranim sučeljima između komponenti. Glavni razlog za ovakav pristup je mogućnost nezavisnog razvoja i testiranja pojedinačnih dijelova, što se pokazalo ključnim tijekom implementacije kada je bilo potrebno ispravljati probleme s vektorskim pretraživanjem ili optimizirati LLM pozive.
 
-Arhitektura se sastoji od tri glavna sloja. Sloj pohrane koristi ChromaDB~\cite{wang2023vector} kao vektorsku bazu podataka za pohranu i pretraživanje semantičkih ugradbi, Sentence Transformers modele~\cite{reimers2019sentence} za generiranje visokokvalitetnih vektorskih reprezentacija teksta, i OpenAI GPT-4 model~\cite{brown2020language} za generiranje SPARQL upita iz prirodnog jezika. ChromaDB omogućava brzo pretraživanje sličnosti (kosinusna sličnost) i podržava pohranu meta podataka, što je bilo važno za spremanje informacija o SPARQL upitima i shemi. U praksi se pokazalo da ChromaDB može učinkovito rukovati s velikim brojem primjera upita bez značajnih problema s performansama.
+Arhitektura se sastoji od tri glavna sloja. Sloj pohrane koristi ChromaDB~\cite{wang2023vector} kao vektorsku bazu podataka, Sentence Transformers modele~\cite{reimers2019sentence} za generiranje vektorskih reprezentacija, i OpenAI GPT-4 model~\cite{brown2020language} za generiranje SPARQL upita. ChromaDB omogućava brzo pretraživanje sličnosti i podržava pohranu meta podataka.
 
-Sloj obrade uključuje Sentence Transformers model all-MiniLM-L6-v2 za generiranje embeddinga. Ovaj model je odabran nakon testiranja nekoliko alternativa - pokazao se kao optimalan balans između kvalitete embeddinga, brzine generiranja i veličine modela. Model generira 384-dimenzijske vektore što je dovoljno za hvatanje semantičkih razlika, a dovoljno malo za brzo pretraživanje. Testiranje je pokazalo da model dobro radi s hrvatskim i engleskim tekstom, što je bilo važno za podatke s EU Portala.
+Sloj obrade uključuje Sentence Transformers model all-MiniLM-L6-v2 za generiranje embeddinga. Ovaj model je odabran nakon testiranja nekoliko alternativa - pokazao se kao adekvatan balans između kvalitete embeddinga, brzine generiranja i veličine modela. Model generira 384-dimenzijske vektore što je dovoljno za hvatanje semantičkih razlika.
 
 LangChain okvir~\cite{liu2023survey} korišten je za orkestraciju različitih komponenti sustava i upravljanje agentima koji omogućavaju složene zadatke poput multimodalnog pretraživanja i inteligentne sinteze rezultata.
 
-OpenAI GPT-4 je korišten za generiranje SPARQL upita. Model pokazuje izvrsne rezultate kada ima dovoljno kontekstualnih informacija, ali ima ograničenja s tokenima što može biti problematično za složene upite. Također, troškovi API poziva mogu biti značajni za intenzivnu upotrebu.
+OpenAI GPT-4 je korišten za generiranje SPARQL upita. Model pokazuje dobre rezultate kada ima dovoljno kontekstualnih informacija, ali ima ograničenja s tokenima što može biti problematično za složene upite. Također, troškovi API poziva mogu biti značajni za intenzivnu upotrebu.
 
 \begin{figure}[htbp]
     \centering
@@ -564,7 +856,7 @@ def _synthesize_results(self, results: Dict[str, Any], original_query: str) -> s
 
 \section{Validacija, rukovanje greškama i optimizacija}
 
-Robusno rukovanje greškama je ključno za pouzdano funkcioniranje sustava. Implementacija uključuje validaciju upita, rukovanje API greškama i strategije oporavka.
+Rukovanje greškama je ključno za pouzdano funkcioniranje sustava. Implementacija uključuje validaciju upita, rukovanje API greškama i strategije oporavka.
 
 Validacija SPARQL upita se vrši kroz dvostupanjski proces. Prvi korak je sintaksna validacija kroz SPARQL parser, a drugi korak je testiranje izvršavanja s ograničenim brojem rezultata. Ovo sprječava izvršavanje neispravnih upita koji mogu uzrokovati probleme s performansama.
 
@@ -737,4 +1029,315 @@ async def async_search_datasets(self, query: str) -> Dict[str, Any]:
     \includegraphics[width=1\textwidth]{figures/izvjestaj_image_68.png}
     \caption{Rukovanje greškama i fallback strategija}
     \label{fig:error_handling}
+\end{figure} 
+
+\section{Cjelokupni pregled i tok podataka}
+
+Cjelokupna arhitektura sustava projektirana je prema načelima modularnosti i skalabilnosti, što omogućuje neovisan razvoj, testiranje i buduću nadogradnju pojedinih komponenti. Sustav se može konceptualno podijeliti na tri glavna sloja: prezentacijski sloj, sloj poslovne logike i sloj podataka. Svaki sloj ima jasno definirane odgovornosti i komunicira s drugim slojevima kroz dobro definirane sučelja.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/system_architecture.png}
+    \caption{UML dijagram komponenti sustava - prikazuje glavne module i njihove međusobne ovisnosti}
+    \label{fig:system_components_uml}
+\end{figure}
+
+Glavni moduli sustava uključuju:
+
+\begin{enumerate}
+    \item \textbf{Korisničko sučelje (\textit{Web Interface})} - Predstavlja točku interakcije s krajnjim korisnikom. Odgovorno je za prihvaćanje upita na prirodnom jeziku, vizualizaciju rezultata te pružanje intuitivnog korisničkog iskustva. Implementirano je kao React aplikacija s modernim UI komponentama.
+    
+    \item \textbf{Multimodalni Asistent (\textit{Unified Data Assistant})} - Djeluje kao središnji orkestrator sustava, implementiran kao LangChain agent. Njegova je zadaća analizirati korisnički upit, identificirati strategiju pretraživanja i koordinirati izvršavanje različitih komponenti.
+    
+    \item \textbf{RAG Podsustav (\textit{RAG Subsystem})} - Čini jezgru inteligentnog generiranja upita. Obuhvaća RAG Engine koji koordinira proces, LLM Assistant za generiranje SPARQL koda i vektorsku bazu podataka za semantičko pretraživanje.
+    
+    \item \textbf{API Klijent (\textit{API Client})} - Komponenta zadužena za interakciju s vanjskim REST API-jima, kao što je CKAN API koji koristi EU Portal. Implementira rukovanje greškama i \textit{retry} logiku.
+    
+    \item \textbf{Procesor SPARQL Upita (\textit{SPARQL Processor})} - Komponenta odgovorna za izvršavanje generiranih SPARQL upita nad definiranim vanjskim \textit{endpoint}-om te za obradu i strukturiranje dobivenih rezultata. Uključuje optimizacije poput predmemoriranja čestih upita.
+    
+    \item \textbf{Ekstraktor Sheme (\textit{Schema Extractor})} - Modul koji periodički, u pozadini, dohvaća i analizira DCAT/VoID shemu s ciljanog portala kako bi osigurao ažurne informacije o strukturi podataka. Ovo je ključno za točnost generiranih upita.
+    
+    \item \textbf{Spremišta Podataka (\textit{Data Stores})} - Uključuju Vektorsku Bazu (ChromaDB) za pohranu primjera i fragmenata sheme, te Predmemoriju (\textit{Cache}) za privremeno spremanje rezultata upita i \textit{embeddings} radi optimizacije performansi.
+\end{enumerate}
+
+Tok podataka kroz sustav može se najjasnije prikazati pomoću slijednog dijagrama interakcije koji prikazuje kako različite komponente surađuju u obradi korisničkog upita.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/izvjestaj_image_11.png}
+    \caption{UML slijedni dijagram za obradu korisničkog upita - prikazuje interakcije između komponenti}
+    \label{fig:sequence_diagram_uml}
+\end{figure}
+
+Detaljan opis toka podataka:
+
+\begin{enumerate}
+    \item \textbf{Korisnikov unos} - Korisnik unosi upit na prirodnom jeziku kroz web sučelje (npr. "Prikaži skupove podataka koji se odnose na kvalitetu zraka u Njemačkoj u zadnjih 5 godina").
+    
+    \item \textbf{Prijem upita} - Multimodalni Asistent prima upit i provodi inicijalnu analizu kako bi identificirao ključne entitete (geografska lokacija: Njemačka, tema: kvaliteta zraka, vremenski okvir: 5 godina).
+    
+    \item \textbf{Paralelno izvršavanje strategija} - Asistent inicira paralelno izvršavanje više strategija pretraživanja:
+    \begin{itemize}
+        \item Delegira RAG Podsustavu zadatak generiranja SPARQL upita
+        \item Nalaže API Klijentu da pretraži portal koristeći ekstrahirane ključne riječi
+        \item Pokreće pretraživanje sličnih skupova podataka ako postoje referentni primjeri
+    \end{itemize}
+    
+    \item \textbf{RAG proces} - RAG Podsustav izvršava svoj interni, višefazni proces:
+    \begin{itemize}
+        \item Generira vektorsku ugradbu za korisnički upit koristeći \textit{Sentence Transformers}
+        \item Pretražuje Vektorsku Bazu radi dohvata semantički sličnih primjera (k=5)
+        \item Dohvaća relevantne elemente DCAT sheme na temelju identificiranih koncepata
+        \item Konstruira obogaćeni \textit{prompt} koji kombinira sve prikupljene informacije
+        \item Prosljeđuje \textit{prompt} LLM Assistant-u (GPT-4) za generiranje
+        \item GPT-4 analizira kontekst i generira kandidatski SPARQL upit
+        \item Upit prolazi kroz proces sintaksne i semantičke validacije
+    \end{itemize}
+    
+    \item \textbf{Izvršavanje SPARQL upita} - Validirani SPARQL upit prosljeđuje se Procesoru SPARQL Upita:
+    \begin{itemize}
+        \item Prvo se provjerava predmemorija za identične upite
+        \item Ako upit nije u predmemoriji, izvršava se nad vanjskim \textit{endpoint}-om
+        \item Rezultati se strukturiraju u standardizirani format
+        \item Novi rezultati se pohranjuju u predmemoriju s TTL od 1 sata
+    \end{itemize}
+    
+    \item \textbf{API pretraživanje} - API Klijent istovremeno izvršava REST API pozive:
+    \begin{itemize}
+        \item Konstruira parametre pretrage na temelju ključnih riječi
+        \item Izvršava paginiranu pretragu kroz CKAN API
+        \item Obrađuje i normalizira dobivene rezultate
+    \end{itemize}
+    
+    \item \textbf{Prikupljanje rezultata} - Multimodalni Asistent prikuplja sve rezultate:
+    \begin{itemize}
+        \item Čeka završetak svih paralelnih operacija (s \textit{timeout}-om od 30 sekundi)
+        \item Agregira rezultate iz različitih izvora
+        \item Identificira preklapanja i uklanja duplikate
+    \end{itemize}
+    
+    \item \textbf{Inteligentna sinteza} - Asistent koristi LLM za provedbu sinteze:
+    \begin{itemize}
+        \item Analizira sve prikupljene rezultate
+        \item Rangira ih prema relevantnosti za originalni upit
+        \item Generira koherentan sažetak na prirodnom jeziku
+        \item Izdvaja ključne nalaze i preporuke
+    \end{itemize}
+    
+    \item \textbf{Prezentacija rezultata} - Finalni, sintetizirani odgovor prezentira se korisniku:
+    \begin{itemize}
+        \item Prikazuje se sažetak s ključnim nalazima
+        \item Lista relevantnih skupova podataka s detaljima
+        \item Vizualizacije ako su primjenjive (grafovi, karte)
+        \item Opcije za daljnje istraživanje i filtriranje
+    \end{itemize}
+\end{enumerate}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/izvjestaj_image_13.png}
+    \caption{UML dijagram aktivnosti - prikazuje paralelne tokove obrade upita}
+    \label{fig:activity_diagram_uml}
+\end{figure}
+
+\section{Arhitektura RAG podsustava}
+
+RAG podsustav predstavlja ključnu inovaciju ovog rada, omogućavajući premošćivanje jaza između prirodnog jezika i formalnih upitnih jezika. Njegova je arhitektura pažljivo projektirana s ciljem maksimizacije točnosti i relevantnosti generiranih SPARQL upita, uz održavanje razumne brzine odziva.
+
+\subsection{Dizajn vektorske baze}
+
+Vektorska baza, implementirana u ChromaDB, organizirana je u dvije logičke kolekcije koje služe različitim svrhama ali zajedno omogućavaju RAG proces.
+
+\subsubsection{Kolekcija query\_examples}
+
+Ova kolekcija predstavlja srce RAG sustava, pohranjujući bazu primjera koji služe kao predlošci za generiranje novih upita. Svaki dokument u ovoj kolekciji strukturiran je na sljedeći način:
+
+\begin{itemize}
+    \item \textbf{Ugradba (\textit{Embedding})} - 384-dimenzionalni vektor generiran iz pitanja na prirodnom jeziku koristeći \texttt{all-MiniLM-L6-v2} model. Ovaj vektor enkapsulira semantičko značenje pitanja.
+    
+    \item \textbf{Sadržaj (\textit{Document})} - Tekstualni sadržaj originalnog pitanja na prirodnom jeziku, pohranjen za referencu i prikaz.
+    
+    \item \textbf{Metapodaci (\textit{Metadata})} - Bogat skup strukturiranih informacija:
+    \begin{itemize}
+        \item \texttt{sparql\_query} - Pripadajući, validirani SPARQL upit koji odgovara pitanju
+        \item \texttt{description} - Detaljan opis što upit radi i kakve rezultate vraća
+        \item \texttt{tags} - Lista deskriptivnih oznaka (npr. ["okoliš", "vremenska\_serija", "geografski"])
+        \item \texttt{endpoint} - URL SPARQL \textit{endpoint}-a za koji je upit namijenjen
+        \item \texttt{success\_rate} - Postotak uspješnih izvršavanja (0.0 - 1.0)
+        \item \texttt{execution\_time} - Prosječno vrijeme izvršavanja u milisekundama
+        \item \texttt{result\_count} - Tipičan broj rezultata koje upit vraća
+        \item \texttt{complexity} - Ocjena složenosti upita (1-5)
+        \item \texttt{created\_at} - Vremenska oznaka stvaranja
+        \item \texttt{last\_used} - Vremenska oznaka zadnjeg korištenja
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Kolekcija schema\_info}
+
+Ova kolekcija pohranjuje atomične fragmente DCAT sheme kako bi LLM imao neposredan kontekst o dostupnim klasama i svojstvima. Organizacija je sljedeća:
+
+\begin{itemize}
+    \item \textbf{Ugradba} - Vektor generiran iz kombinacije:
+    \begin{itemize}
+        \item Imena klase ili svojstva (npr. "dcat:Dataset")
+        \item Formalnog opisa iz DCAT specifikacije
+        \item Primjera korištenja u kontekstu
+    \end{itemize}
+    
+    \item \textbf{Metapodaci} - Detaljne informacije o elementu sheme:
+    \begin{itemize}
+        \item \texttt{type} - Tip elementa ("class" ili "property")
+        \item \texttt{uri} - Potpuni URI elementa
+        \item \texttt{domain} - Za svojstva, klasa na kojoj se koriste
+        \item \texttt{range} - Za svojstva, tip vrijednosti koje primaju
+        \item \texttt{cardinality} - Kardinalnost (obavezno, preporučeno, opcionalno)
+        \item \texttt{frequency} - Učestalost pojavljivanja u grafu znanja
+        \item \texttt{examples} - Konkretni primjeri korištenja
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Metrika sličnosti i alternativni pristupi}
+
+Za dohvat relevantnih primjera iz vektorske baze koristi se kosinusna sličnost, definirana kao:
+
+$$\text{similarity}(A, B) = \frac{A \cdot B}{||A|| \cdot ||B||} = \frac{\sum_{i=1}^{n} A_i B_i}{\sqrt{\sum_{i=1}^{n} A_i^2} \sqrt{\sum_{i=1}^{n} B_i^2}}$$
+
+Ova metrika odabrana je nakon evaluacije nekoliko alternativa:
+
+\begin{itemize}
+    \item \textbf{Euklidska udaljenost} - Testirana ali pokazala se manje prikladnom za semantičko pretraživanje jer je osjetljiva na magnitudu vektora
+    \item \textbf{Manhattan udaljenost} - Brža za računanje ali manje precizna za visokodimenzionalne prostore
+    \item \textbf{Dot product} - Slična kosinusnoj sličnosti ali bez normalizacije
+\end{itemize}
+
+Pitanje korištenja hibridnih metoda koje kombiniraju vektorsku pretragu s tradicionalnim \textit{bag-of-words} pristupima razmatrano je detaljno. Hibridni pristup bi mogao kombinirati:
+
+\begin{itemize}
+    \item BM25 algoritam za ključne riječi
+    \item Kosinusnu sličnost za semantiku
+    \item Ponderiranu kombinaciju rezultata
+\end{itemize}
+
+Prednosti hibridnog pristupa:
+\begin{itemize}
+    \item Bolje rukovanje rijetkim terminima
+    \item Otpornost na pravopisne greške
+    \item Preciznije podudaranje specifičnih naziva
+\end{itemize}
+
+Razlozi zašto je za prototip odabran čisti vektorski pristup:
+\begin{itemize}
+    \item Jednostavnost implementacije omogućava brži razvoj
+    \item Konzistentnost rezultata kroz različite jezike
+    \item Dovoljna preciznost za identificirane slučajeve (92\% točnosti)
+    \item Arhitektura omogućava lako dodavanje hibridnog pristupa u budućnosti
+\end{itemize}
+
+\subsection{Dizajn procesa generiranja upita}
+
+Proces generiranja upita slijedi kanonski RAG \textit{pipeline} koji se sastoji od tri glavne faze: \textit{Retrieval}, \textit{Augmentation} i \textit{Generation}. Svaka faza je optimizirana za točnost i performanse.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/rag_pipeline.png}
+    \caption{Konceptualni prikaz RAG \textit{pipeline}-a s detaljima svake faze}
+    \label{fig:rag_pipeline_detailed}
+\end{figure}
+
+\subsubsection{Retrieval (Dohvat)}
+
+Faza dohvata počinje transformacijom korisničkog upita u vektorsku reprezentaciju:
+
+\begin{enumerate}
+    \item \textbf{Predobrada upita}:
+    \begin{itemize}
+        \item Normalizacija teksta (mala slova, uklanjanje viška razmaka)
+        \item Identifikacija imenovanih entiteta (lokacije, vremena, organizacije)
+        \item Ekstraktiranje ključnih koncepata kroz NER (\textit{Named Entity Recognition})
+    \end{itemize}
+    
+    \item \textbf{Generiranje \textit{embeddings}-a}:
+    \begin{itemize}
+        \item Tokenizacija kroz SentencePiece tokenizer
+        \item Procesiranje kroz 6 slojeva transformer arhitekture
+        \item Agregacija kroz \textit{mean pooling} strategiju
+        \item Normalizacija rezultirajućeg vektora
+    \end{itemize}
+    
+    \item \textbf{Vektorsko pretraživanje}:
+    \begin{itemize}
+        \item Primjena HNSW (\textit{Hierarchical Navigable Small World}) algoritma
+        \item Dohvaćanje k=5 najsličnijih primjera iz \texttt{query\_examples}
+        \item Paralelno dohvaćanje k=3 relevantnih elemenata sheme
+        \item Filtriranje rezultata s pragom sličnosti > 0.7
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{Augmentation (Obogaćivanje)}
+
+Faza obogaćivanja predstavlja ključan korak poznat kao inženjerstvo \textit{prompt}-ova. Struktura \textit{prompt}-a je rezultat iterativnog testiranja i optimizacije:
+
+\begin{lstlisting}[language=Python, caption=Struktura obogaćenog prompta za LLM]
+prompt_template = """
+System: You are an expert SPARQL query generator for the EU Open Data Portal.
+Your task is to generate valid, efficient SPARQL queries based on user questions.
+
+Context - Available DCAT Schema Elements:
+{schema_context}
+
+Similar Query Examples:
+{similar_examples}
+
+User Question: {user_question}
+
+Instructions:
+1. Analyze the user's intent carefully
+2. Use appropriate prefixes (dcat:, dct:, foaf:, etc.)
+3. Include proper WHERE clauses and OPTIONAL patterns
+4. Optimize for performance with appropriate LIMIT
+5. Return only the SPARQL query without explanations
+
+SPARQL Query:
+"""
+\end{lstlisting}
+
+Ključni elementi \textit{prompt}-a:
+
+\begin{itemize}
+    \item \textbf{Sistemska instrukcija} - Definira ulogu i kontekst LLM-a
+    \item \textbf{Kontekst sheme} - Pruža informacije o dostupnim klasama i svojstvima
+    \item \textbf{Primjeri} - Pokazuje slične upite s njihovim rješenjima
+    \item \textbf{Instrukcije} - Specificiraju format i zahtjeve za izlaz
+\end{itemize}
+
+\subsubsection{Generation (Generiranje)}
+
+Faza generiranja koristi GPT-4 model s pažljivo podešenim parametrima:
+
+\begin{itemize}
+    \item \textbf{Temperature}: 0.1 - niska vrijednost za determinističke rezultate
+    \item \textbf{Top-p}: 0.9 - ograničava na vjerojatnije tokene
+    \item \textbf{Max tokens}: 1000 - dovoljan prostor za složene upite
+    \item \textbf{Frequency penalty}: 0.0 - ne kažnjava ponavljanje (važno za SPARQL)
+    \item \textbf{Presence penalty}: 0.0 - omogućava ponavljanje obrazaca
+\end{itemize}
+
+Nakon generiranja slijedi post-procesiranje:
+
+\begin{enumerate}
+    \item Ekstraktiranje SPARQL koda iz odgovora
+    \item Uklanjanje komentara i nepotrebnih znakova
+    \item Provjera osnovne sintakse
+    \item Dodavanje nedostajućih prefiksa ako je potrebno
+\end{enumerate}
+
+\section{Arhitektura multimodalnog pretraživanja}
+
+Oslanjanje na isključivo jednu metodu pretraživanja može predstavljati ograničenje, posebno kada različiti tipovi upita zahtijevaju različite pristupe. Stoga je sustav projektiran s multimodalnom arhitekturom koja omogućava kombiniranje prednosti različitih pristupa.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/multimodal_search.png}
+    \caption{Arhitektura multimodalnog pretraživanja - UML dijagram komponenti}
+    \label{fig:multimodal_architecture_uml}
 \end{figure} 

@@ -4,37 +4,139 @@
 \babel@toc {croatian}{}\relax 
 \babel@toc {croatian}{}\relax 
 \contentsline {chapter}{Sadr\v {z}aj}{1}{chapter*.1}%
-\contentsline {chapter}{\numberline {1.}Uvod i korištene tehnologije}{3}{chapter.1}%
+\contentsline {chapter}{Popis slika}{4}{chapter*.2}%
+\contentsline {chapter}{\numberline {1.}Uvod}{7}{chapter.1}%
 \babel@toc {croatian}{}\relax 
-\contentsline {section}{\numberline {1.1.}Korištene tehnologije}{7}{section.1.1}%
-\contentsline {section}{\numberline {1.2.}Ključne funkcionalnosti}{9}{section.1.2}%
-\contentsline {section}{\numberline {1.3.}Arhitektura i skalabilnost}{9}{section.1.3}%
-\contentsline {section}{\numberline {1.4.}Praktične implikacije i budući razvoj}{12}{section.1.4}%
-\contentsline {chapter}{\numberline {2.}Dizajn i implementacija sustava}{16}{chapter.2}%
+\contentsline {section}{\numberline {1.1.}Problemski okvir i motivacija}{7}{section.1.1}%
+\contentsline {section}{\numberline {1.2.}Predloženo rješenje i ciljevi rada}{8}{section.1.2}%
+\contentsline {section}{\numberline {1.3.}Struktura rada}{10}{section.1.3}%
+\contentsline {chapter}{\numberline {2.}Korištene tehnologije i alati}{12}{chapter.2}%
 \babel@toc {croatian}{}\relax 
-\contentsline {section}{\numberline {2.1.}Arhitektura i korištene tehnologije}{16}{section.2.1}%
-\contentsline {section}{\numberline {2.2.}RAG sustav implementacija i vektorska baza}{17}{section.2.2}%
-\contentsline {section}{\numberline {2.3.}Generiranje SPARQL upita i prompt engineering}{20}{section.2.3}%
-\contentsline {section}{\numberline {2.4.}Ekstrakcija sheme i DCAT analiza}{23}{section.2.4}%
-\contentsline {section}{\numberline {2.5.}Unified Data Assistant i multimodalno pretraživanje}{27}{section.2.5}%
-\contentsline {section}{\numberline {2.6.}Validacija, rukovanje greškama i optimizacija}{34}{section.2.6}%
-\contentsline {chapter}{\numberline {3.}Evaluacija i rezultati}{40}{chapter.3}%
+\contentsline {section}{\numberline {2.1.}Tehnologije za upravljanje podacima}{12}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1.}SPARQL (SPARQL Protocol and RDF Query Language)}{12}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2.}DCAT (Data Catalog Vocabulary)}{13}{subsection.2.1.2}%
+\contentsline {subsubsection}{DCAT-AP (Application Profile for Data Portals in Europe)}{14}{section*.5}%
+\contentsline {subsection}{\numberline {2.1.3.}ChromaDB Vektorska Baza Podataka}{15}{subsection.2.1.3}%
+\contentsline {section}{\numberline {2.2.}Komponente umjetne inteligencije}{18}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1.}Veliki jezični modeli (LLM) - OpenAI GPT-4}{18}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2.}Modeli za semantičke ugradbe - Sentence Transformers}{19}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3.}Orkestracijski okviri - LangChain}{21}{subsection.2.2.3}%
+\contentsline {subsubsection}{Orkestracija RAG pipeline-a}{21}{section*.8}%
+\contentsline {subsubsection}{Upravljanje multimodalnim agentom}{22}{section*.9}%
+\contentsline {chapter}{\numberline {3.}Arhitektura sustava}{23}{chapter.3}%
+\contentsline {section}{\numberline {3.1.}Korištene tehnologije}{23}{section.3.1}%
+\contentsline {section}{\numberline {3.2.}Ključne funkcionalnosti}{24}{section.3.2}%
+\contentsline {section}{\numberline {3.3.}Arhitektura i skalabilnost}{24}{section.3.3}%
+\contentsline {section}{\numberline {3.4.}Implementacija RAG sustava i vektorske baze}{27}{section.3.4}%
+\contentsline {section}{\numberline {3.5.}Generiranje SPARQL upita i prompt engineering}{30}{section.3.5}%
+\contentsline {section}{\numberline {3.6.}Ekstrakcija sheme i DCAT analiza}{34}{section.3.6}%
+\contentsline {section}{\numberline {3.7.}Unified Data Assistant i multimodalno pretraživanje}{37}{section.3.7}%
+\contentsline {section}{\numberline {3.8.}Validacija, rukovanje greškama i optimizacija}{42}{section.3.8}%
+\contentsline {section}{\numberline {3.9.}Cjelokupni pregled i tok podataka}{48}{section.3.9}%
+\contentsline {section}{\numberline {3.10.}Arhitektura RAG podsustava}{52}{section.3.10}%
+\contentsline {subsection}{\numberline {3.10.1.}Dizajn vektorske baze}{53}{subsection.3.10.1}%
+\contentsline {subsubsection}{Kolekcija query\_examples}{53}{section*.27}%
+\contentsline {subsubsection}{Kolekcija schema\_info}{54}{section*.28}%
+\contentsline {subsubsection}{Metrika sličnosti i alternativni pristupi}{54}{section*.29}%
+\contentsline {subsection}{\numberline {3.10.2.}Dizajn procesa generiranja upita}{55}{subsection.3.10.2}%
+\contentsline {subsubsection}{Retrieval (Dohvat)}{56}{section*.31}%
+\contentsline {subsubsection}{Augmentation (Obogaćivanje)}{57}{section*.32}%
+\contentsline {subsubsection}{Generation (Generiranje)}{58}{section*.33}%
+\contentsline {section}{\numberline {3.11.}Arhitektura multimodalnog pretraživanja}{58}{section.3.11}%
+\contentsline {chapter}{\numberline {4.}Evaluacija sustava}{60}{chapter.4}%
 \babel@toc {croatian}{}\relax 
-\contentsline {section}{\numberline {3.1.}Metodologija evaluacije i testni podaci}{40}{section.3.1}%
-\contentsline {section}{\numberline {3.2.}Rezultati performansi i točnosti}{41}{section.3.2}%
-\contentsline {section}{\numberline {3.3.}Usporedna analiza i robusnost sustava}{42}{section.3.3}%
-\contentsline {section}{\numberline {3.4.}Evaluacija korisničkog iskustva i praktične implikacije}{45}{section.3.4}%
-\contentsline {section}{\numberline {3.5.}Ograničenja, problemi i smjernice za budući rad}{47}{section.3.5}%
-\contentsline {chapter}{\numberline {4.}Zaključak}{52}{chapter.4}%
+\contentsline {section}{\numberline {4.1.}Metodologija i testno okruženje}{60}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1.}Izvor podataka}{60}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2.}Testni skup upita}{61}{subsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.1.3.}Definirane metrike}{61}{subsection.4.1.3}%
+\contentsline {subsubsection}{Metrike točnosti}{61}{section*.36}%
+\contentsline {subsubsection}{Metrike performansi}{62}{section*.37}%
+\contentsline {subsubsection}{Metrike kvalitete korisničkog iskustva}{62}{section*.38}%
+\contentsline {subsection}{\numberline {4.1.4.}Testno okruženje}{63}{subsection.4.1.4}%
+\contentsline {section}{\numberline {4.2.}Analiza rezultata}{64}{section.4.2}%
+\contentsline {subsection}{\numberline {4.2.1.}Uspješnost i točnost generiranja upita}{64}{subsection.4.2.1}%
+\contentsline {subsubsection}{Stopa uspjeha generiranja}{64}{section*.40}%
+\contentsline {subsubsection}{Analiza po domenama}{65}{section*.41}%
+\contentsline {subsubsection}{Tipovi grešaka}{65}{section*.43}%
+\contentsline {subsection}{\numberline {4.2.2.}Analiza performansi i vremena odziva}{66}{subsection.4.2.2}%
+\contentsline {subsubsection}{Prosječno vrijeme odziva}{66}{section*.45}%
+\contentsline {subsubsection}{Performanse vektorskog pretraživanja}{67}{section*.46}%
+\contentsline {subsubsection}{Analiza propusnosti}{67}{section*.47}%
+\contentsline {subsection}{\numberline {4.2.3.}Predmemoriranje i optimizacija}{68}{subsection.4.2.3}%
+\contentsline {section}{\numberline {4.3.}Usporedna analiza i testiranje stabilnosti}{68}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1.}Usporedba s alternativnim pristupima}{68}{subsection.4.3.1}%
+\contentsline {subsubsection}{Rezultati usporedbe}{69}{section*.51}%
+\contentsline {subsubsection}{Analiza po tipovima upita}{69}{section*.53}%
+\contentsline {subsection}{\numberline {4.3.2.}Testovi stabilnosti}{70}{subsection.4.3.2}%
+\contentsline {subsubsection}{Mrežne greške i prekidi}{70}{section*.54}%
+\contentsline {subsubsection}{Ograničenja API-ja}{70}{section*.55}%
+\contentsline {subsubsection}{Neispravni korisnički unosi}{70}{section*.56}%
+\contentsline {subsection}{\numberline {4.3.3.}Evaluacija korisničkog iskustva}{71}{subsection.4.3.3}%
+\contentsline {subsubsection}{Profili sudionika}{71}{section*.58}%
+\contentsline {subsubsection}{Rezultati evaluacije korisničkog iskustva}{71}{section*.59}%
+\contentsline {subsubsection}{Identificirani izazovi}{72}{section*.61}%
+\contentsline {section}{\numberline {4.4.}Diskusija rezultata evaluacije}{72}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1.}Ključni doprinosi}{72}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2.}Područja za poboljšanje}{72}{subsection.4.4.2}%
+\contentsline {chapter}{\numberline {5.}Rasprava i budući rad}{74}{chapter.5}%
 \babel@toc {croatian}{}\relax 
-\contentsline {chapter}{\numberline {5.}Literatura}{54}{chapter.5}%
+\contentsline {section}{\numberline {5.1.}Ograničenja}{74}{section.5.1}%
+\contentsline {subsection}{\numberline {5.1.1.}Ovisnost o komercijalnim LLM API-jima}{74}{subsection.5.1.1}%
+\contentsline {subsubsection}{Latencija i performanse}{74}{section*.62}%
+\contentsline {subsubsection}{Troškovi skaliranja}{75}{section*.63}%
+\contentsline {subsubsection}{Sigurnosni i privatnosti aspekti}{75}{section*.65}%
+\contentsline {subsection}{\numberline {5.1.2.}Jezična podrška}{76}{subsection.5.1.2}%
+\contentsline {subsubsection}{Izazovi s hrvatskim jezikom}{76}{section*.66}%
+\contentsline {subsubsection}{Višejezični kontekst EU}{76}{section*.67}%
+\contentsline {subsection}{\numberline {5.1.3.}Skalabilnost sustava}{76}{subsection.5.1.3}%
+\contentsline {subsubsection}{Identificirana uska grla}{76}{section*.68}%
+\contentsline {subsubsection}{Arhitekturalna ograničenja}{77}{section*.69}%
+\contentsline {subsection}{\numberline {5.1.4.}Domensko usmjeravanje}{77}{subsection.5.1.4}%
+\contentsline {subsubsection}{Vezanost uz DCAT}{77}{section*.70}%
+\contentsline {subsubsection}{Nedostatak domenskog znanja}{78}{section*.71}%
+\contentsline {section}{\numberline {5.2.}Smjernice za buduća istraživanja}{78}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1.}Implementacija lokalnih LLM-ova}{78}{subsection.5.2.1}%
+\contentsline {subsubsection}{Kandidati za lokalne modele}{78}{section*.72}%
+\contentsline {subsubsection}{Strategija implementacije}{79}{section*.74}%
+\contentsline {subsubsection}{Očekivane prednosti}{79}{section*.75}%
+\contentsline {subsection}{\numberline {5.2.2.}Unapređenje baze primjera}{80}{subsection.5.2.2}%
+\contentsline {subsubsection}{Strategija aktivnog učenja}{80}{section*.76}%
+\contentsline {subsubsection}{Optimizacija vektorskog prostora}{80}{section*.77}%
+\contentsline {subsection}{\numberline {5.2.3.}Bolje strategije sinteze}{81}{subsection.5.2.3}%
+\contentsline {subsubsection}{Algoritmi rangiranja}{81}{section*.78}%
+\contentsline {subsubsection}{Kombiniranje rezultata}{82}{section*.79}%
+\contentsline {subsection}{\numberline {5.2.4.}Višejezična podrška}{82}{subsection.5.2.4}%
+\contentsline {subsubsection}{Arhitektura za višejezičnost}{82}{section*.80}%
+\contentsline {subsubsection}{Hrvatski jezik specifično}{83}{section*.81}%
+\contentsline {subsection}{\numberline {5.2.5.}Prelazak na distribuiranu arhitekturu}{83}{subsection.5.2.5}%
+\contentsline {subsubsection}{Predložena mikroservisna arhitektura}{83}{section*.82}%
+\contentsline {subsubsection}{Prednosti distribuirane arhitekture}{84}{section*.84}%
+\contentsline {subsection}{\numberline {5.2.6.}Dodatne značajke korisničkog sučelja}{84}{subsection.5.2.6}%
+\contentsline {subsubsection}{Vizualizacija podataka}{84}{section*.85}%
+\contentsline {subsubsection}{Interaktivno istraživanje}{84}{section*.86}%
+\contentsline {subsubsection}{Kolaborativne značajke}{85}{section*.87}%
+\contentsline {section}{\numberline {5.3.}Dugoročna vizija}{85}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1.}Integracija s AI ekosistemom}{85}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2.}Standardizacija pristupa}{85}{subsection.5.3.2}%
+\contentsline {subsection}{\numberline {5.3.3.}Edukacijska komponenta}{86}{subsection.5.3.3}%
+\contentsline {chapter}{\numberline {6.}Zaključak}{87}{chapter.6}%
 \babel@toc {croatian}{}\relax 
-\contentsline {chapter}{Sa\v {z}etak}{56}{chapter*.29}%
+\contentsline {section}{\numberline {6.1.}Glavna postignuća}{87}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1.}Tehnički doprinosi}{87}{subsection.6.1.1}%
+\contentsline {subsection}{\numberline {6.1.2.}Praktični utjecaj}{88}{subsection.6.1.2}%
+\contentsline {section}{\numberline {6.2.}Odgovori na istraživačka pitanja}{88}{section.6.2}%
+\contentsline {section}{\numberline {6.3.}Ograničenja i budući rad}{89}{section.6.3}%
+\contentsline {section}{\numberline {6.4.}Smjernice za budući razvoj}{89}{section.6.4}%
+\contentsline {section}{\numberline {6.5.}Završna razmatranja}{90}{section.6.5}%
+\contentsline {chapter}{\numberline {7.}Literatura}{91}{chapter.7}%
+\contentsline {chapter}{Popis izvora slika}{93}{chapter*.88}%
+\babel@toc {croatian}{}\relax 
+\contentsline {chapter}{Sa\v {z}etak}{96}{chapter*.89}%
 \babel@toc {croatian}{}\relax 
 \babel@toc {croatian}{}\relax 
 \babel@toc {croatian}{}\relax 
 \babel@toc {english}{}\relax 
-\contentsline {chapter}{Abstract}{57}{chapter*.30}%
+\contentsline {chapter}{Abstract}{97}{chapter*.90}%
 \babel@toc {croatian}{}\relax 
 \babel@toc {english}{}\relax 
 \babel@toc {croatian}{}\relax 

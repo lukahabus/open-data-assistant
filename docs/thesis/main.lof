@@ -1,0 +1,54 @@
+\babel@toc {croatian}{}\relax 
+\babel@toc {croatian}{}\relax 
+\babel@toc {croatian}{}\relax 
+\babel@toc {croatian}{}\relax 
+\babel@toc {croatian}{}\relax 
+\addvspace {10\p@ }
+\babel@toc {croatian}{}\relax 
+\contentsline {figure}{\numberline {1.\spacefactor \@m {}1.}{\ignorespaces DCAT standard - prikazuje osnovne klase i svojstva za opisivanje kataloga podataka~\cite {dcat2020}}}{11}{figure.caption.3}%
+\addvspace {10\p@ }
+\babel@toc {croatian}{}\relax 
+\contentsline {figure}{\numberline {2.\spacefactor \@m {}1.}{\ignorespaces DCAT konceptualni model - prikazuje osnovne klase i njihove međusobne veze}}{14}{figure.caption.4}%
+\contentsline {figure}{\numberline {2.\spacefactor \@m {}2.}{\ignorespaces EU Portal otvorenih podataka - sučelje koje koristi DCAT standard za organizaciju podataka}}{16}{figure.caption.6}%
+\contentsline {figure}{\numberline {2.\spacefactor \@m {}3.}{\ignorespaces ChromaDB arhitektura - prikazuje komponente vektorske baze podataka i tok obrade podataka}}{16}{figure.caption.7}%
+\contentsline {figure}{\numberline {2.\spacefactor \@m {}4.}{\ignorespaces LangChain komponente u akciji - prikaz orkestracije različitih AI komponenti}}{22}{figure.caption.10}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.\spacefactor \@m {}1.}{\ignorespaces ChromaDB arhitektura - prikazuje komponente vektorske baze podataka}}{23}{figure.caption.11}%
+\contentsline {figure}{\numberline {3.\spacefactor \@m {}2.}{\ignorespaces Ekstrakcija sheme i validacija generiranog SPARQL upita}}{24}{figure.caption.12}%
+\contentsline {figure}{\numberline {3.\spacefactor \@m {}3.}{\ignorespaces Multimodalno pretraživanje - prikazuje različite strategije i njihovu integraciju}}{25}{figure.caption.13}%
+\contentsline {figure}{\numberline {3.\spacefactor \@m {}4.}{\ignorespaces Skalabilnost sustava - prikazuje mogućnosti proširivanja i optimizacije}}{25}{figure.caption.14}%
+\contentsline {figure}{\numberline {3.\spacefactor \@m {}5.}{\ignorespaces Korisničko sučelje - prikazuje dizajn i funkcionalnosti}}{26}{figure.caption.15}%
+\contentsline {figure}{\numberline {3.\spacefactor \@m {}6.}{\ignorespaces Arhitektura sustava - prikazuje tok podataka kroz različite komponente}}{27}{figure.caption.16}%
+\contentsline {figure}{\numberline {3.\spacefactor \@m {}7.}{\ignorespaces RAG pipeline - prikazuje tok od upita do generiranog SPARQL-a}}{30}{figure.caption.17}%
+\contentsline {figure}{\numberline {3.\spacefactor \@m {}8.}{\ignorespaces Generiranje SPARQL upita}}{33}{figure.caption.18}%
+\contentsline {figure}{\numberline {3.\spacefactor \@m {}9.}{\ignorespaces Primjer prompta - struktura i elementi prompta za LLM}}{34}{figure.caption.19}%
+\contentsline {figure}{\numberline {3.\spacefactor \@m {}10.}{\ignorespaces Pokretanje složenijeg upita}}{39}{figure.caption.20}%
+\contentsline {figure}{\numberline {3.\spacefactor \@m {}11.}{\ignorespaces Multimodalno pretraživanje}}{41}{figure.caption.21}%
+\contentsline {figure}{\numberline {3.\spacefactor \@m {}12.}{\ignorespaces Rangiranje kombiniranih rezultata}}{43}{figure.caption.22}%
+\contentsline {figure}{\numberline {3.\spacefactor \@m {}13.}{\ignorespaces Rukovanje greškama i fallback strategija}}{48}{figure.caption.23}%
+\contentsline {figure}{\numberline {3.\spacefactor \@m {}14.}{\ignorespaces UML dijagram komponenti sustava - prikazuje glavne module i njihove međusobne ovisnosti}}{49}{figure.caption.24}%
+\contentsline {figure}{\numberline {3.\spacefactor \@m {}15.}{\ignorespaces UML slijedni dijagram za obradu korisničkog upita - prikazuje interakcije između komponenti}}{50}{figure.caption.25}%
+\contentsline {figure}{\numberline {3.\spacefactor \@m {}16.}{\ignorespaces UML dijagram aktivnosti - prikazuje paralelne tokove obrade upita}}{52}{figure.caption.26}%
+\contentsline {figure}{\numberline {3.\spacefactor \@m {}17.}{\ignorespaces Konceptualni prikaz RAG \textit {pipeline}-a s detaljima svake faze}}{56}{figure.caption.30}%
+\contentsline {figure}{\numberline {3.\spacefactor \@m {}18.}{\ignorespaces Arhitektura multimodalnog pretraživanja - UML dijagram komponenti}}{59}{figure.caption.34}%
+\addvspace {10\p@ }
+\babel@toc {croatian}{}\relax 
+\contentsline {figure}{\numberline {4.\spacefactor \@m {}1.}{\ignorespaces Stopa uspjeha generiranja upita po kategorijama složenosti}}{64}{figure.caption.39}%
+\contentsline {figure}{\numberline {4.\spacefactor \@m {}2.}{\ignorespaces Distribucija vremena odziva po komponentama sustava}}{66}{figure.caption.44}%
+\contentsline {figure}{\numberline {4.\spacefactor \@m {}3.}{\ignorespaces Utjecaj predmemoriranja na vrijeme odziva}}{68}{figure.caption.49}%
+\contentsline {figure}{\numberline {4.\spacefactor \@m {}4.}{\ignorespaces Usporedba pristupa po različitim metrikama}}{69}{figure.caption.50}%
+\contentsline {figure}{\numberline {4.\spacefactor \@m {}5.}{\ignorespaces Ocjene korisničkog iskustva po kategorijama (skala 1-5)}}{71}{figure.caption.60}%
+\addvspace {10\p@ }
+\babel@toc {croatian}{}\relax 
+\contentsline {figure}{\numberline {5.\spacefactor \@m {}1.}{\ignorespaces Predložena mikroservisna arhitektura za skalabilnost}}{83}{figure.caption.83}%
+\addvspace {10\p@ }
+\babel@toc {croatian}{}\relax 
+\addvspace {10\p@ }
+\babel@toc {croatian}{}\relax 
+\babel@toc {croatian}{}\relax 
+\babel@toc {croatian}{}\relax 
+\babel@toc {croatian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {croatian}{}\relax 
+\babel@toc {english}{}\relax 
+\babel@toc {croatian}{}\relax 
